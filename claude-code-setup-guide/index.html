@@ -1,460 +1,996 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Turning Claude Code Into a Real AI Dev Environment</title>
-    <meta name="description" content="Stop using Claude Code vanilla. Here's how hooks, skills, MCP servers, subagents, and automations turn it into a complete AI development environment.">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Turning Claude Code Into a Real AI Dev Environment">
-    <meta name="twitter:description" content="Stop using Claude Code vanilla. Here's how hooks, skills, MCP servers, subagents, and automations turn it into a complete AI development environment.">
-    <meta name="twitter:image" content="https://hwan50.github.io/ai-agents-guide/claude-code-setup-guide/twitter-card.png">
-    <meta property="og:title" content="Turning Claude Code Into a Real AI Dev Environment">
-    <meta property="og:description" content="Stop using Claude Code vanilla. Here's how hooks, skills, MCP servers, subagents, and automations turn it into a complete AI development environment.">
-    <meta property="og:image" content="https://hwan50.github.io/ai-agents-guide/claude-code-setup-guide/twitter-card.png">
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.7;
-            max-width: 720px;
-            margin: 0 auto;
-            padding: 24px;
-            color: #1a1a1a;
-            background: #fafafa;
-        }
-        /* Navigation */
-        .navbar {
-            background: #1a1a1a;
-            color: #fff;
-            padding: 0 24px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .nav-inner {
-            max-width: 1100px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 56px;
-        }
-        .nav-brand {
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: #fff;
-            text-decoration: none;
-            letter-spacing: -0.02em;
-        }
-        .nav-brand span { color: #f59e0b; }
-        .nav-back {
-            color: rgba(255,255,255,0.7);
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: color 0.2s;
-        }
-        .nav-back:hover { color: #fff; }
-        .content { max-width: 720px; margin: 0 auto; padding: 32px 24px 48px; }
-        h1 {
-            font-size: 2rem;
-            margin-bottom: 8px;
-            color: #111;
-        }
-        .meta {
-            color: #666;
-            font-size: 0.9rem;
-            margin-bottom: 32px;
-        }
-        h2 {
-            font-size: 1.4rem;
-            margin-top: 32px;
-            color: #222;
-        }
-        h3 {
-            font-size: 1.15rem;
-            margin-top: 24px;
-            color: #333;
-        }
-        img {
-            max-width: 100%;
-            border-radius: 8px;
-            margin: 16px 0;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        .img-caption {
-            font-size: 0.85rem;
-            color: #666;
-            text-align: center;
-            margin-top: -12px;
-            margin-bottom: 24px;
-        }
-        code {
-            background: #f3f4f6;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 0.9em;
-        }
-        pre {
-            background: #f3f4f6;
-            padding: 16px;
-            border-radius: 8px;
-            overflow-x: auto;
-            margin: 16px 0;
-            font-size: 0.9em;
-            line-height: 1.5;
-        }
-        pre code {
-            background: none;
-            padding: 0;
-        }
-        ul, ol {
-            padding-left: 20px;
-        }
-        li {
-            margin: 8px 0;
-        }
-        .note {
-            background: #fffbeb;
-            border-left: 4px solid #f59e0b;
-            padding: 16px;
-            margin: 20px 0;
-            border-radius: 0 8px 8px 0;
-        }
-        .warning {
-            background: #fef2f2;
-            border-left: 4px solid #ef4444;
-            padding: 16px;
-            margin: 20px 0;
-            border-radius: 0 8px 8px 0;
-        }
-        .cta {
-            background: #1a1a1a;
-            color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 32px;
-        }
-        .cta a {
-            color: #60a5fa;
-        }
-        .source-box {
-            background: #fff;
-            border: 1px solid #eee;
-            border-radius: 8px;
-            padding: 16px;
-            margin: 20px 0;
-        }
-        .source-box a {
-            color: #2563eb;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Turning Claude Code Into a Real AI Dev Environment</title>
+<meta name="description" content="Stop using Claude Code vanilla. Here's how hooks, skills, MCP servers, subagents, and automations turn it into a complete AI development environment.">
+<meta property="og:title" content="Turning Claude Code Into a Real AI Dev Environment">
+<meta property="og:description" content="Stop using Claude Code vanilla. Here's how hooks, skills, MCP servers, subagents, and automations turn it into a complete AI development environment.">
+<meta property="og:image" content="https://hwan50.github.io/ai-agents-guide/claude-code-setup-guide/twitter-card.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Turning Claude Code Into a Real AI Dev Environment">
+<meta name="twitter:description" content="Stop using Claude Code vanilla. Here's how hooks, skills, MCP servers, subagents, and automations turn it into a complete AI development environment.">
+<meta name="twitter:image" content="https://hwan50.github.io/ai-agents-guide/claude-code-setup-guide/twitter-card.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..600&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..500&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f4f0e7;
+    --paper-2:#ebe5d8;
+    --ink:#211f1b;
+    --ink-soft:#46423a;
+    --muted:#7c7567;
+    --rule:#d8d1c0;
+    --accent:#b8492f;
+    --accent-deep:#9a3a23;
+    --teal:#2f6b66;
+    --code-bg:#211f1b;
+    --code-paper:#2c2a24;
+    --code-ink:#e9e3d4;
+    --code-muted:#9b9483;
+    --maxread:42rem;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Newsreader",Georgia,serif;
+    font-size:1.225rem;
+    line-height:1.72;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    overflow-x:hidden;
+  }
+
+  /* ---- reading progress ---- */
+  #progress{
+    position:fixed;top:0;left:0;height:3px;width:0%;
+    background:var(--accent);z-index:200;transition:width .1s linear;
+  }
+
+  /* ---- layout grid ---- */
+  .wrap{
+    max-width:74rem;margin:0 auto;padding:0 1.6rem;
+  }
+  .masthead{
+    border-bottom:1px solid var(--rule);
+    padding:1.1rem 0;
+    display:flex;align-items:center;justify-content:space-between;
+    font-family:"Inter",sans-serif;
+  }
+  .masthead .brand{
+    font-weight:700;font-size:.82rem;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--ink);text-decoration:none;
+  }
+  .masthead .brand span{color:var(--accent)}
+  .masthead .issue{
+    font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;
+    color:var(--muted);
+  }
+
+  /* ---- hero ---- */
+  header.hero{padding:4.5rem 0 1rem}
+  .kicker{
+    font-family:"Inter",sans-serif;font-weight:600;
+    font-size:.78rem;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:1.4rem;
+    display:flex;align-items:center;gap:.7rem;
+  }
+  .kicker::after{content:"";flex:0 0 2.4rem;height:1px;background:var(--accent)}
+  h1.title{
+    font-family:"Fraunces",serif;
+    font-weight:600;
+    font-size:clamp(2.6rem,6.4vw,5rem);
+    line-height:1.04;
+    letter-spacing:-.02em;
+    max-width:18ch;
+    margin-bottom:1.6rem;
+  }
+  .standfirst{
+    font-family:"Newsreader",serif;
+    font-style:italic;
+    font-size:clamp(1.3rem,2.4vw,1.6rem);
+    line-height:1.5;
+    color:var(--ink-soft);
+    max-width:38rem;
+    margin-bottom:2.2rem;
+  }
+  .byline{
+    display:flex;flex-wrap:wrap;gap:.55rem 1.3rem;align-items:center;
+    font-family:"Inter",sans-serif;font-size:.82rem;
+    letter-spacing:.04em;color:var(--muted);
+    border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+    padding:.9rem 0;
+  }
+  .byline strong{color:var(--ink);font-weight:600}
+  .byline .dot{width:3px;height:3px;border-radius:50%;background:var(--muted)}
+
+  figure.hero-fig{margin:2.6rem 0 0}
+  figure.hero-fig img{
+    width:100%;display:block;border:1px solid var(--rule);
+    background:var(--paper-2);
+  }
+  figcaption{
+    font-family:"Inter",sans-serif;font-size:.78rem;
+    color:var(--muted);margin-top:.7rem;letter-spacing:.02em;
+    padding-left:1rem;border-left:2px solid var(--accent);
+  }
+
+  /* ---- main two-column ---- */
+  .layout{
+    display:grid;
+    grid-template-columns:15rem 1fr;
+    gap:3.5rem;
+    padding:3.5rem 0 2rem;
+    align-items:start;
+  }
+  /* ---- TOC ---- */
+  nav.toc{
+    position:sticky;top:2rem;
+    font-family:"Inter",sans-serif;
+  }
+  nav.toc .toc-label{
+    font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--muted);font-weight:600;
+    padding-bottom:.8rem;margin-bottom:.4rem;
+    border-bottom:1px solid var(--rule);
+  }
+  nav.toc ol{list-style:none;counter-reset:toc}
+  nav.toc li{counter-increment:toc}
+  nav.toc a{
+    display:flex;gap:.6rem;
+    padding:.42rem 0;
+    font-size:.86rem;line-height:1.35;
+    color:var(--ink-soft);text-decoration:none;
+    border-left:2px solid transparent;
+    padding-left:.8rem;margin-left:-.8rem;
+    transition:color .15s,border-color .15s;
+  }
+  nav.toc a::before{
+    content:counter(toc,decimal-leading-zero);
+    color:var(--muted);font-variant-numeric:tabular-nums;
+    font-size:.74rem;flex:0 0 auto;padding-top:.08rem;
+  }
+  nav.toc a:hover{color:var(--accent)}
+  nav.toc a.active{
+    color:var(--accent);font-weight:600;
+    border-left-color:var(--accent);
+  }
+  nav.toc a.active::before{color:var(--accent)}
+
+  /* ---- article ---- */
+  article{max-width:var(--maxread);min-width:0}
+  article p{margin:0 0 1.35rem}
+  article p a,article li a,.endlinks a{
+    color:var(--accent-deep);
+    text-decoration:none;
+    border-bottom:1px solid var(--rule);
+    transition:border-color .15s;
+  }
+  article p a:hover,article li a:hover,.endlinks a:hover{
+    border-bottom-color:var(--accent);
+  }
+
+  /* drop cap */
+  article .lede::first-letter{
+    font-family:"Fraunces",serif;
+    font-weight:600;
+    float:left;
+    font-size:5.1rem;
+    line-height:.78;
+    padding:.36rem .55rem 0 0;
+    color:var(--accent);
+  }
+
+  /* section heads */
+  .section{padding-top:2.4rem;scroll-margin-top:1.5rem}
+  .sec-num{
+    font-family:"Inter",sans-serif;font-weight:700;
+    font-size:.78rem;letter-spacing:.16em;color:var(--accent);
+    text-transform:uppercase;display:block;margin-bottom:.55rem;
+  }
+  h2{
+    font-family:"Fraunces",serif;font-weight:600;
+    font-size:clamp(1.85rem,3.6vw,2.7rem);
+    line-height:1.12;letter-spacing:-.015em;
+    margin-bottom:1.2rem;
+  }
+  h3{
+    font-family:"Fraunces",serif;font-weight:600;
+    font-size:1.4rem;line-height:1.25;
+    margin:2.3rem 0 .9rem;
+  }
+  h2+p,h3+p{margin-top:0}
+
+  /* lists */
+  article ul{list-style:none;margin:0 0 1.5rem;padding:0}
+  article ul li{
+    position:relative;padding-left:1.5rem;margin-bottom:.7rem;
+  }
+  article ul li::before{
+    content:"";position:absolute;left:0;top:.62em;
+    width:.5rem;height:.5rem;background:var(--accent);
+    transform:rotate(45deg);
+  }
+  article ol.steps{
+    list-style:none;counter-reset:step;
+    margin:0 0 1.5rem;padding:0;
+  }
+  article ol.steps li{
+    counter-increment:step;position:relative;
+    padding-left:2.4rem;margin-bottom:.85rem;
+  }
+  article ol.steps li::before{
+    content:counter(step);
+    position:absolute;left:0;top:.05em;
+    width:1.65rem;height:1.65rem;
+    background:var(--ink);color:var(--paper);
+    font-family:"Inter",sans-serif;font-weight:600;font-size:.82rem;
+    display:flex;align-items:center;justify-content:center;
+    border-radius:50%;
+  }
+  li strong{font-weight:600}
+
+  /* pull quote */
+  blockquote{
+    margin:2.6rem 0;
+    font-family:"Fraunces",serif;
+    font-weight:500;font-style:italic;
+    font-size:clamp(1.5rem,3vw,2rem);
+    line-height:1.32;
+    color:var(--ink);
+    padding-left:1.6rem;
+    border-left:3px solid var(--accent);
+  }
+  blockquote .attr{
+    display:block;font-family:"Inter",sans-serif;
+    font-style:normal;font-weight:500;
+    font-size:.82rem;letter-spacing:.04em;
+    color:var(--muted);margin-top:.9rem;
+  }
+
+  /* callout / aside */
+  .callout{
+    margin:2rem 0;padding:1.3rem 1.5rem;
+    background:var(--paper-2);
+    border-left:3px solid var(--teal);
+  }
+  .callout.warn{border-left-color:var(--accent)}
+  .callout .c-label{
+    font-family:"Inter",sans-serif;font-weight:700;
+    font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;
+    color:var(--teal);display:block;margin-bottom:.4rem;
+  }
+  .callout.warn .c-label{color:var(--accent)}
+  .callout p{margin:0;font-size:1.08rem;line-height:1.6}
+
+  /* source box */
+  .source-card{
+    margin:2.2rem 0;padding:1.4rem 1.6rem;
+    border:1px solid var(--rule);background:var(--paper-2);
+  }
+  .source-card .c-label{
+    font-family:"Inter",sans-serif;font-weight:700;
+    font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;
+    color:var(--accent);display:block;margin-bottom:.5rem;
+  }
+  .source-card p{font-size:1.05rem;line-height:1.58;margin:0 0 .8rem}
+  .source-card a.btn{
+    font-family:"Inter",sans-serif;font-weight:600;font-size:.86rem;
+    color:var(--paper);background:var(--ink);
+    text-decoration:none;border:none;
+    display:inline-block;padding:.55rem 1.1rem;
+    transition:background .15s;
+  }
+  .source-card a.btn:hover{background:var(--accent)}
+
+  /* code */
+  code{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:.86em;
+    background:var(--paper-2);
+    padding:.12em .38em;
+    border-radius:3px;
+    color:var(--accent-deep);
+  }
+  .codeblock{
+    margin:1.7rem 0;
+    background:var(--code-bg);
+    border-radius:6px;
+    overflow:hidden;
+    box-shadow:0 12px 30px -16px rgba(33,31,27,.5);
+  }
+  .codeblock .cb-head{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:.5rem .9rem;
+    background:var(--code-paper);
+    border-bottom:1px solid rgba(255,255,255,.07);
+  }
+  .codeblock .cb-name{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:.76rem;color:var(--code-muted);
+    display:flex;align-items:center;gap:.5rem;
+  }
+  .codeblock .cb-name .dots{display:flex;gap:.32rem}
+  .codeblock .cb-name .dots i{
+    width:.5rem;height:.5rem;border-radius:50%;display:block;
+  }
+  .dots i:nth-child(1){background:#d8553f}
+  .dots i:nth-child(2){background:#d8a23f}
+  .dots i:nth-child(3){background:#3f9d7d}
+  .copy-btn{
+    font-family:"Inter",sans-serif;font-size:.72rem;font-weight:600;
+    letter-spacing:.06em;text-transform:uppercase;
+    color:var(--code-muted);background:transparent;
+    border:1px solid rgba(255,255,255,.14);border-radius:4px;
+    padding:.28rem .6rem;cursor:pointer;
+    transition:color .15s,border-color .15s;
+  }
+  .copy-btn:hover{color:var(--code-ink);border-color:rgba(255,255,255,.35)}
+  .copy-btn.done{color:#3f9d7d;border-color:#3f9d7d}
+  .codeblock pre{
+    margin:0;padding:1.1rem 1.2rem;
+    overflow-x:auto;
+  }
+  .codeblock code{
+    font-family:"IBM Plex Mono",monospace;
+    background:none;padding:0;border-radius:0;
+    color:var(--code-ink);
+    font-size:.83rem;line-height:1.65;
+    display:block;white-space:pre;
+  }
+  .tok-c{color:#8f8a7a;font-style:italic}
+  .tok-k{color:#e8896b}
+  .tok-s{color:#9bbf8f}
+  .tok-y{color:#e6c07b}
+  .tok-no{color:#d8553f}
+  .tok-ok{color:#5fae8c}
+
+  /* compare cards */
+  .compare{
+    display:grid;grid-template-columns:1fr 1fr;gap:1.1rem;
+    margin:1.8rem 0;
+  }
+  .compare .card{
+    border:1px solid var(--rule);padding:1.3rem;
+    background:var(--paper-2);
+  }
+  .compare .card.pos{border-color:var(--teal);border-width:1px 1px 1px 3px}
+  .compare .card h4{
+    font-family:"Inter",sans-serif;font-weight:700;
+    font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;
+    margin-bottom:.7rem;color:var(--muted);
+  }
+  .compare .card.pos h4{color:var(--teal)}
+  .compare .card ul{margin:0}
+  .compare .card ul li{
+    font-size:1.02rem;line-height:1.5;margin-bottom:.5rem;
+    padding-left:1.1rem;
+  }
+  .compare .card ul li::before{
+    width:.34rem;height:.34rem;top:.6em;background:var(--muted);
+  }
+  .compare .card.pos ul li::before{background:var(--teal)}
+
+  /* server list */
+  .srv-list{margin:1.6rem 0;border-top:1px solid var(--rule)}
+  .srv-list .srv{
+    display:grid;grid-template-columns:1fr;gap:.2rem;
+    padding:.95rem 0;border-bottom:1px solid var(--rule);
+  }
+  .srv .srv-name{
+    font-family:"IBM Plex Mono",monospace;font-size:.92rem;
+    color:var(--accent-deep);font-weight:500;
+  }
+  .srv .srv-desc{font-size:1.04rem;line-height:1.5;color:var(--ink-soft)}
+
+  /* status table */
+  .status-table{
+    width:100%;border-collapse:collapse;margin:1.7rem 0;
+    font-size:1.02rem;
+  }
+  .status-table th{
+    font-family:"Inter",sans-serif;font-size:.72rem;font-weight:700;
+    letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
+    text-align:left;padding:.6rem .8rem;border-bottom:2px solid var(--ink);
+  }
+  .status-table td{
+    padding:.8rem .8rem;border-bottom:1px solid var(--rule);
+    vertical-align:top;
+  }
+  .status-table td:first-child{font-weight:500}
+  .status-table tr:last-child td{border-bottom:none}
+  .badge{
+    font-family:"Inter",sans-serif;font-size:.7rem;font-weight:700;
+    letter-spacing:.06em;text-transform:uppercase;
+    padding:.22rem .5rem;border-radius:3px;white-space:nowrap;
+    display:inline-block;
+  }
+  .b-stable{background:#dceee2;color:#2f6b4e}
+  .b-exp{background:#f6e6cc;color:#9a6a16}
+  .b-early{background:#e6e1f0;color:#5a4a8a}
+  .b-no{background:#f1ddd6;color:#a8412a}
+
+  /* end matter */
+  .endmatter{
+    border-top:3px solid var(--ink);
+    margin-top:3rem;padding-top:2.2rem;
+  }
+  .endmatter h3{margin-top:0}
+  .endlinks{list-style:none;padding:0;margin:1rem 0 0}
+  .endlinks li{
+    padding:.7rem 0;border-bottom:1px solid var(--rule);
+    display:flex;align-items:baseline;gap:.6rem;
+  }
+  .endlinks li::before{content:"\2192";color:var(--accent);font-weight:700}
+  .endlinks a{font-family:"Inter",sans-serif;font-size:.98rem;font-weight:500}
+  .disclosure{
+    font-size:.92rem;font-style:italic;color:var(--muted);
+    margin-top:1.6rem;
+  }
+
+  /* related article */
+  .related{
+    margin:2.2rem 0;padding:1.4rem 1.6rem;
+    border:1px solid var(--rule);background:var(--paper-2);
+  }
+  .related .c-label{
+    font-family:"Inter",sans-serif;font-weight:700;
+    font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;
+    color:var(--accent);display:block;margin-bottom:.5rem;
+  }
+  .related a{
+    font-family:"Fraunces",serif;font-weight:600;
+    font-size:1.15rem;color:var(--ink);text-decoration:none;
+    border-bottom:1px solid var(--rule);
+    transition:border-color .15s;
+  }
+  .related a:hover{border-bottom-color:var(--accent)}
+  .related p{font-size:1.02rem;line-height:1.55;color:var(--ink-soft);margin:.4rem 0 0}
+
+  footer.foot{
+    border-top:1px solid var(--rule);
+    margin-top:3.5rem;padding:2.2rem 0 3rem;
+    font-family:"Inter",sans-serif;
+    display:flex;flex-wrap:wrap;gap:1rem;
+    justify-content:space-between;align-items:center;
+  }
+  footer.foot .f-brand{
+    font-weight:700;font-size:.8rem;letter-spacing:.14em;
+    text-transform:uppercase;
+  }
+  footer.foot .f-brand span{color:var(--accent)}
+  footer.foot .f-note{font-size:.8rem;color:var(--muted)}
+
+  /* responsive */
+  @media(max-width:880px){
+    body{font-size:1.12rem}
+    .layout{grid-template-columns:1fr;gap:0;padding-top:2.2rem}
+    nav.toc{
+      position:static;margin-bottom:2.5rem;
+      padding:1.1rem 1.2rem;background:var(--paper-2);
+      border:1px solid var(--rule);
+    }
+    nav.toc ol{
+      columns:2;column-gap:1.4rem;
+    }
+    nav.toc a{padding-left:.6rem;margin-left:0;border-left:none}
+    nav.toc a.active{border-left:none}
+    header.hero{padding-top:2.6rem}
+    .compare{grid-template-columns:1fr}
+    article .lede::first-letter{font-size:4rem}
+  }
+  @media(max-width:520px){
+    .wrap{padding:0 1.1rem}
+    nav.toc ol{columns:1}
+    .status-table{font-size:.92rem}
+    .status-table th,.status-table td{padding:.55rem .45rem}
+    blockquote{padding-left:1.1rem}
+  }
+</style>
 </head>
 <body>
+<div id="progress"></div>
 
-<nav class="navbar">
-    <div class="nav-inner">
-        <a href="/ai-agents-guide/" class="nav-brand">AI Agents <span>/</span> Field Guide</a>
-        <a href="/ai-agents-guide/" class="nav-back">← All Articles</a>
-    </div>
-</nav>
-
-<div class="content">
-
-<h1>Turning Claude Code Into a Real AI Dev Environment</h1>
-<p class="meta">Updated May 2026</p>
-
-<img src="hero-image.png" alt="Abstract editorial illustration of a terminal window with glowing code brackets and geometric shapes in coral and teal on dark navy background" style="margin-top: 8px;">
-
-<p><em>"Claude Code feels completely different once you install this."</em> — I saw that tweet too. And while the specific plugin name might be aspirational, the underlying concept is spot on. Most people install Claude Code, run a few commands, and think that's all there is. They're missing the ecosystem that turns a chat interface into an actual development environment.</p>
-
-<div class="source-box">
-    <strong>📹 Original Source</strong><br><br>
-    This article expands on a viral tweet from <a href="https://x.com/Radha_AI" target="_blank">@Radha_AI</a> that introduced the <code>claude-code-setup</code> plugin concept. The video demonstration shows how project scanning and automated setup recommendations work in practice.<br><br>
-    <a href="https://x.com/Radha_AI/status/2057730673532916022" target="_blank">→ Watch the original tweet/video on X</a>
+<div class="wrap">
+  <div class="masthead">
+    <a href="/ai-agents-guide/" class="brand">AI&nbsp;Agents <span>/</span> Field&nbsp;Guide</a>
+    <div class="issue">Setup Guide &middot; No.&nbsp;02</div>
+  </div>
 </div>
 
-<p>This is the guide I wish existed when I first started. No vague marketing promises — just what each component actually does, how to set it up, and whether it's worth your time.</p>
+<div class="wrap">
+  <header class="hero">
+    <div class="kicker">The Claude Code Setup</div>
+    <h1 class="title">Turning Claude Code Into a Real AI Dev Environment</h1>
+    <p class="standfirst">Stop using Claude Code vanilla. Hooks, skills, MCP servers, subagents, and automations turn a terminal chatbot into a complete development environment.</p>
+    <div class="byline">
+      <span>Updated <strong>May 2026</strong></span>
+      <span class="dot"></span>
+      <span><strong>14 min</strong> read</span>
+      <span class="dot"></span>
+      <span>A practical field guide</span>
+    </div>
+    <figure class="hero-fig">
+      <img src="hero-image.png" alt="Abstract editorial illustration of a terminal window with glowing code brackets and geometric shapes in coral and teal on dark navy background">
+      <figcaption>From a terminal chatbot to a configured workspace — the difference is setup, not magic.</figcaption>
+    </figure>
+  </header>
+</div>
 
-<h2>What "Vanilla" Claude Code Actually Gives You</h2>
+<div class="wrap">
+  <div class="layout">
 
-<p>Out of the box, Claude Code is a terminal-based chatbot that can read files and run shell commands. That's genuinely useful — I use it daily for refactoring, debugging, and exploring unfamiliar codebases. But it's also limited:</p>
+    <nav class="toc" id="toc">
+      <div class="toc-label">In this guide</div>
+      <ol>
+        <li><a href="#vanilla">What "vanilla" gives you</a></li>
+        <li><a href="#hooks">Hooks: your workflow</a></li>
+        <li><a href="#skills">Skills: domain expertise</a></li>
+        <li><a href="#mcp">MCP: the outside world</a></li>
+        <li><a href="#subagents">Subagents: delegation</a></li>
+        <li><a href="#automations">Automations</a></li>
+        <li><a href="#setup">Putting it together</a></li>
+        <li><a href="#status">Available vs. coming</a></li>
+        <li><a href="#verdict">Should you do this?</a></li>
+      </ol>
+    </nav>
 
-<ul>
-    <li>No persistent memory of your project's conventions</li>
-    <li>No access to external databases, APIs, or documentation</li>
-    <li>No way to delegate sub-tasks to specialized agents</li>
-    <li>No automation — you type everything manually</li>
-</ul>
+    <article>
+      <p class="lede">"Claude Code feels completely different once you install this." I saw that tweet too. And while the specific plugin name might be aspirational, the underlying concept is spot on. Most people install Claude Code, run a few commands, and think that's all there is. They're missing the ecosystem that turns a chat interface into an actual development environment.</p>
 
-<p>The "messy" feeling that tweet describes? It's real. You're essentially pair-programming with a very smart colleague who has goldfish memory and no access to your company's internal tools.</p>
+      <div class="source-card">
+        <span class="c-label">&#9654;&nbsp;&nbsp;Original Source</span>
+        <p>This article expands on a viral tweet from <a href="https://x.com/Radha_AI" target="_blank" rel="noopener">@Radha_AI</a> that introduced the <code>claude-code-setup</code> plugin concept. The video demonstration shows how project scanning and automated setup recommendations work in practice.</p>
+        <a class="btn" href="https://x.com/Radha_AI/status/2057730673532916022" target="_blank" rel="noopener">Watch the original tweet &rarr;</a>
+      </div>
 
-<p>Here's how to fix that.</p>
+      <p>This is the guide I wish existed when I first started. No vague marketing promises — just what each component actually does, how to set it up, and whether it's worth your time.</p>
 
-<h2>1. Hooks: Teaching Claude Your Workflow</h2>
+      <section class="section" id="vanilla">
+        <span class="sec-num">Starting point</span>
+        <h2>What "vanilla" Claude Code actually gives you</h2>
+        <p>Out of the box, Claude Code is a terminal-based chatbot that can read files and run shell commands. That's genuinely useful — I use it daily for refactoring, debugging, and exploring unfamiliar codebases. But it's also limited:</p>
+        <ul>
+          <li>No persistent memory of your project's conventions</li>
+          <li>No access to external databases, APIs, or documentation</li>
+          <li>No way to delegate sub-tasks to specialized agents</li>
+          <li>No automation — you type everything manually</li>
+        </ul>
+        <p>The "messy" feeling that tweet describes? It's real. You're essentially pair-programming with a very smart colleague who has goldfish memory and no access to your company's internal tools.</p>
+        <p>Here's how to fix that.</p>
+      </section>
 
-<p>Hooks are event triggers that run custom logic before or after Claude takes action. Think of them as Claude's nervous system — they let you intercept and modify behavior at specific moments.</p>
+      <section class="section" id="hooks">
+        <span class="sec-num">Component 01</span>
+        <h2>Hooks: teaching Claude your workflow</h2>
+        <p>Hooks are event triggers that run custom logic before or after Claude takes action. Think of them as Claude's nervous system — they let you intercept and modify behavior at specific moments.</p>
 
-<h3>What You Can Actually Do With Hooks</h3>
+        <h3>What you can actually do with hooks</h3>
+        <p>Here are three I use daily:</p>
+        <ul>
+          <li><strong>Pre-command validation.</strong> Before Claude runs <code>rm -rf</code> or <code>git push --force</code>, pause and ask for confirmation. I've caught accidental destructive commands twice this week.</li>
+          <li><strong>Auto-format on save.</strong> When Claude writes a file, automatically run Prettier or Black. No more "can you format that?" back-and-forth.</li>
+          <li><strong>Context injection.</strong> Before every response, prepend your team's coding standards. Claude suddenly knows you use 2-space indents, prefer early returns, and hate nested ternaries.</li>
+        </ul>
 
-<p>Here are three I use daily:</p>
+        <h3>How to configure hooks</h3>
+        <p>Claude Code uses a <code>claude.md</code> file in your project root for persistent instructions. For hooks, create a <code>.claude/hooks/</code> directory:</p>
 
-<ul>
-    <li><strong>Pre-command validation:</strong> Before Claude runs <code>rm -rf</code> or <code>git push --force</code>, pause and ask for confirmation. I've caught accidental destructive commands twice this week.</li>
-    <li><strong>Auto-format on save:</strong> When Claude writes a file, automatically run Prettier or Black. No more "can you format that?" back-and-forth.</li>
-    <li><strong>Context injection:</strong> Before every response, prepend your team's coding standards. Claude suddenly knows you use 2-space indents, prefer early returns, and hate nested ternaries.</li>
-</ul>
-
-<h3>How to Configure Hooks</h3>
-
-<p>Claude Code uses a <code>claude.md</code> file in your project root for persistent instructions. For hooks, create a <code>.claude/hooks/</code> directory:</p>
-
+        <div class="codeblock">
+          <div class="cb-head">
+            <span class="cb-name"><span class="dots"><i></i><i></i><i></i></span>project structure</span>
+            <button class="copy-btn">Copy</button>
+          </div>
 <pre><code>.claude/
 ├── hooks/
-│   ├── before-command.sh    # Runs before any shell command
-│   ├── after-write.py       # Runs after Claude writes a file
-│   └── pre-response.md      # Injected into every context
-└── claude.md                # Global project instructions</code></pre>
+│   ├── before-command.sh    <span class="tok-c"># Runs before any shell command</span>
+│   ├── after-write.py       <span class="tok-c"># Runs after Claude writes a file</span>
+│   └── pre-response.md      <span class="tok-c"># Injected into every context</span>
+└── claude.md                <span class="tok-c"># Global project instructions</span></code></pre>
+        </div>
 
-<p>Example <code>before-command.sh</code>:</p>
+        <p>Example <code>before-command.sh</code>:</p>
 
-<pre><code>#!/bin/bash
-# Safety gate for destructive commands
-if [[ "$1" =~ ^rm\ -rf|git\ push\ --force|DROP\ TABLE ]]; then
-    echo "⚠️  Destructive command detected: $1"
-    echo "Type 'yes' to proceed:"
-    read confirmation
-    if [[ "$confirmation" != "yes" ]]; then
-        exit 1
-    fi
-fi</code></pre>
+        <div class="codeblock">
+          <div class="cb-head">
+            <span class="cb-name"><span class="dots"><i></i><i></i><i></i></span>before-command.sh</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+<pre><code><span class="tok-c">#!/bin/bash</span>
+<span class="tok-c"># Safety gate for destructive commands</span>
+<span class="tok-k">if</span> [[ <span class="tok-s">"$1"</span> =~ ^rm\ -rf|git\ push\ --force|DROP\ TABLE ]]; <span class="tok-k">then</span>
+    <span class="tok-k">echo</span> <span class="tok-s">"⚠️  Destructive command detected: $1"</span>
+    <span class="tok-k">echo</span> <span class="tok-s">"Type 'yes' to proceed:"</span>
+    <span class="tok-k">read</span> confirmation
+    <span class="tok-k">if</span> [[ <span class="tok-s">"$confirmation"</span> != <span class="tok-s">"yes"</span> ]]; <span class="tok-k">then</span>
+        <span class="tok-k">exit</span> 1
+    <span class="tok-k">fi</span>
+<span class="tok-k">fi</span></code></pre>
+        </div>
 
-<p>Make it executable (<code>chmod +x</code>) and Claude will respect it. The integration isn't officially documented yet — this works because Claude Code reads <code>.claude/</code> as a convention directory.</p>
+        <p>Make it executable (<code>chmod +x</code>) and Claude will respect it. The integration isn't officially documented yet — this works because Claude Code reads <code>.claude/</code> as a convention directory.</p>
+      </section>
 
-<h2>2. Skills: Giving Claude Domain Expertise</h2>
+      <section class="section" id="skills">
+        <span class="sec-num">Component 02</span>
+        <h2>Skills: giving Claude domain expertise</h2>
+        <p>Skills are structured knowledge files that teach Claude how to work with specific technologies. Unlike the generic "I'm a helpful assistant" baseline, a skill tells Claude exactly how your team uses React, how your GraphQL schema is organized, or what your deployment pipeline expects.</p>
 
-<p>Skills are structured knowledge files that teach Claude how to work with specific technologies. Unlike the generic "I'm a helpful assistant" baseline, a skill tells Claude exactly how your team uses React, how your GraphQL schema is organized, or what your deployment pipeline expects.</p>
+        <h3>Real example: a Next.js App Router skill</h3>
+        <p>I wrote this after Claude suggested <code>getServerSideProps</code> in a Next.js 14 project. It kept happening until I gave it structured context:</p>
 
-<h3>Real Example: Next.js App Router Skill</h3>
-
-<p>I wrote this after Claude suggested <code>getServerSideProps</code> in a Next.js 14 project. It kept happening until I gave it structured context:</p>
-
-<pre><code>// .claude/skills/nextjs-app-router.md
-
-## Project Structure
+        <div class="codeblock">
+          <div class="cb-head">
+            <span class="cb-name"><span class="dots"><i></i><i></i><i></i></span>.claude/skills/nextjs-app-router.md</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+<pre><code><span class="tok-c">## Project Structure</span>
 - App directory: `/app`
 - API routes: `/app/api/*`
 - Server components: default in `/app`
 - Client components: marked with `"use client"`
 - Data fetching: Use Server Components with async/await
 
-## Forbidden Patterns
-❌ getServerSideProps, getStaticProps (pages router only)
-❌ fetch in useEffect
-❌ Direct database access from client components
+<span class="tok-c">## Forbidden Patterns</span>
+<span class="tok-no">❌ getServerSideProps, getStaticProps (pages router only)</span>
+<span class="tok-no">❌ fetch in useEffect</span>
+<span class="tok-no">❌ Direct database access from client components</span>
 
-## Required Patterns
-✅ Server Components for data fetching
-✅ Route handlers at `/app/api/[route]/route.ts`
-✅ Suspense boundaries for async content
+<span class="tok-c">## Required Patterns</span>
+<span class="tok-ok">✅ Server Components for data fetching</span>
+<span class="tok-ok">✅ Route handlers at `/app/api/[route]/route.ts`</span>
+<span class="tok-ok">✅ Suspense boundaries for async content</span>
 
-## File Naming
+<span class="tok-c">## File Naming</span>
 - Page component: `page.tsx`
 - Layout: `layout.tsx`
 - API route: `route.ts`
 - Loading state: `loading.tsx`
 - Error handling: `error.tsx`</code></pre>
+        </div>
 
-<p>After adding this, Claude stopped suggesting deprecated patterns. It even started proactively creating <code>loading.tsx</code> when I asked for new pages.</p>
+        <p>After adding this, Claude stopped suggesting deprecated patterns. It even started proactively creating <code>loading.tsx</code> when I asked for new pages.</p>
 
-<h3>How Skills Differ from Regular Prompts</h3>
+        <h3>How skills differ from regular prompts</h3>
+        <div class="compare">
+          <div class="card">
+            <h4>Regular prompt</h4>
+            <ul>
+              <li>One-shot, forgotten next session</li>
+              <li>Scattered across chat history</li>
+              <li>Claude interprets loosely</li>
+              <li>Generic advice</li>
+            </ul>
+          </div>
+          <div class="card pos">
+            <h4>Skill file</h4>
+            <ul>
+              <li>Persistent, loaded automatically</li>
+              <li>Centralized, version-controlled</li>
+              <li>Structured, rules-based</li>
+              <li>Project-specific conventions</li>
+            </ul>
+          </div>
+        </div>
+      </section>
 
-<ul>
-    <li><strong>Regular Prompt:</strong> One-shot, forgotten next session. Scattered across chat history. Claude interprets loosely. Generic advice.</li>
-    <li><strong>Skill File:</strong> Persistent, loaded automatically. Centralized, version-controlled. Structured, rules-based. Project-specific conventions.</li>
-</ul>
+      <section class="section" id="mcp">
+        <span class="sec-num">Component 03</span>
+        <h2>MCP servers: connecting Claude to the outside world</h2>
+        <p>MCP (Model Context Protocol) servers are the most powerful and least understood part of the Claude ecosystem. They let Claude talk to databases, APIs, browsers, and other tools through a standardized protocol.</p>
 
-<h2>3. MCP Servers: Connecting Claude to the Outside World</h2>
+        <h3>What MCP actually does</h3>
+        <p>Without MCP, Claude can only see what you paste into the chat. With MCP, Claude can:</p>
+        <ul>
+          <li>Query your PostgreSQL database to check schema before writing migrations</li>
+          <li>Read your Notion docs to understand product requirements</li>
+          <li>Control a headless browser to test the UI it just built</li>
+          <li>Access your GitHub issues to prioritize bug fixes</li>
+        </ul>
+        <p>I have a Postgres MCP server configured. When I ask Claude to "create a migration for the new user fields," it queries the current schema first, checks for conflicts, then generates the migration. It used to hallucinate column types; now it's accurate because it actually reads the database.</p>
 
-<p>MCP (Model Context Protocol) servers are the most powerful and least understood part of the Claude ecosystem. They let Claude talk to databases, APIs, browsers, and other tools through a standardized protocol.</p>
+        <h3>Setting up your first MCP server</h3>
+        <p>Claude Code supports MCP through a configuration file. On macOS, it's at <code>~/Library/Application Support/Claude/claude_desktop_config.json</code>:</p>
 
-<h3>What MCP Actually Does</h3>
-
-<p>Without MCP, Claude can only see what you paste into the chat. With MCP, Claude can:</p>
-
-<ul>
-    <li>Query your PostgreSQL database to check schema before writing migrations</li>
-    <li>Read your Notion docs to understand product requirements</li>
-    <li>Control a headless browser to test the UI it just built</li>
-    <li>Access your GitHub issues to prioritize bug fixes</li>
-</ul>
-
-<p>I have a Postgres MCP server configured. When I ask Claude to "create a migration for the new user fields," it queries the current schema first, checks for conflicts, then generates the migration. It used to hallucinate column types; now it's accurate because it actually reads the database.</p>
-
-<h3>Setting Up Your First MCP Server</h3>
-
-<p>Claude Code supports MCP through a configuration file. On macOS, it's at <code>~/Library/Application Support/Claude/claude_desktop_config.json</code>:</p>
-
+        <div class="codeblock">
+          <div class="cb-head">
+            <span class="cb-name"><span class="dots"><i></i><i></i><i></i></span>claude_desktop_config.json</span>
+            <button class="copy-btn">Copy</button>
+          </div>
 <pre><code>{
-  "mcpServers": {
-    "postgres": {
-      "command": "npx",
-      "args": ["-y", "@anthropic/mcp-server-postgres", "postgresql://localhost/mydb"]
+  <span class="tok-y">"mcpServers"</span>: {
+    <span class="tok-y">"postgres"</span>: {
+      <span class="tok-y">"command"</span>: <span class="tok-s">"npx"</span>,
+      <span class="tok-y">"args"</span>: [<span class="tok-s">"-y"</span>, <span class="tok-s">"@anthropic/mcp-server-postgres"</span>, <span class="tok-s">"postgresql://localhost/mydb"</span>]
     },
-    "github": {
-      "command": "npx",
-      "args": ["-y", "@anthropic/mcp-server-github", "--token", "YOUR_TOKEN"]
+    <span class="tok-y">"github"</span>: {
+      <span class="tok-y">"command"</span>: <span class="tok-s">"npx"</span>,
+      <span class="tok-y">"args"</span>: [<span class="tok-s">"-y"</span>, <span class="tok-s">"@anthropic/mcp-server-github"</span>, <span class="tok-s">"--token"</span>, <span class="tok-s">"YOUR_TOKEN"</span>]
     },
-    "filesystem": {
-      "command": "npx",
-      "args": ["-y", "@anthropic/mcp-server-filesystem", "/path/to/project"]
+    <span class="tok-y">"filesystem"</span>: {
+      <span class="tok-y">"command"</span>: <span class="tok-s">"npx"</span>,
+      <span class="tok-y">"args"</span>: [<span class="tok-s">"-y"</span>, <span class="tok-s">"@anthropic/mcp-server-filesystem"</span>, <span class="tok-s">"/path/to/project"</span>]
     }
   }
 }</code></pre>
+        </div>
 
-<div class="note">
-    <strong>Important:</strong> MCP servers run as separate processes on your machine. They have the permissions you give them. The filesystem server can delete files. The Postgres server can drop tables. Configure carefully.
-</div>
+        <div class="callout warn">
+          <span class="c-label">Important</span>
+          <p>MCP servers run as separate processes on your machine. They have the permissions you give them. The filesystem server can delete files. The Postgres server can drop tables. Configure carefully.</p>
+        </div>
 
-<h3>Community MCP Servers Worth Trying</h3>
+        <h3>Community MCP servers worth trying</h3>
+        <div class="srv-list">
+          <div class="srv">
+            <span class="srv-name">@anthropic/mcp-server-filesystem</span>
+            <span class="srv-desc">Read and write local files. Use for any project.</span>
+          </div>
+          <div class="srv">
+            <span class="srv-name">@anthropic/mcp-server-postgres</span>
+            <span class="srv-desc">Query PostgreSQL. Use for database work.</span>
+          </div>
+          <div class="srv">
+            <span class="srv-name">@anthropic/mcp-server-github</span>
+            <span class="srv-desc">Read issues and PRs, create branches. Use for GitHub workflow.</span>
+          </div>
+          <div class="srv">
+            <span class="srv-name">mcp-server-puppeteer</span>
+            <span class="srv-desc">Control a headless browser. Use for UI testing and scraping.</span>
+          </div>
+          <div class="srv">
+            <span class="srv-name">mcp-server-sqlite</span>
+            <span class="srv-desc">Local SQLite queries. Use for mobile and dev tools.</span>
+          </div>
+        </div>
+      </section>
 
-<ul>
-    <li><strong>@anthropic/mcp-server-filesystem</strong> — Read/write local files. Use for any project.</li>
-    <li><strong>@anthropic/mcp-server-postgres</strong> — Query PostgreSQL. Use for database work.</li>
-    <li><strong>@anthropic/mcp-server-github</strong> — Read issues, PRs, create branches. Use for GitHub workflow.</li>
-    <li><strong>mcp-server-puppeteer</strong> — Control headless browser. Use for UI testing/scraping.</li>
-    <li><strong>mcp-server-sqlite</strong> — Local SQLite queries. Use for mobile/dev tools.</li>
-</ul>
+      <section class="section" id="subagents">
+        <span class="sec-num">Component 04</span>
+        <h2>Subagents: delegation without chaos</h2>
+        <p>This is where it gets interesting. Claude can spawn specialized sub-agents for specific tasks — a code review agent, a testing agent, a documentation agent — and coordinate their work.</p>
 
-<h2>4. Subagents: Delegation Without Chaos</h2>
+        <h3>How I use subagents</h3>
+        <p>My workflow for a new feature:</p>
+        <ol class="steps">
+          <li>I tell the main Claude: "Implement user authentication with JWT tokens."</li>
+          <li>Claude spawns a <strong>Research Agent</strong> to check our existing auth patterns in the codebase.</li>
+          <li>Research Agent reports back: "We use Passport.js with local strategy, JWT stored in httpOnly cookies."</li>
+          <li>Claude spawns an <strong>Implementation Agent</strong> with the research context.</li>
+          <li>Implementation Agent writes the code.</li>
+          <li>Claude spawns a <strong>Review Agent</strong> to check for security issues.</li>
+          <li>Review Agent flags: "JWT secret is hardcoded — should use env var."</li>
+          <li>Claude fixes it and presents the final result.</li>
+        </ol>
+        <p>This sounds futuristic, but it's achievable today with the right setup. The key insight: each subagent gets a narrow system prompt and specific tools. You don't spawn "another Claude" — you spawn a specialist with amnesia about everything except its job.</p>
 
-<p>This is where it gets interesting. Claude can spawn specialized sub-agents for specific tasks — a code review agent, a testing agent, a documentation agent — and coordinate their work.</p>
-
-<h3>How I Use Subagents</h3>
-
-<p>My workflow for a new feature:</p>
-
-<ol>
-    <li>I tell the main Claude: "Implement user authentication with JWT tokens"</li>
-    <li>Claude spawns a <strong>Research Agent</strong> to check our existing auth patterns in the codebase</li>
-    <li>Research Agent reports back: "We use Passport.js with local strategy, JWT stored in httpOnly cookies"</li>
-    <li>Claude spawns an <strong>Implementation Agent</strong> with the research context</li>
-    <li>Implementation Agent writes the code</li>
-    <li>Claude spawns a <strong>Review Agent</strong> to check for security issues</li>
-    <li>Review Agent flags: "JWT secret is hardcoded — should use env var"</li>
-    <li>Claude fixes it and presents the final result</li>
-</ol>
-
-<p>This sounds futuristic, but it's achievable today with the right setup. The key insight: each subagent gets a narrow system prompt and specific tools. You don't spawn "another Claude" — you spawn a specialist with amnesia about everything except its job.</p>
-
-<h3>Configuration Example</h3>
-
-<pre><code>// .claude/agents/review-agent.md
-
-You are a security-focused code reviewer.
+        <h3>Configuration example</h3>
+        <div class="codeblock">
+          <div class="cb-head">
+            <span class="cb-name"><span class="dots"><i></i><i></i><i></i></span>.claude/agents/review-agent.md</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+<pre><code>You are a security-focused code reviewer.
 You only look for:
 - Hardcoded secrets
 - SQL injection risks
-- XSS vulnerabilities  
+- XSS vulnerabilities
 - Insecure dependencies
 
 Do not comment on style, performance, or architecture.
-Return findings as a JSON array with "severity" and "fix" fields.</code></pre>
+Return findings as a JSON array with <span class="tok-s">"severity"</span> and <span class="tok-s">"fix"</span> fields.</code></pre>
+        </div>
+        <p>I invoke it with: <code>/agent review-agent check src/auth.ts</code></p>
 
-<p>I invoke it with: <code>/agent review-agent check src/auth.ts</code></p>
+        <div class="callout">
+          <span class="c-label">Reality check</span>
+          <p>Full multi-agent orchestration like I described requires custom scripting. The <code>/agent</code> command and structured sub-agents are still emerging features. What's available today: you can run separate Claude Code instances with different <code>claude.md</code> configs, or use the API with different system prompts.</p>
+        </div>
+      </section>
 
-<div class="note">
-    <strong>Reality check:</strong> Full multi-agent orchestration like I described requires custom scripting. The <code>/agent</code> command and structured sub-agents are still emerging features. What's available today: you can run separate Claude Code instances with different <code>claude.md</code> configs, or use the API with different system prompts.
-</div>
+      <section class="section" id="automations">
+        <span class="sec-num">Component 05</span>
+        <h2>Automations: removing repetitive work</h2>
+        <p>Automations are triggered workflows that run without manual prompting. They turn Claude from reactive (you ask, it answers) to proactive (event happens, Claude acts).</p>
 
-<h2>5. Automations: Removing Repetitive Work</h2>
+        <h3>Practical automations I actually use</h3>
+        <p><strong>Auto-commit messages.</strong> I have a git hook that sends my staged diff to Claude and asks for a conventional commit message. It runs <code>git commit</code> with an AI-generated message following the <code>type(scope): description</code> format.</p>
 
-<p>Automations are triggered workflows that run without manual prompting. They turn Claude from reactive (you ask, it answers) to proactive (event happens, Claude acts).</p>
-
-<h3>Practical Automations I Actually Use</h3>
-
-<p><strong>Auto-commit messages:</strong></p>
-
-<p>I have a git hook that sends my staged diff to Claude and asks for a conventional commit message. It runs <code>git commit</code> with an AI-generated message following the <code>type(scope): description</code> format.</p>
-
-<pre><code>#!/bin/bash
-# .git/hooks/prepare-commit-msg
+        <div class="codeblock">
+          <div class="cb-head">
+            <span class="cb-name"><span class="dots"><i></i><i></i><i></i></span>.git/hooks/prepare-commit-msg</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+<pre><code><span class="tok-c">#!/bin/bash</span>
+<span class="tok-c"># .git/hooks/prepare-commit-msg</span>
 DIFF=$(git diff --cached)
-MSG=$(claude --quiet "Write a conventional commit message for this diff:\n$DIFF")
-echo "$MSG" > "$1"</code></pre>
+MSG=$(claude --quiet <span class="tok-s">"Write a conventional commit message for this diff:\n$DIFF"</span>)
+<span class="tok-k">echo</span> <span class="tok-s">"$MSG"</span> &gt; <span class="tok-s">"$1"</span></code></pre>
+        </div>
 
-<p><strong>Dependency update summaries:</strong></p>
+        <p><strong>Dependency update summaries.</strong> Weekly, a cron job runs <code>npm outdated</code>, pipes the output to Claude, and asks: "Which updates are safe to apply? Which need manual review?" Claude outputs a markdown table with risk assessment. I review it in 30 seconds instead of manually checking each package's changelog.</p>
 
-<p>Weekly, a cron job runs <code>npm outdated</code>, pipes the output to Claude, and asks: "Which updates are safe to apply? Which need manual review?" Claude outputs a markdown table with risk assessment. I review it in 30 seconds instead of manually checking each package's changelog.</p>
+        <p><strong>PR description generation.</strong> When I create a PR branch, a script asks Claude to summarize the commits, explain the motivation, and list testing steps. I edit lightly and submit. It saves about 5 minutes per PR.</p>
 
-<p><strong>PR description generation:</strong></p>
+        <h3>The automation mindset</h3>
+        <p>Every time you find yourself copy-pasting output from Claude, or asking the same sequence of questions, that's an automation candidate. The pattern is always:</p>
+        <ol class="steps">
+          <li>Collect context (git diff, file changes, test output).</li>
+          <li>Send to Claude with a structured prompt.</li>
+          <li>Capture the output.</li>
+          <li>Put it where it belongs (commit message, PR description, Slack).</li>
+        </ol>
+      </section>
 
-<p>When I create a PR branch, a script asks Claude to summarize the commits, explain the motivation, and list testing steps. I edit lightly and submit. It saves about 5 minutes per PR.</p>
+      <section class="section" id="setup">
+        <span class="sec-num">The full picture</span>
+        <h2>Putting it all together: my setup</h2>
+        <p>Here's what my Claude Code environment actually looks like in practice:</p>
 
-<h3>The Automation Mindset</h3>
-
-<p>Every time you find yourself copy-pasting output from Claude, or asking the same sequence of questions, that's an automation candidate. The pattern is always:</p>
-
-<ol>
-    <li>Collect context (git diff, file changes, test output)</li>
-    <li>Send to Claude with a structured prompt</li>
-    <li>Capture the output</li>
-    <li>Put it where it belongs (commit message, PR description, Slack)</li>
-</ol>
-
-<h2>Putting It All Together: My Setup</h2>
-
-<p>Here's what my Claude Code environment actually looks like in practice:</p>
-
+        <div class="codeblock">
+          <div class="cb-head">
+            <span class="cb-name"><span class="dots"><i></i><i></i><i></i></span>my-project/</span>
+            <button class="copy-btn">Copy</button>
+          </div>
 <pre><code>my-project/
 ├── .claude/
-│   ├── claude.md              # Global project context
+│   ├── claude.md              <span class="tok-c"># Global project context</span>
 │   ├── hooks/
-│   │   ├── before-command.sh  # Safety gate
-│   │   └── after-write.py     # Auto-format
+│   │   ├── before-command.sh  <span class="tok-c"># Safety gate</span>
+│   │   └── after-write.py     <span class="tok-c"># Auto-format</span>
 │   ├── skills/
-│   │   ├── nextjs.md          # Framework rules
-│   │   ├── testing.md         # Test conventions
-│   │   └── deployment.md      # Deploy checklist
+│   │   ├── nextjs.md          <span class="tok-c"># Framework rules</span>
+│   │   ├── testing.md         <span class="tok-c"># Test conventions</span>
+│   │   └── deployment.md      <span class="tok-c"># Deploy checklist</span>
 │   └── agents/
-│       ├── review-agent.md    # Security reviewer
-│       └── test-agent.md      # Test generator
+│       ├── review-agent.md    <span class="tok-c"># Security reviewer</span>
+│       └── test-agent.md      <span class="tok-c"># Test generator</span>
 ├── .github/
 │   └── workflows/
-│       └── pr-description.yml # Auto-generate PRs
+│       └── pr-description.yml <span class="tok-c"># Auto-generate PRs</span>
 └── package.json</code></pre>
+        </div>
 
-<p>This took about two hours to set up initially. Now it saves me 15-30 minutes per coding session. The ROI was positive after the third day.</p>
+        <p>This took about two hours to set up initially. Now it saves me 15–30 minutes per coding session. The ROI was positive after the third day.</p>
+      </section>
 
-<h2>What's Actually Available vs. What's Coming</h2>
+      <section class="section" id="status">
+        <span class="sec-num">Honest status</span>
+        <h2>What's actually available vs. what's coming</h2>
+        <p>Not everything described here is equally mature. Here's an honest breakdown:</p>
 
-<ul>
-    <li><strong>Skills (claude.md)</strong> — ✅ Stable. Create <code>.claude/skills/*.md</code>.</li>
-    <li><strong>Hooks (safety gates)</strong> — ⚠️ Experimental. <code>.claude/hooks/*.sh</code> with conventions.</li>
-    <li><strong>MCP Servers</strong> — ✅ Released. <code>claude_desktop_config.json</code>.</li>
-    <li><strong>Subagents</strong> — 🧪 Early. Separate configs / API calls.</li>
-    <li><strong>Automations</strong> — ✅ DIY. Shell scripts + cron + Claude API.</li>
-    <li><strong>Project scanner</strong> — ❌ Not yet. The "claude-code-setup" plugin from the tweet.</li>
-</ul>
+        <table class="status-table">
+          <thead>
+            <tr><th>Capability</th><th>Status</th><th>How</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Skills (claude.md)</td>
+              <td><span class="badge b-stable">Stable</span></td>
+              <td>Create <code>.claude/skills/*.md</code></td>
+            </tr>
+            <tr>
+              <td>Hooks (safety gates)</td>
+              <td><span class="badge b-exp">Experimental</span></td>
+              <td><code>.claude/hooks/*.sh</code> with conventions</td>
+            </tr>
+            <tr>
+              <td>MCP servers</td>
+              <td><span class="badge b-stable">Released</span></td>
+              <td><code>claude_desktop_config.json</code></td>
+            </tr>
+            <tr>
+              <td>Subagents</td>
+              <td><span class="badge b-early">Early</span></td>
+              <td>Separate configs / API calls</td>
+            </tr>
+            <tr>
+              <td>Automations</td>
+              <td><span class="badge b-stable">DIY</span></td>
+              <td>Shell scripts + cron + Claude API</td>
+            </tr>
+            <tr>
+              <td>Project scanner</td>
+              <td><span class="badge b-no">Not yet</span></td>
+              <td>The "claude-code-setup" plugin from the tweet</td>
+            </tr>
+          </tbody>
+        </table>
 
-<p>The tweet that started this mentioned a plugin that "scans your project and recommends setup." That specific tool doesn't exist as a single installable package yet. But you can approximate it by manually creating the structure I described above. It's more work, but you understand what each piece does instead of blindly accepting defaults.</p>
+        <p>The tweet that started this mentioned a plugin that "scans your project and recommends setup." That specific tool doesn't exist as a single installable package yet. But you can approximate it by manually creating the structure described above. It's more work, but you understand what each piece does instead of blindly accepting defaults.</p>
+      </section>
 
-<h2>Should You Do This?</h2>
+      <section class="section" id="verdict">
+        <span class="sec-num">The verdict</span>
+        <h2>Should you do this?</h2>
+        <p>If you use Claude Code less than once a week, probably not. The setup overhead won't pay off.</p>
+        <p>If you use it daily, absolutely yes. The marginal cost of each interaction drops significantly when Claude knows your conventions, has access to your database schema, and follows your safety rules.</p>
 
-<p>If you use Claude Code less than once a week, probably not. The setup overhead won't pay off.</p>
+        <blockquote>
+          The messy feeling of "vanilla" Claude Code isn't a bug — it's the default state before configuration.
+        </blockquote>
 
-<p>If you use it daily, absolutely yes. The marginal cost of each interaction drops significantly when Claude knows your conventions, has access to your database schema, and follows your safety rules.</p>
+        <p>Every serious IDE requires setup: VS Code needs extensions, Vim needs <code>.vimrc</code>, Emacs needs... well, Emacs always needs something. Claude Code is no different.</p>
+        <p>The difference is that once configured, it knows your codebase better than any IDE extension because it can actually read, understand, and reason about the code — not just syntax-highlight it.</p>
 
-<p>The messy feeling of "vanilla" Claude Code isn't a bug — it's the default state before configuration. Every serious IDE requires setup: VS Code needs extensions, Vim needs <code>.vimrc</code>, Emacs needs... well, Emacs always needs something. Claude Code is no different.</p>
+        <div class="related">
+          <span class="c-label">Related Review</span>
+          <a href="../claude-pro-review/">Why I Keep Paying for Claude Pro (And What Annoys Me)</a>
+          <p>A real Claude Pro user's honest take after months of daily use. Why Anthropic's coding approach wins, and where the language model falls short.</p>
+        </div>
 
-<p>The difference is that once configured, it knows your codebase better than any IDE extension because it can actually read, understand, and reason about the code — not just syntax-highlight it.</p>
+        <div class="endmatter">
+          <h3>Ready to upgrade your Claude Code setup?</h3>
+          <ul class="endlinks">
+            <li><a href="https://claude.com" target="_blank" rel="noopener">Claude — free tier available</a></li>
+            <li><a href="https://code.claude.com/docs" target="_blank" rel="noopener">Claude Code documentation</a></li>
+            <li><a href="https://www.anthropic.com/customer-stories" target="_blank" rel="noopener">How teams use Claude</a></li>
+          </ul>
+          <p class="disclosure">Disclosure: This post contains affiliate links. If you sign up through our links, we earn a commission at no extra cost to you.</p>
+        </div>
+      </section>
 
-<div class="cta">
-    <strong>Ready to upgrade your Claude Code setup?</strong><br><br>
-    - <a href="https://claude.com" target="_blank">Claude (Free tier available)</a><br>
-    - <a href="https://code.claude.com/docs" target="_blank">Claude Code Documentation</a><br>
-    - <a href="https://www.anthropic.com/customer-stories" target="_blank">How Teams Use Claude</a><br><br>
-    <em>Disclosure: This post contains affiliate links. If you sign up through our links, we earn a commission at no extra cost to you.</em>
+    </article>
+  </div>
 </div>
 
+<div class="wrap">
+  <footer class="foot">
+    <div class="f-brand">AI&nbsp;Agents <span>/</span> Field&nbsp;Guide</div>
+    <div class="f-note">Last updated May 2026 &middot; Written for daily Claude Code users</div>
+  </footer>
+</div>
+
+<script>
+  // reading progress
+  var progress=document.getElementById('progress');
+  function updateProgress(){
+    var h=document.documentElement;
+    var max=h.scrollHeight-h.clientHeight;
+    var pct=max>0?(h.scrollTop/max)*100:0;
+    progress.style.width=pct+'%';
+  }
+  document.addEventListener('scroll',updateProgress,{passive:true});
+  window.addEventListener('resize',updateProgress);
+  updateProgress();
+
+  // scroll spy for TOC
+  var sections=Array.prototype.slice.call(document.querySelectorAll('section.section'));
+  var tocLinks=Array.prototype.slice.call(document.querySelectorAll('#toc a'));
+  function spy(){
+    var pos=window.scrollY+window.innerHeight*0.3;
+    var current=sections[0];
+    for(var i=0;i<sections.length;i++){
+      if(sections[i].offsetTop<=pos)current=sections[i];
+    }
+    tocLinks.forEach(function(a){
+      a.classList.toggle('active',a.getAttribute('href')==='#'+current.id);
+    });
+  }
+  document.addEventListener('scroll',spy,{passive:true});
+  window.addEventListener('resize',spy);
+  spy();
+
+  // copy buttons
+  document.querySelectorAll('.copy-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var block=btn.closest('.codeblock');
+      var code=block.querySelector('pre code');
+      var text=code.innerText;
+      navigator.clipboard.writeText(text).then(function(){
+        btn.textContent='Copied';
+        btn.classList.add('done');
+        setTimeout(function(){btn.textContent='Copy';btn.classList.remove('done');},1800);
+      }).catch(function(){
+        btn.textContent='Error';
+        setTimeout(function(){btn.textContent='Copy';},1800);
+      });
+    });
+  });
+</script>
 </body>
 </html>
