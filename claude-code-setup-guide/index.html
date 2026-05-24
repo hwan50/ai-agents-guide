@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Turning Claude Code Into a Real AI Dev Environment: The Complete Setup Guide</title>
+    <title>Turning Claude Code Into a Real AI Dev Environment</title>
     <meta name="description" content="Stop using Claude Code vanilla. Here's how hooks, skills, MCP servers, subagents, and automations turn it into a complete AI development environment.">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Turning Claude Code Into a Real AI Dev Environment">
@@ -13,36 +13,35 @@
     <meta property="og:description" content="Stop using Claude Code vanilla. Here's how hooks, skills, MCP servers, subagents, and automations turn it into a complete AI development environment.">
     <meta property="og:image" content="https://hwan50.github.io/ai-agents-guide/claude-code-setup-guide/twitter-card.png">
     <style>
-        :root {
-            --bg: #fafafa;
-            --text: #1a1a1a;
-            --text-secondary: #666;
-            --accent: #f59e0b;
-            --accent-bg: #fffbeb;
-            --card-bg: #fff;
-            --border: #eee;
-            --code-bg: #f3f4f6;
-            --cta-bg: #1a1a1a;
-            --cta-text: #fff;
-            --cta-link: #60a5fa;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.7;
             max-width: 720px;
             margin: 0 auto;
             padding: 24px;
-            color: var(--text);
-            background: var(--bg);
+            color: #1a1a1a;
+            background: #fafafa;
         }
-        h1 { font-size: 2rem; margin-bottom: 8px; color: #111; }
-        .meta { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 32px; }
-        h2 { font-size: 1.4rem; margin-top: 32px; color: #222; }
-        h3 { font-size: 1.15rem; margin-top: 24px; color: #333; }
-        p { margin: 14px 0; }
-        a { color: #2563eb; text-decoration: none; }
-        a:hover { text-decoration: underline; }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            color: #111;
+        }
+        .meta {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 32px;
+        }
+        h2 {
+            font-size: 1.4rem;
+            margin-top: 32px;
+            color: #222;
+        }
+        h3 {
+            font-size: 1.15rem;
+            margin-top: 24px;
+            color: #333;
+        }
         img {
             max-width: 100%;
             border-radius: 8px;
@@ -51,20 +50,19 @@
         }
         .img-caption {
             font-size: 0.85rem;
-            color: var(--text-secondary);
+            color: #666;
             text-align: center;
             margin-top: -12px;
             margin-bottom: 24px;
         }
         code {
-            background: var(--code-bg);
+            background: #f3f4f6;
             padding: 2px 6px;
             border-radius: 4px;
             font-size: 0.9em;
-            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
         }
         pre {
-            background: var(--code-bg);
+            background: #f3f4f6;
             padding: 16px;
             border-radius: 8px;
             overflow-x: auto;
@@ -78,12 +76,13 @@
         }
         ul, ol {
             padding-left: 20px;
-            margin: 14px 0;
         }
-        li { margin: 8px 0; }
+        li {
+            margin: 8px 0;
+        }
         .note {
-            background: var(--accent-bg);
-            border-left: 4px solid var(--accent);
+            background: #fffbeb;
+            border-left: 4px solid #f59e0b;
             padding: 16px;
             margin: 20px 0;
             border-radius: 0 8px 8px 0;
@@ -95,62 +94,42 @@
             margin: 20px 0;
             border-radius: 0 8px 8px 0;
         }
-        .tip {
-            background: #eff6ff;
-            border-left: 4px solid #3b82f6;
-            padding: 16px;
-            margin: 20px 0;
-            border-radius: 0 8px 8px 0;
-        }
         .cta {
-            background: var(--cta-bg);
-            color: var(--cta-text);
+            background: #1a1a1a;
+            color: #fff;
             padding: 20px;
             border-radius: 8px;
             margin-top: 32px;
         }
-        .cta a { color: var(--cta-link); }
-        .nav { margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
-        .nav a { font-size: 0.9rem; color: var(--text-secondary); }
-        .footer {
-            margin-top: 48px;
-            padding-top: 24px;
-            border-top: 1px solid var(--border);
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            text-align: center;
+        .cta a {
+            color: #60a5fa;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            background: var(--card-bg);
+        .source-box {
+            background: #fff;
+            border: 1px solid #eee;
             border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            padding: 16px;
+            margin: 20px 0;
         }
-        th, td {
-            padding: 12px 16px;
-            text-align: left;
-            border-bottom: 1px solid var(--border);
-        }
-        th {
-            background: #f5f5f5;
-            font-weight: 600;
-            color: #444;
+        .source-box a {
+            color: #2563eb;
         }
     </style>
 </head>
 <body>
 
-<div class="nav">
-    <a href="/ai-agents-guide/">← All Articles</a>
-</div>
+<h1>Turning Claude Code Into a Real AI Dev Environment</h1>
+<p class="meta">Updated May 2026</p>
 
-<h1>Turning Claude Code Into a Real AI Dev Environment: The Complete Setup Guide</h1>
-<p class="meta">May 2026</p>
+<img src="hero-image.png" alt="Abstract editorial illustration of a terminal window with glowing code brackets and geometric shapes in coral and teal on dark navy background" style="margin-top: 8px;">
 
 <p><em>"Claude Code feels completely different once you install this."</em> — I saw that tweet too. And while the specific plugin name might be aspirational, the underlying concept is spot on. Most people install Claude Code, run a few commands, and think that's all there is. They're missing the ecosystem that turns a chat interface into an actual development environment.</p>
+
+<div class="source-box">
+    <strong>📹 Original Source</strong><br><br>
+    This article expands on a viral tweet from <a href="https://x.com/Radha_AI" target="_blank">@Radha_AI</a> that introduced the <code>claude-code-setup</code> plugin concept. The video demonstration shows how project scanning and automated setup recommendations work in practice.<br><br>
+    <a href="https://x.com/Radha_AI/status/2057730673532916022" target="_blank">→ Watch the original tweet/video on X</a>
+</div>
 
 <p>This is the guide I wish existed when I first started. No vague marketing promises — just what each component actually does, how to set it up, and whether it's worth your time.</p>
 
@@ -159,10 +138,10 @@
 <p>Out of the box, Claude Code is a terminal-based chatbot that can read files and run shell commands. That's genuinely useful — I use it daily for refactoring, debugging, and exploring unfamiliar codebases. But it's also limited:</p>
 
 <ul>
-<li>No persistent memory of your project's conventions</li>
-<li>No access to external databases, APIs, or documentation</li>
-<li>No way to delegate sub-tasks to specialized agents</li>
-<li>No automation — you type everything manually</li>
+    <li>No persistent memory of your project's conventions</li>
+    <li>No access to external databases, APIs, or documentation</li>
+    <li>No way to delegate sub-tasks to specialized agents</li>
+    <li>No automation — you type everything manually</li>
 </ul>
 
 <p>The "messy" feeling that tweet describes? It's real. You're essentially pair-programming with a very smart colleague who has goldfish memory and no access to your company's internal tools.</p>
@@ -178,9 +157,9 @@
 <p>Here are three I use daily:</p>
 
 <ul>
-<li><strong>Pre-command validation:</strong> Before Claude runs <code>rm -rf</code> or <code>git push --force</code>, pause and ask for confirmation. I've caught accidental destructive commands twice this week.</li>
-<li><strong>Auto-format on save:</strong> When Claude writes a file, automatically run Prettier or Black. No more "can you format that?" back-and-forth.</li>
-<li><strong>Context injection:</strong> Before every response, prepend your team's coding standards. Claude suddenly knows you use 2-space indents, prefer early returns, and hate nested ternaries.</li>
+    <li><strong>Pre-command validation:</strong> Before Claude runs <code>rm -rf</code> or <code>git push --force</code>, pause and ask for confirmation. I've caught accidental destructive commands twice this week.</li>
+    <li><strong>Auto-format on save:</strong> When Claude writes a file, automatically run Prettier or Black. No more "can you format that?" back-and-forth.</li>
+    <li><strong>Context injection:</strong> Before every response, prepend your team's coding standards. Claude suddenly knows you use 2-space indents, prefer early returns, and hate nested ternaries.</li>
 </ul>
 
 <h3>How to Configure Hooks</h3>
@@ -247,13 +226,10 @@ fi</code></pre>
 
 <h3>How Skills Differ from Regular Prompts</h3>
 
-<table>
-<tr><th>Regular Prompt</th><th>Skill File</th></tr>
-<tr><td>One-shot, forgotten next session</td><td>Persistent, loaded automatically</td></tr>
-<tr><td>Scattered across chat history</td><td>Centralized, version-controlled</td></tr>
-<tr><td>Claude interprets loosely</td><td>Structured, rules-based</td></tr>
-<tr><td>Generic advice</td><td>Project-specific conventions</td></tr>
-</table>
+<ul>
+    <li><strong>Regular Prompt:</strong> One-shot, forgotten next session. Scattered across chat history. Claude interprets loosely. Generic advice.</li>
+    <li><strong>Skill File:</strong> Persistent, loaded automatically. Centralized, version-controlled. Structured, rules-based. Project-specific conventions.</li>
+</ul>
 
 <h2>3. MCP Servers: Connecting Claude to the Outside World</h2>
 
@@ -264,10 +240,10 @@ fi</code></pre>
 <p>Without MCP, Claude can only see what you paste into the chat. With MCP, Claude can:</p>
 
 <ul>
-<li>Query your PostgreSQL database to check schema before writing migrations</li>
-<li>Read your Notion docs to understand product requirements</li>
-<li>Control a headless browser to test the UI it just built</li>
-<li>Access your GitHub issues to prioritize bug fixes</li>
+    <li>Query your PostgreSQL database to check schema before writing migrations</li>
+    <li>Read your Notion docs to understand product requirements</li>
+    <li>Control a headless browser to test the UI it just built</li>
+    <li>Access your GitHub issues to prioritize bug fixes</li>
 </ul>
 
 <p>I have a Postgres MCP server configured. When I ask Claude to "create a migration for the new user fields," it queries the current schema first, checks for conflicts, then generates the migration. It used to hallucinate column types; now it's accurate because it actually reads the database.</p>
@@ -294,19 +270,18 @@ fi</code></pre>
 }</code></pre>
 
 <div class="note">
-<strong>Important:</strong> MCP servers run as separate processes on your machine. They have the permissions you give them. The filesystem server can delete files. The Postgres server can drop tables. Configure carefully.
+    <strong>Important:</strong> MCP servers run as separate processes on your machine. They have the permissions you give them. The filesystem server can delete files. The Postgres server can drop tables. Configure carefully.
 </div>
 
 <h3>Community MCP Servers Worth Trying</h3>
 
-<table>
-<tr><th>Server</th><th>What It Does</th><th>When You Need It</th></tr>
-<tr><td>@anthropic/mcp-server-filesystem</td><td>Read/write local files</td><td>Any project</td></tr>
-<tr><td>@anthropic/mcp-server-postgres</td><td>Query PostgreSQL</td><td>Database work</td></tr>
-<tr><td>@anthropic/mcp-server-github</td><td>Read issues, PRs, create branches</td><td>GitHub workflow</td></tr>
-<tr><td>mcp-server-puppeteer</td><td>Control headless browser</td><td>UI testing/scraping</td></tr>
-<tr><td>mcp-server-sqlite</td><td>Local SQLite queries</td><td>Mobile/dev tools</td></tr>
-</table>
+<ul>
+    <li><strong>@anthropic/mcp-server-filesystem</strong> — Read/write local files. Use for any project.</li>
+    <li><strong>@anthropic/mcp-server-postgres</strong> — Query PostgreSQL. Use for database work.</li>
+    <li><strong>@anthropic/mcp-server-github</strong> — Read issues, PRs, create branches. Use for GitHub workflow.</li>
+    <li><strong>mcp-server-puppeteer</strong> — Control headless browser. Use for UI testing/scraping.</li>
+    <li><strong>mcp-server-sqlite</strong> — Local SQLite queries. Use for mobile/dev tools.</li>
+</ul>
 
 <h2>4. Subagents: Delegation Without Chaos</h2>
 
@@ -317,14 +292,14 @@ fi</code></pre>
 <p>My workflow for a new feature:</p>
 
 <ol>
-<li>I tell the main Claude: "Implement user authentication with JWT tokens"</li>
-<li>Claude spawns a <strong>Research Agent</strong> to check our existing auth patterns in the codebase</li>
-<li>Research Agent reports back: "We use Passport.js with local strategy, JWT stored in httpOnly cookies"</li>
-<li>Claude spawns an <strong>Implementation Agent</strong> with the research context</li>
-<li>Implementation Agent writes the code</li>
-<li>Claude spawns a <strong>Review Agent</strong> to check for security issues</li>
-<li>Review Agent flags: "JWT secret is hardcoded — should use env var"</li>
-<li>Claude fixes it and presents the final result</li>
+    <li>I tell the main Claude: "Implement user authentication with JWT tokens"</li>
+    <li>Claude spawns a <strong>Research Agent</strong> to check our existing auth patterns in the codebase</li>
+    <li>Research Agent reports back: "We use Passport.js with local strategy, JWT stored in httpOnly cookies"</li>
+    <li>Claude spawns an <strong>Implementation Agent</strong> with the research context</li>
+    <li>Implementation Agent writes the code</li>
+    <li>Claude spawns a <strong>Review Agent</strong> to check for security issues</li>
+    <li>Review Agent flags: "JWT secret is hardcoded — should use env var"</li>
+    <li>Claude fixes it and presents the final result</li>
 </ol>
 
 <p>This sounds futuristic, but it's achievable today with the right setup. The key insight: each subagent gets a narrow system prompt and specific tools. You don't spawn "another Claude" — you spawn a specialist with amnesia about everything except its job.</p>
@@ -345,8 +320,8 @@ Return findings as a JSON array with "severity" and "fix" fields.</code></pre>
 
 <p>I invoke it with: <code>/agent review-agent check src/auth.ts</code></p>
 
-<div class="tip">
-<strong>Reality check:</strong> Full multi-agent orchestration like I described requires custom scripting. The <code>/agent</code> command and structured sub-agents are still emerging features. What's available today: you can run separate Claude Code instances with different <code>claude.md</code> configs, or use the API with different system prompts.
+<div class="note">
+    <strong>Reality check:</strong> Full multi-agent orchestration like I described requires custom scripting. The <code>/agent</code> command and structured sub-agents are still emerging features. What's available today: you can run separate Claude Code instances with different <code>claude.md</code> configs, or use the API with different system prompts.
 </div>
 
 <h2>5. Automations: Removing Repetitive Work</h2>
@@ -378,10 +353,10 @@ echo "$MSG" > "$1"</code></pre>
 <p>Every time you find yourself copy-pasting output from Claude, or asking the same sequence of questions, that's an automation candidate. The pattern is always:</p>
 
 <ol>
-<li>Collect context (git diff, file changes, test output)</li>
-<li>Send to Claude with a structured prompt</li>
-<li>Capture the output</li>
-<li>Put it where it belongs (commit message, PR description, Slack)</li>
+    <li>Collect context (git diff, file changes, test output)</li>
+    <li>Send to Claude with a structured prompt</li>
+    <li>Capture the output</li>
+    <li>Put it where it belongs (commit message, PR description, Slack)</li>
 </ol>
 
 <h2>Putting It All Together: My Setup</h2>
@@ -410,15 +385,14 @@ echo "$MSG" > "$1"</code></pre>
 
 <h2>What's Actually Available vs. What's Coming</h2>
 
-<table>
-<tr><th>Feature</th><th>Status Now</th><th>How to Use It</th></tr>
-<tr><td>Skills (<code>claude.md</code>)</td><td>✅ Stable</td><td>Create <code>.claude/skills/*.md</code></td></tr>
-<tr><td>Hooks (safety gates)</td><td>⚠️ Experimental</td><td><code>.claude/hooks/*.sh</code> with conventions</td></tr>
-<tr><td>MCP Servers</td><td>✅ Released</td><td><code>claude_desktop_config.json</code></td></tr>
-<tr><td>Subagents</td><td>🧪 Early</td><td>Separate configs / API calls</td></tr>
-<tr><td>Automations</td><td>✅ DIY</td><td>Shell scripts + cron + Claude API</td></tr>
-<tr><td>Project scanner</td><td>❌ Not yet</td><td>The "claude-code-setup" plugin from the tweet</td></tr>
-</table>
+<ul>
+    <li><strong>Skills (claude.md)</strong> — ✅ Stable. Create <code>.claude/skills/*.md</code>.</li>
+    <li><strong>Hooks (safety gates)</strong> — ⚠️ Experimental. <code>.claude/hooks/*.sh</code> with conventions.</li>
+    <li><strong>MCP Servers</strong> — ✅ Released. <code>claude_desktop_config.json</code>.</li>
+    <li><strong>Subagents</strong> — 🧪 Early. Separate configs / API calls.</li>
+    <li><strong>Automations</strong> — ✅ DIY. Shell scripts + cron + Claude API.</li>
+    <li><strong>Project scanner</strong> — ❌ Not yet. The "claude-code-setup" plugin from the tweet.</li>
+</ul>
 
 <p>The tweet that started this mentioned a plugin that "scans your project and recommends setup." That specific tool doesn't exist as a single installable package yet. But you can approximate it by manually creating the structure I described above. It's more work, but you understand what each piece does instead of blindly accepting defaults.</p>
 
@@ -434,15 +408,10 @@ echo "$MSG" > "$1"</code></pre>
 
 <div class="cta">
     <strong>Ready to upgrade your Claude Code setup?</strong><br><br>
-    <a href="https://claude.com" target="_blank">Claude (Free tier available)</a> &nbsp;|&nbsp;
-    <a href="https://code.claude.com/docs" target="_blank">Claude Code Docs</a> &nbsp;|&nbsp;
-    <a href="https://www.anthropic.com/customer-stories" target="_blank">Customer Stories</a><br><br>
+    - <a href="https://claude.com" target="_blank">Claude (Free tier available)</a><br>
+    - <a href="https://code.claude.com/docs" target="_blank">Claude Code Documentation</a><br>
+    - <a href="https://www.anthropic.com/customer-stories" target="_blank">How Teams Use Claude</a><br><br>
     <em>Disclosure: This post contains affiliate links. If you sign up through our links, we earn a commission at no extra cost to you.</em>
-</div>
-
-<div class="footer">
-    <p>Written by a real Claude Pro user · Not sponsored by Anthropic</p>
-    <p>All screenshots are authentic unless noted otherwise</p>
 </div>
 
 </body>
