@@ -1,270 +1,627 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Why I Keep Paying for Claude Pro (And What Annoys Me)</title>
-    <meta name="description" content="A real Claude Pro user's honest take after months of daily use. Why Anthropic's coding approach wins, and where the language model falls short.">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Why I Keep Paying for Claude Pro (And What Annoys Me)">
-    <meta name="twitter:description" content="A real Claude Pro user's honest take after months of daily use.">
-    <meta name="twitter:image" content="https://hwan50.github.io/ai-agents-guide/claude-pro-review/twitter-card.png">
-    <meta property="og:title" content="Why I Keep Paying for Claude Pro (And What Annoys Me)">
-    <meta property="og:description" content="A real Claude Pro user's honest take after months of daily use.">
-    <meta property="og:image" content="https://hwan50.github.io/ai-agents-guide/claude-pro-review/twitter-card.png">
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.7;
-            color: #1a1a1a;
-            background: #fafafa;
-        }
-        /* Navigation */
-        .navbar {
-            background: #1a1a1a;
-            color: #fff;
-            padding: 0 24px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .nav-inner {
-            max-width: 1100px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 56px;
-        }
-        .nav-brand {
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: #fff;
-            text-decoration: none;
-            letter-spacing: -0.02em;
-        }
-        .nav-brand span { color: #f59e0b; }
-        .nav-back {
-            color: rgba(255,255,255,0.7);
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: color 0.2s;
-        }
-        .nav-back:hover { color: #fff; }
-        /* Content */
-        .content {
-            max-width: 720px;
-            margin: 0 auto;
-            padding: 32px 24px 48px;
-        }
-        h1 {
-            font-size: 2rem;
-            margin-bottom: 8px;
-            color: #111;
-        }
-        .meta {
-            color: #666;
-            font-size: 0.9rem;
-            margin-bottom: 32px;
-        }
-        h2 {
-            font-size: 1.4rem;
-            margin-top: 32px;
-            color: #222;
-        }
-        img {
-            max-width: 100%;
-            border-radius: 8px;
-            margin: 16px 0;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        .img-caption {
-            font-size: 0.85rem;
-            color: #666;
-            text-align: center;
-            margin-top: -12px;
-            margin-bottom: 24px;
-        }
-        code {
-            background: #f3f4f6;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 0.9em;
-        }
-        ul {
-            padding-left: 20px;
-        }
-        li {
-            margin: 8px 0;
-        }
-        .note {
-            background: #fffbeb;
-            border-left: 4px solid #f59e0b;
-            padding: 16px;
-            margin: 20px 0;
-            border-radius: 0 8px 8px 0;
-        }
-        .cta {
-            background: #1a1a1a;
-            color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 32px;
-        }
-        .cta a {
-            color: #60a5fa;
-        }
-        .related {
-            background: #fff;
-            border: 1px solid #eee;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 24px 0;
-        }
-        .related a {
-            font-size: 1.1rem;
-            color: #2563eb;
-            text-decoration: none;
-        }
-        .related a:hover { text-decoration: underline; }
-        .footer {
-            text-align: center;
-            padding: 32px 24px;
-            color: #888;
-            font-size: 0.85rem;
-            border-top: 1px solid #eee;
-            max-width: 720px;
-            margin: 0 auto;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why I Keep Paying for Claude Pro (And What Annoys Me)</title>
+<meta name="description" content="A real Claude Pro user's honest take after months of daily use. Why Anthropic's coding approach wins, and where the language model falls short.">
+<meta property="og:title" content="Why I Keep Paying for Claude Pro (And What Annoys Me)">
+<meta property="og:description" content="A real Claude Pro user's honest take after months of daily use.">
+<meta property="og:image" content="https://hwan50.github.io/ai-agents-guide/claude-pro-review/twitter-card.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Why I Keep Paying for Claude Pro (And What Annoys Me)">
+<meta name="twitter:description" content="A real Claude Pro user's honest take after months of daily use.">
+<meta name="twitter:image" content="https://hwan50.github.io/ai-agents-guide/claude-pro-review/twitter-card.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..600&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..500&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f4f0e7;
+    --paper-2:#ebe5d8;
+    --ink:#211f1b;
+    --ink-soft:#46423a;
+    --muted:#7c7567;
+    --rule:#d8d1c0;
+    --accent:#b8492f;
+    --accent-deep:#9a3a23;
+    --teal:#2f6b66;
+    --code-bg:#211f1b;
+    --code-paper:#2c2a24;
+    --code-ink:#e9e3d4;
+    --code-muted:#9b9483;
+    --maxread:42rem;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Newsreader",Georgia,serif;
+    font-size:1.225rem;
+    line-height:1.72;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    overflow-x:hidden;
+  }
+
+  /* ---- reading progress ---- */
+  #progress{
+    position:fixed;top:0;left:0;height:3px;width:0%;
+    background:var(--accent);z-index:200;transition:width .1s linear;
+  }
+
+  /* ---- layout grid ---- */
+  .wrap{
+    max-width:74rem;margin:0 auto;padding:0 1.6rem;
+  }
+  .masthead{
+    border-bottom:1px solid var(--rule);
+    padding:1.1rem 0;
+    display:flex;align-items:center;justify-content:space-between;
+    font-family:"Inter",sans-serif;
+  }
+  .masthead .brand{
+    font-weight:700;font-size:.82rem;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--ink);text-decoration:none;
+  }
+  .masthead .brand span{color:var(--accent)}
+  .masthead .issue{
+    font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;
+    color:var(--muted);
+  }
+
+  /* ---- hero ---- */
+  header.hero{padding:4.5rem 0 1rem}
+  .kicker{
+    font-family:"Inter",sans-serif;font-weight:600;
+    font-size:.78rem;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:1.4rem;
+    display:flex;align-items:center;gap:.7rem;
+  }
+  .kicker::after{content:"";flex:0 0 2.4rem;height:1px;background:var(--accent)}
+  h1.title{
+    font-family:"Fraunces",serif;
+    font-weight:600;
+    font-size:clamp(2.6rem,6.4vw,5rem);
+    line-height:1.04;
+    letter-spacing:-.02em;
+    max-width:18ch;
+    margin-bottom:1.6rem;
+  }
+  .standfirst{
+    font-family:"Newsreader",serif;
+    font-style:italic;
+    font-size:clamp(1.3rem,2.4vw,1.6rem);
+    line-height:1.5;
+    color:var(--ink-soft);
+    max-width:38rem;
+    margin-bottom:2.2rem;
+  }
+  .byline{
+    display:flex;flex-wrap:wrap;gap:.55rem 1.3rem;align-items:center;
+    font-family:"Inter",sans-serif;font-size:.82rem;
+    letter-spacing:.04em;color:var(--muted);
+    border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+    padding:.9rem 0;
+  }
+  .byline strong{color:var(--ink);font-weight:600}
+  .byline .dot{width:3px;height:3px;border-radius:50%;background:var(--muted)}
+
+  figure.hero-fig{margin:2.6rem 0 0}
+  figure.hero-fig img{
+    width:100%;display:block;border:1px solid var(--rule);
+    background:var(--paper-2);
+  }
+  figcaption{
+    font-family:"Inter",sans-serif;font-size:.78rem;
+    color:var(--muted);margin-top:.7rem;letter-spacing:.02em;
+    padding-left:1rem;border-left:2px solid var(--accent);
+  }
+
+  /* ---- main two-column ---- */
+  .layout{
+    display:grid;
+    grid-template-columns:15rem 1fr;
+    gap:3.5rem;
+    padding:3.5rem 0 2rem;
+    align-items:start;
+  }
+  /* ---- TOC ---- */
+  nav.toc{
+    position:sticky;top:2rem;
+    font-family:"Inter",sans-serif;
+  }
+  nav.toc .toc-label{
+    font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--muted);font-weight:600;
+    padding-bottom:.8rem;margin-bottom:.4rem;
+    border-bottom:1px solid var(--rule);
+  }
+  nav.toc ol{list-style:none;counter-reset:toc}
+  nav.toc li{counter-increment:toc}
+  nav.toc a{
+    display:flex;gap:.6rem;
+    padding:.42rem 0;
+    font-size:.86rem;line-height:1.35;
+    color:var(--ink-soft);text-decoration:none;
+    border-left:2px solid transparent;
+    padding-left:.8rem;margin-left:-.8rem;
+    transition:color .15s,border-color .15s;
+  }
+  nav.toc a::before{
+    content:counter(toc,decimal-leading-zero);
+    color:var(--muted);font-variant-numeric:tabular-nums;
+    font-size:.74rem;flex:0 0 auto;padding-top:.08rem;
+  }
+  nav.toc a:hover{color:var(--accent)}
+  nav.toc a.active{
+    color:var(--accent);font-weight:600;
+    border-left-color:var(--accent);
+  }
+  nav.toc a.active::before{color:var(--accent)}
+
+  /* ---- article ---- */
+  article{max-width:var(--maxread);min-width:0}
+  article p{margin:0 0 1.35rem}
+  article p a,article li a,.endlinks a{
+    color:var(--accent-deep);
+    text-decoration:none;
+    border-bottom:1px solid var(--rule);
+    transition:border-color .15s;
+  }
+  article p a:hover,article li a:hover,.endlinks a:hover{
+    border-bottom-color:var(--accent);
+  }
+
+  /* drop cap */
+  article .lede::first-letter{
+    font-family:"Fraunces",serif;
+    font-weight:600;
+    float:left;
+    font-size:5.1rem;
+    line-height:.78;
+    padding:.36rem .55rem 0 0;
+    color:var(--accent);
+  }
+
+  /* section heads */
+  .section{padding-top:2.4rem;scroll-margin-top:1.5rem}
+  .sec-num{
+    font-family:"Inter",sans-serif;font-weight:700;
+    font-size:.78rem;letter-spacing:.16em;color:var(--accent);
+    text-transform:uppercase;display:block;margin-bottom:.55rem;
+  }
+  h2{
+    font-family:"Fraunces",serif;font-weight:600;
+    font-size:clamp(1.85rem,3.6vw,2.7rem);
+    line-height:1.12;letter-spacing:-.015em;
+    margin-bottom:1.2rem;
+  }
+  h3{
+    font-family:"Fraunces",serif;font-weight:600;
+    font-size:1.4rem;line-height:1.25;
+    margin:2.3rem 0 .9rem;
+  }
+  h2+p,h3+p{margin-top:0}
+
+  /* lists */
+  article ul{list-style:none;margin:0 0 1.5rem;padding:0}
+  article ul li{
+    position:relative;padding-left:1.5rem;margin-bottom:.7rem;
+  }
+  article ul li::before{
+    content:"";position:absolute;left:0;top:.62em;
+    width:.5rem;height:.5rem;background:var(--accent);
+    transform:rotate(45deg);
+  }
+  article ol.steps{
+    list-style:none;counter-reset:step;
+    margin:0 0 1.5rem;padding:0;
+  }
+  article ol.steps li{
+    counter-increment:step;position:relative;
+    padding-left:2.4rem;margin-bottom:.85rem;
+  }
+  article ol.steps li::before{
+    content:counter(step);
+    position:absolute;left:0;top:.05em;
+    width:1.65rem;height:1.65rem;
+    background:var(--ink);color:var(--paper);
+    font-family:"Inter",sans-serif;font-weight:600;font-size:.82rem;
+    display:flex;align-items:center;justify-content:center;
+    border-radius:50%;
+  }
+  li strong{font-weight:600}
+
+  /* pull quote */
+  blockquote{
+    margin:2.6rem 0;
+    font-family:"Fraunces",serif;
+    font-weight:500;font-style:italic;
+    font-size:clamp(1.5rem,3vw,2rem);
+    line-height:1.32;
+    color:var(--ink);
+    padding-left:1.6rem;
+    border-left:3px solid var(--accent);
+  }
+  blockquote .attr{
+    display:block;font-family:"Inter",sans-serif;
+    font-style:normal;font-weight:500;
+    font-size:.82rem;letter-spacing:.04em;
+    color:var(--muted);margin-top:.9rem;
+  }
+
+  /* callout / aside */
+  .callout{
+    margin:2rem 0;padding:1.3rem 1.5rem;
+    background:var(--paper-2);
+    border-left:3px solid var(--teal);
+  }
+  .callout.warn{border-left-color:var(--accent)}
+  .callout .c-label{
+    font-family:"Inter",sans-serif;font-weight:700;
+    font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;
+    color:var(--teal);display:block;margin-bottom:.4rem;
+  }
+  .callout.warn .c-label{color:var(--accent)}
+  .callout p{margin:0;font-size:1.08rem;line-height:1.6}
+
+  /* code */
+  code{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:.86em;
+    background:var(--paper-2);
+    padding:.12em .38em;
+    border-radius:3px;
+    color:var(--accent-deep);
+  }
+
+  /* compare cards */
+  .compare{
+    display:grid;grid-template-columns:1fr 1fr;gap:1.1rem;
+    margin:1.8rem 0;
+  }
+  .compare .card{
+    border:1px solid var(--rule);padding:1.3rem;
+    background:var(--paper-2);
+  }
+  .compare .card.pos{border-color:var(--teal);border-width:1px 1px 1px 3px}
+  .compare .card h4{
+    font-family:"Inter",sans-serif;font-weight:700;
+    font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;
+    margin-bottom:.7rem;color:var(--muted);
+  }
+  .compare .card.pos h4{color:var(--teal)}
+  .compare .card ul{margin:0}
+  .compare .card ul li{
+    font-size:1.02rem;line-height:1.5;margin-bottom:.5rem;
+    padding-left:1.1rem;
+  }
+  .compare .card ul li::before{
+    width:.34rem;height:.34rem;top:.6em;background:var(--muted);
+  }
+  .compare .card.pos ul li::before{background:var(--teal)}
+
+  /* related article card */
+  .related{
+    margin:2.2rem 0;padding:1.4rem 1.6rem;
+    border:1px solid var(--rule);background:var(--paper-2);
+  }
+  .related .c-label{
+    font-family:"Inter",sans-serif;font-weight:700;
+    font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;
+    color:var(--accent);display:block;margin-bottom:.5rem;
+  }
+  .related a{
+    font-family:"Fraunces",serif;font-weight:600;
+    font-size:1.15rem;color:var(--ink);text-decoration:none;
+    border-bottom:1px solid var(--rule);
+    transition:border-color .15s;
+  }
+  .related a:hover{border-bottom-color:var(--accent)}
+  .related p{font-size:1.02rem;line-height:1.55;color:var(--ink-soft);margin:.4rem 0 0}
+
+  /* end matter */
+  .endmatter{
+    border-top:3px solid var(--ink);
+    margin-top:3rem;padding-top:2.2rem;
+  }
+  .endmatter h3{margin-top:0}
+  .endlinks{list-style:none;padding:0;margin:1rem 0 0}
+  .endlinks li{
+    padding:.7rem 0;border-bottom:1px solid var(--rule);
+    display:flex;align-items:baseline;gap:.6rem;
+  }
+  .endlinks li::before{content:"\2192";color:var(--accent);font-weight:700}
+  .endlinks a{font-family:"Inter",sans-serif;font-size:.98rem;font-weight:500}
+  .disclosure{
+    font-size:.92rem;font-style:italic;color:var(--muted);
+    margin-top:1.6rem;
+  }
+
+  footer.foot{
+    border-top:1px solid var(--rule);
+    margin-top:3.5rem;padding:2.2rem 0 3rem;
+    font-family:"Inter",sans-serif;
+    display:flex;flex-wrap:wrap;gap:1rem;
+    justify-content:space-between;align-items:center;
+  }
+  footer.foot .f-brand{
+    font-weight:700;font-size:.8rem;letter-spacing:.14em;
+    text-transform:uppercase;
+  }
+  footer.foot .f-brand span{color:var(--accent)}
+  footer.foot .f-note{font-size:.8rem;color:var(--muted)}
+
+  /* responsive */
+  @media(max-width:880px){
+    body{font-size:1.12rem}
+    .layout{grid-template-columns:1fr;gap:0;padding-top:2.2rem}
+    nav.toc{
+      position:static;margin-bottom:2.5rem;
+      padding:1.1rem 1.2rem;background:var(--paper-2);
+      border:1px solid var(--rule);
+    }
+    nav.toc ol{
+      columns:2;column-gap:1.4rem;
+    }
+    nav.toc a{padding-left:.6rem;margin-left:0;border-left:none}
+    nav.toc a.active{border-left:none}
+    header.hero{padding-top:2.6rem}
+    .compare{grid-template-columns:1fr}
+    article .lede::first-letter{font-size:4rem}
+  }
+  @media(max-width:520px){
+    .wrap{padding:0 1.1rem}
+    nav.toc ol{columns:1}
+    blockquote{padding-left:1.1rem}
+  }
+</style>
 </head>
 <body>
+<div id="progress"></div>
 
-<nav class="navbar">
-    <div class="nav-inner">
-        <a href="/ai-agents-guide/" class="nav-brand">AI Agents <span>/</span> Field Guide</a>
-        <a href="/ai-agents-guide/" class="nav-back">← All Articles</a>
+<div class="wrap">
+  <div class="masthead">
+    <a href="/ai-agents-guide/" class="brand">AI&nbsp;Agents <span>/</span> Field&nbsp;Guide</a>
+    <div class="issue">Review &middot; No.&nbsp;01</div>
+  </div>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="kicker">The Claude Pro Review</div>
+    <h1 class="title">Why I Keep Paying for Claude Pro</h1>
+    <p class="standfirst">I've been paying for Claude Pro since early 2026. Not because it's perfect. Because Anthropic's product philosophy is the closest thing to how I actually want to work with AI.</p>
+    <div class="byline">
+      <span>Updated <strong>May 2026</strong></span>
+      <span class="dot"></span>
+      <span><strong>5 min</strong> read</span>
+      <span class="dot"></span>
+      <span>Real user review</span>
     </div>
-</nav>
-
-<div class="content">
-
-<h1>Why I Keep Paying for Claude Pro (And What Annoys Me)</h1>
-<p class="meta">Updated May 2026</p>
-
-<img src="hero-image.png" alt="Abstract illustration of two AI assistants facing each other - warm orange-gold Claude and cool blue-green ChatGPT on dark navy background" style="margin-top: 8px;">
-
-<p>I've been paying for Claude Pro since early 2026. Not because it's perfect. Because Anthropic's product philosophy is the closest thing to how I actually want to work with AI.</p>
-
-<p>But I want to be upfront about something: Claude's language model is weaker than ChatGPT in some ways. When I asked it to write a Chinese blog post, the output was grammatically correct but stylistically dead. Like a textbook. ChatGPT got the tone right on the first try. I keep that in mind every time I recommend Claude to someone.</p>
-
-<h2>What $17/Month Actually Gets You</h2>
-
-<img src="claude-pricing.png" alt="Claude pricing page showing Free $0, Pro $17, Max from $100 tiers">
-<p class="img-caption">Claude's current pricing: Pro at $17/month (annual) unlocks Code, Cowork, Projects, and Research.</p>
-
-<p>Claude Pro costs $17/month if you pay annually ($20 monthly). For that, you get:</p>
-
-<ul>
-    <li>Claude Code - terminal agent that reads your repo, edits files, runs tests</li>
-    <li>Claude Cowork - async task runner for background work</li>
-    <li>Unlimited Projects - persistent memory, custom instructions, file attachments</li>
-    <li>Research mode - multi-step web search that cites sources</li>
-    <li>Priority access - no rate limit anxiety during peak hours</li>
-</ul>
-
-<p>Max tier starts at $100/month for 5x usage. I don't need it yet. Pro handles my daily workflow fine.</p>
-
-<h2>The 7-Step Setup Nobody Talks About</h2>
-
-<img src="claude-setup-flow.png" alt="7-step Claude setup flow diagram">
-<p class="img-caption">The Claude setup flow most people skip. Do this once, and Claude becomes a completely different tool.</p>
-
-<p>Most Claude vs ChatGPT comparisons miss the single biggest differentiator: Claude's Project system. Here's the setup flow that 90% of users skip, and it's why their Claude feels generic.</p>
-
-<ol>
-    <li>Create a Project - one per work stream</li>
-    <li>Tell Claude who you are - your role, stack, preferences</li>
-    <li>Generate Custom Instructions - Claude auto-creates these from your profile</li>
-    <li>Add writing samples - paste 2-3 examples of your actual code or prose</li>
-    <li>Use ask-first prompts - "what would you need to know before doing X?"</li>
-    <li>Turn on thinking - for complex tasks, force Claude to show its reasoning</li>
-    <li>Start new chats by topic - never mix unrelated tasks in one thread</li>
-</ol>
-
-<p>Do this once. The difference is night and day. Without Projects, Claude is a chatbot. With Projects, it's a specialized assistant that remembers your conventions.</p>
-
-<h2>Why Anthropic's Approach Is Smarter</h2>
-
-<img src="ai-entry-strategy-en.png" alt="Google fragmented AI entry points vs Claude/ChatGPT unified approach - editorial illustration">
-<p class="img-caption">Google has 6+ AI entry points. Claude and ChatGPT have one door with everything inside.</p>
-
-<p>This is where I disagree with most benchmark comparisons. Yes, GPT-5.3 scores higher on some language tasks. But Anthropic's product architecture is better designed.</p>
-
-<p>Look at Google's strategy: 6 different AI products (Gemini, Search AI, Workspace AI, Flow+Veo, AI Studio, Cloud AI) - each with its own interface, billing, and limitations. The analyst who made this diagram nailed it: one primary entry point wins the mind, while scattered entry points lose attention.</p>
-
-<p>Claude and ChatGPT took the opposite approach: one primary door, then expand capabilities inward. Inside that single interface, you get chat, writing, search, coding, projects, and API access. You don't context-switch between 6 apps.</p>
-
-<p>When I switch from claude.com/chat to Claude Code in my terminal, it's the same model, same memory, same projects. There's no "oh this is the coding version, let me re-explain my repo structure." It just knows.</p>
-
-<h2>Where Claude Actually Falls Short</h2>
-
-<p>Two specific weaknesses I've run into:</p>
-
-<p>First, creative writing. Claude's prose is flatter, less varied in tone. I noticed this when I tried to have it write a Chinese blog post. It was technically correct but read like a machine translation. ChatGPT captured the nuance.</p>
-
-<p>Second, Cowork is still in beta and it shows. Task scheduling works, but error recovery is fragile. If a background task hits an edge case, it doesn't come back and ask - it just fails silently. I check the Cowork dashboard more often than I'd like.</p>
-
-<h2>My Actual Daily Workflow</h2>
-
-<img src="claude-cowork-interface.png" alt="Claude Cowork interface showing active projects">
-<p class="img-caption">My actual Claude Cowork dashboard. I run 3-4 active projects here.</p>
-
-<p>This is a real screenshot of my Cowork interface. You can see what I'm actually using Claude for:</p>
-
-<ul>
-    <li>Local Ollama capabilities - testing which open-source models can replace API calls</li>
-    <li>Model pricing comparison - tracking Claude vs OpenAI vs Gemini cost per task</li>
-    <li>Account management and traffic analysis - SEO/content performance tracking</li>
-    <li>DBS Corporate Ideal Account Transfer - a financial research workflow</li>
-</ul>
-
-<p>None of these are "chat for fun." They're all task-oriented workflows that I run in Projects with attached files and custom instructions. This is how Claude is designed to be used.</p>
-
-<h2>The Verdict</h2>
-
-<p>My real take after months of daily use: Anthropic's system design is better. Projects, Code, Cowork, and MCP integrations create a cohesive workflow that OpenAI hasn't matched. But OpenAI's base model is stronger at pure language tasks.</p>
-
-<p>If you're building software, managing workflows, or doing research - Claude wins. If you're writing novels, marketing copy, or multilingual content - ChatGPT is still ahead.</p>
-
-<p>Most senior engineers I know run both. Claude for architecture and system design. ChatGPT for copy and creative refinement.</p>
-
-<p>If you can only afford one and your work involves code or structured reasoning, Claude Pro at $17/month is the better investment. The Projects system alone justifies the price. It's the difference between "using AI" and "having an AI teammate."</p>
-
-<div class="note">
-    <strong>Quick setup tip:</strong> If you try Claude and it feels "just okay," you probably skipped the Project setup. Go to claude.com - Projects - New Project - fill out the profile. Add 2-3 writing samples. Then try the same prompt again. The difference will surprise you.
+    <figure class="hero-fig">
+      <img src="hero-image.png" alt="Abstract illustration of two AI assistants facing each other - warm orange-gold Claude and cool blue-green ChatGPT on dark navy background">
+      <figcaption>Claude vs. ChatGPT: the real comparison isn't benchmarks — it's workflow fit.</figcaption>
+    </figure>
+  </header>
 </div>
 
-<div class="related">
-    <strong>Related Article:</strong><br><br>
-    <a href="../claude-code-setup-guide/">→ Turning Claude Code Into a Real AI Dev Environment</a><br>
-    <span style="color: #666; font-size: 0.9rem;">How hooks, skills, MCP servers, subagents, and automations turn vanilla Claude Code into a complete development environment. Based on a viral tweet from @Radha_AI.</span>
+<div class="wrap">
+  <div class="layout">
+
+    <nav class="toc" id="toc">
+      <div class="toc-label">In this review</div>
+      <ol>
+        <li><a href="#pricing">What $17/month gets you</a></li>
+        <li><a href="#setup">The 7-step setup</a></li>
+        <li><a href="#approach">Anthropic's approach</a></li>
+        <li><a href="#shortcomings">Where it falls short</a></li>
+        <li><a href="#workflow">My daily workflow</a></li>
+        <li><a href="#verdict">The verdict</a></li>
+      </ol>
+    </nav>
+
+    <article>
+      <p class="lede">But I want to be upfront about something: Claude's language model is weaker than ChatGPT in some ways. When I asked it to write a Chinese blog post, the output was grammatically correct but stylistically dead. Like a textbook. ChatGPT got the tone right on the first try. I keep that in mind every time I recommend Claude to someone.</p>
+
+      <section class="section" id="pricing">
+        <span class="sec-num">What you get</span>
+        <h2>What $17/Month Actually Gets You</h2>
+
+        <figure class="hero-fig">
+          <img src="claude-pricing.png" alt="Claude pricing page showing Free $0, Pro $17, Max from $100 tiers">
+          <figcaption>Claude's current pricing: Pro at $17/month (annual) unlocks Code, Cowork, Projects, and Research.</figcaption>
+        </figure>
+
+        <p>Claude Pro costs $17/month if you pay annually ($20 monthly). For that, you get:</p>
+        <ul>
+          <li><strong>Claude Code</strong> — terminal agent that reads your repo, edits files, runs tests</li>
+          <li><strong>Claude Cowork</strong> — async task runner for background work</li>
+          <li><strong>Unlimited Projects</strong> — persistent memory, custom instructions, file attachments</li>
+          <li><strong>Research mode</strong> — multi-step web search that cites sources</li>
+          <li><strong>Priority access</strong> — no rate limit anxiety during peak hours</li>
+        </ul>
+        <p>Max tier starts at $100/month for 5x usage. I don't need it yet. Pro handles my daily workflow fine.</p>
+      </section>
+
+      <section class="section" id="setup">
+        <span class="sec-num">The secret setup</span>
+        <h2>The 7-Step Setup Nobody Talks About</h2>
+
+        <figure class="hero-fig">
+          <img src="claude-setup-flow.png" alt="7-step Claude setup flow diagram">
+          <figcaption>The Claude setup flow most people skip. Do this once, and Claude becomes a completely different tool.</figcaption>
+        </figure>
+
+        <p>Most Claude vs ChatGPT comparisons miss the single biggest differentiator: Claude's Project system. Here's the setup flow that 90% of users skip, and it's why their Claude feels generic.</p>
+
+        <ol class="steps">
+          <li><strong>Create a Project</strong> — one per work stream</li>
+          <li><strong>Tell Claude who you are</strong> — your role, stack, preferences</li>
+          <li><strong>Generate Custom Instructions</strong> — Claude auto-creates these from your profile</li>
+          <li><strong>Add writing samples</strong> — paste 2-3 examples of your actual code or prose</li>
+          <li><strong>Use ask-first prompts</strong> — "what would you need to know before doing X?"</li>
+          <li><strong>Turn on thinking</strong> — for complex tasks, force Claude to show its reasoning</li>
+          <li><strong>Start new chats by topic</strong> — never mix unrelated tasks in one thread</li>
+        </ol>
+
+        <p>Do this once. The difference is night and day. Without Projects, Claude is a chatbot. With Projects, it's a specialized assistant that remembers your conventions.</p>
+      </section>
+
+      <section class="section" id="approach">
+        <span class="sec-num">Product philosophy</span>
+        <h2>Why Anthropic's Approach Is Smarter</h2>
+
+        <figure class="hero-fig">
+          <img src="ai-entry-strategy-en.png" alt="Google fragmented AI entry points vs Claude/ChatGPT unified approach - editorial illustration">
+          <figcaption>Google has 6+ AI entry points. Claude and ChatGPT have one door with everything inside.</figcaption>
+        </figure>
+
+        <p>This is where I disagree with most benchmark comparisons. Yes, GPT-5.3 scores higher on some language tasks. But Anthropic's product architecture is better designed.</p>
+
+        <p>Look at Google's strategy: 6 different AI products (Gemini, Search AI, Workspace AI, Flow+Veo, AI Studio, Cloud AI) — each with its own interface, billing, and limitations. The analyst who made this diagram nailed it: one primary entry point wins the mind, while scattered entry points lose attention.</p>
+
+        <p>Claude and ChatGPT took the opposite approach: one primary door, then expand capabilities inward. Inside that single interface, you get chat, writing, search, coding, projects, and API access. You don't context-switch between 6 apps.</p>
+
+        <blockquote>
+          One primary entry point wins the mind; scattered entry points lose attention.
+          <span class="attr">— AI Platform Strategy Analysis, 2026</span>
+        </blockquote>
+
+        <p>When I switch from claude.com/chat to Claude Code in my terminal, it's the same model, same memory, same projects. There's no "oh this is the coding version, let me re-explain my repo structure." It just knows.</p>
+      </section>
+
+      <section class="section" id="shortcomings">
+        <span class="sec-num">Honest critique</span>
+        <h2>Where Claude Actually Falls Short</h2>
+
+        <p>Two specific weaknesses I've run into:</p>
+
+        <p>First, <strong>creative writing</strong>. Claude's prose is flatter, less varied in tone. I noticed this when I tried to have it write a Chinese blog post. It was technically correct but read like a machine translation. ChatGPT captured the nuance.</p>
+
+        <p>Second, <strong>Cowork is still in beta</strong> and it shows. Task scheduling works, but error recovery is fragile. If a background task hits an edge case, it doesn't come back and ask — it just fails silently. I check the Cowork dashboard more often than I'd like.</p>
+
+        <div class="callout warn">
+          <span class="c-label">The trade-off</span>
+          <p>Claude is better at structured reasoning and coding. ChatGPT is better at creative and multilingual writing. Most senior engineers I know run both.</p>
+        </div>
+      </section>
+
+      <section class="section" id="workflow">
+        <span class="sec-num">Real usage</span>
+        <h2>My Actual Daily Workflow</h2>
+
+        <figure class="hero-fig">
+          <img src="claude-cowork-interface.png" alt="Claude Cowork interface showing active projects">
+          <figcaption>My actual Claude Cowork dashboard. I run 3-4 active projects here.</figcaption>
+        </figure>
+
+        <p>This is a real screenshot of my Cowork interface. You can see what I'm actually using Claude for:</p>
+        <ul>
+          <li><strong>Local Ollama capabilities</strong> — testing which open-source models can replace API calls</li>
+          <li><strong>Model pricing comparison</strong> — tracking Claude vs OpenAI vs Gemini cost per task</li>
+          <li><strong>Account management and traffic analysis</strong> — SEO/content performance tracking</li>
+          <li><strong>DBS Corporate Ideal Account Transfer</strong> — a financial research workflow</li>
+        </ul>
+
+        <p>None of these are "chat for fun." They're all task-oriented workflows that I run in Projects with attached files and custom instructions. This is how Claude is designed to be used.</p>
+      </section>
+
+      <section class="section" id="verdict">
+        <span class="sec-num">The verdict</span>
+        <h2>Should You Pay for Claude Pro?</h2>
+
+        <p>My real take after months of daily use: Anthropic's system design is better. Projects, Code, Cowork, and MCP integrations create a cohesive workflow that OpenAI hasn't matched. But OpenAI's base model is stronger at pure language tasks.</p>
+
+        <div class="compare">
+          <div class="card">
+            <h4>Choose Claude if</h4>
+            <ul>
+              <li>You're building software</li>
+              <li>You manage workflows</li>
+              <li>You do research with sources</li>
+              <li>You want persistent project memory</li>
+            </ul>
+          </div>
+          <div class="card pos">
+            <h4>Choose ChatGPT if</h4>
+            <ul>
+              <li>You write novels or marketing copy</li>
+              <li>You need multilingual content</li>
+              <li>You want creative writing help</li>
+              <li>You prefer a simpler chat interface</li>
+            </ul>
+          </div>
+        </div>
+
+        <p>Most senior engineers I know run both. Claude for architecture and system design. ChatGPT for copy and creative refinement.</p>
+
+        <p>If you can only afford one and your work involves code or structured reasoning, Claude Pro at $17/month is the better investment. The Projects system alone justifies the price. It's the difference between "using AI" and "having an AI teammate."</p>
+
+        <div class="callout">
+          <span class="c-label">Quick setup tip</span>
+          <p>If you try Claude and it feels "just okay," you probably skipped the Project setup. Go to claude.com → Projects → New Project → fill out the profile. Add 2-3 writing samples. Then try the same prompt again. The difference will surprise you.</p>
+        </div>
+
+        <div class="related">
+          <span class="c-label">Related Guide</span>
+          <a href="../claude-code-setup-guide/">Turning Claude Code Into a Real AI Dev Environment</a>
+          <p>How hooks, skills, MCP servers, subagents, and automations turn vanilla Claude Code into a complete development environment. Based on a viral tweet from @Radha_AI.</p>
+        </div>
+
+        <div class="endmatter">
+          <h3>Ready to try Claude?</h3>
+          <ul class="endlinks">
+            <li><a href="https://claude.com" target="_blank" rel="noopener">Claude — free tier available</a></li>
+            <li><a href="https://code.claude.com/docs" target="_blank" rel="noopener">Claude Code documentation</a></li>
+            <li><a href="https://www.anthropic.com/customer-stories" target="_blank" rel="noopener">How teams use Claude</a></li>
+          </ul>
+          <p class="disclosure">Disclosure: This post contains affiliate links. If you sign up through our links, we earn a commission at no extra cost to you.</p>
+        </div>
+      </section>
+
+    </article>
+  </div>
 </div>
 
-<div class="cta">
-    <strong>Ready to try Claude?</strong><br><br>
-    - <a href="https://claude.com" target="_blank">Claude (Free tier available)</a><br>
-    - <a href="https://code.claude.com/docs" target="_blank">Claude Code Documentation</a><br>
-    - <a href="https://www.anthropic.com/customer-stories" target="_blank">How Teams Use Claude</a><br><br>
-    <em>Disclosure: This post contains affiliate links. If you sign up through our links, we earn a commission at no extra cost to you.</em>
+<div class="wrap">
+  <footer class="foot">
+    <div class="f-brand">AI&nbsp;Agents <span>/</span> Field&nbsp;Guide</div>
+    <div class="f-note">Last updated May 2026 &middot; Written for daily Claude users</div>
+  </footer>
 </div>
 
-</div>
+<script>
+  // reading progress
+  var progress=document.getElementById('progress');
+  function updateProgress(){
+    var h=document.documentElement;
+    var max=h.scrollHeight-h.clientHeight;
+    var pct=max>0?(h.scrollTop/max)*100:0;
+    progress.style.width=pct+'%';
+  }
+  document.addEventListener('scroll',updateProgress,{passive:true});
+  window.addEventListener('resize',updateProgress);
+  updateProgress();
 
-<div class="footer">
-    <p>Written by a real Claude Pro user · Not sponsored by Anthropic · <a href="/ai-agents-guide/">AI Agents Field Guide</a></p>
-</div>
-
+  // scroll spy for TOC
+  var sections=Array.prototype.slice.call(document.querySelectorAll('section.section'));
+  var tocLinks=Array.prototype.slice.call(document.querySelectorAll('#toc a'));
+  function spy(){
+    var pos=window.scrollY+window.innerHeight*0.3;
+    var current=sections[0];
+    for(var i=0;i<sections.length;i++){
+      if(sections[i].offsetTop<=pos)current=sections[i];
+    }
+    tocLinks.forEach(function(a){
+      a.classList.toggle('active',a.getAttribute('href')==='#'+current.id);
+    });
+  }
+  document.addEventListener('scroll',spy,{passive:true});
+  window.addEventListener('resize',spy);
+  spy();
+</script>
 </body>
 </html>
