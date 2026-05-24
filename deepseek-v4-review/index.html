@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeepSeek V4: The $5.5M Model Taking on $100B Giants — What the Data Actually Says</title>
+<meta name="description" content="DeepSeek V4 was trained for $5.5M and priced at $0.435 per million tokens. We compare benchmarks, pricing, and real-world performance against GPT-5.5 and Claude Opus 4.7.">
+<meta property="og:title" content="DeepSeek V4: The $5.5M Model Taking on $100B Giants">
+<meta property="og:description" content="DeepSeek V4 was trained for $5.5M and priced at $0.435 per million tokens. Here's what the data actually says.">
+<meta property="og:image" content="https://hwan50.github.io/ai-agents-guide/deepseek-v4-review/hero-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="DeepSeek V4: The $5.5M Model Taking on $100B Giants">
+<meta name="twitter:description" content="DeepSeek V4 was trained for $5.5M and priced at $0.435 per million tokens. Here's what the data actually says.">
+<meta name="twitter:image" content="https://hwan50.github.io/ai-agents-guide/deepseek-v4-review/hero-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..600&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..500&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--paper:#f4f0e7;--paper-2:#ebe5d8;--ink:#211f1b;--ink-soft:#46423a;--muted:#7c7567;--rule:#d8d1c0;--accent:#b8492f;--accent-deep:#9a3a23;--teal:#2f6b66;--code-bg:#211f1b;--code-paper:#2c2a24;--code-ink:#e9e3d4;--code-muted:#9b9483;--maxread:42rem;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:1.225rem;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden;}
+  #progress{position:fixed;top:0;left:0;height:3px;width:0%;background:var(--accent);z-index:200;transition:width .1s linear;}
+  .wrap{max-width:74rem;margin:0 auto;padding:0 1.6rem;}
+  .masthead{border-bottom:1px solid var(--rule);padding:1.1rem 0;display:flex;align-items:center;justify-content:space-between;font-family:"Inter",sans-serif;}
+  .masthead .brand{font-weight:700;font-size:.82rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink);text-decoration:none;}
+  .masthead .brand span{color:var(--accent)}
+  .masthead .issue{font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);}
+  header.hero{padding:4.5rem 0 1rem}
+  .kicker{font-family:"Inter",sans-serif;font-weight:600;font-size:.78rem;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin-bottom:1.4rem;display:flex;align-items:center;gap:.7rem;}
+  .kicker::after{content:"";flex:0 0 2.4rem;height:1px;background:var(--accent)}
+  h1.title{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(2.6rem,6.4vw,5rem);line-height:1.04;letter-spacing:-.02em;max-width:18ch;margin-bottom:1.6rem;}
+  .standfirst{font-family:"Newsreader",serif;font-style:italic;font-size:clamp(1.3rem,2.4vw,1.6rem);line-height:1.5;color:var(--ink-soft);max-width:38rem;margin-bottom:2.2rem;}
+  .byline{display:flex;flex-wrap:wrap;gap:.55rem 1.3rem;align-items:center;font-family:"Inter",sans-serif;font-size:.82rem;letter-spacing:.04em;color:var(--muted);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:.9rem 0;}
+  .byline strong{color:var(--ink);font-weight:600}
+  .byline .dot{width:3px;height:3px;border-radius:50%;background:var(--muted);}
+  figure.hero-fig{margin:2.6rem 0 0}
+  figure.hero-fig img{width:100%;display:block;border:1px solid var(--rule);background:var(--paper-2);}
+  figcaption{font-family:"Inter",sans-serif;font-size:.78rem;color:var(--muted);margin-top:.7rem;letter-spacing:.02em;padding-left:1rem;border-left:2px solid var(--accent);}
+  .layout{display:grid;grid-template-columns:15rem 1fr;gap:3.5rem;padding:3.5rem 0 2rem;align-items:start;}
+  nav.toc{position:sticky;top:2rem;font-family:"Inter",sans-serif;}
+  nav.toc .toc-label{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:600;padding-bottom:.8rem;margin-bottom:.4rem;border-bottom:1px solid var(--rule);}
+  nav.toc ol{list-style:none;counter-reset:toc}
+  nav.toc li{counter-increment:toc}
+  nav.toc a{display:flex;gap:.6rem;padding:.42rem 0;font-size:.86rem;line-height:1.35;color:var(--ink-soft);text-decoration:none;border-left:2px solid transparent;padding-left:.8rem;margin-left:-.8rem;transition:color .15s,border-color .15s;}
+  nav.toc a::before{content:counter(toc,decimal-leading-zero);color:var(--muted);font-variant-numeric:tabular-nums;font-size:.74rem;flex:0 0 auto;padding-top:.08rem;}
+  nav.toc a:hover{color:var(--accent)}
+  nav.toc a.active{color:var(--accent);font-weight:600;border-left-color:var(--accent);}
+  nav.toc a.active::before{color:var(--accent)}
+  article{max-width:var(--maxread);min-width:0}
+  article p{margin:0 0 1.35rem}
+  article p a,article li a,.endlinks a{color:var(--accent-deep);text-decoration:none;border-bottom:1px solid var(--rule);transition:border-color .15s;}
+  article p a:hover,article li a:hover,.endlinks a:hover{border-bottom-color:var(--accent);}
+  article .lede::first-letter{font-family:"Fraunces",serif;font-weight:600;float:left;font-size:5.1rem;line-height:.78;padding:.36rem .55rem 0 0;color:var(--accent);}
+  .section{padding-top:2.4rem;scroll-margin-top:1.5rem}
+  .sec-num{font-family:"Inter",sans-serif;font-weight:700;font-size:.78rem;letter-spacing:.16em;color:var(--accent);text-transform:uppercase;display:block;margin-bottom:.55rem;}
+  h2{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(1.85rem,3.6vw,2.7rem);line-height:1.12;letter-spacing:-.015em;margin-bottom:1.2rem;}
+  h3{font-family:"Fraunces",serif;font-weight:600;font-size:1.4rem;line-height:1.25;margin:2.3rem 0 .9rem;}
+  h2+p,h3+p{margin-top:0}
+  article ul{list-style:none;margin:0 0 1.5rem;padding:0}
+  article ul li{position:relative;padding-left:1.5rem;margin-bottom:.7rem;}
+  article ul li::before{content:"";position:absolute;left:0;top:.62em;width:.5rem;height:.5rem;background:var(--accent);transform:rotate(45deg);}
+  article ol.steps{list-style:none;counter-reset:step;margin:0 0 1.5rem;padding:0;}
+  article ol.steps li{counter-increment:step;position:relative;padding-left:2.4rem;margin-bottom:.85rem;}
+  article ol.steps li::before{content:counter(step);position:absolute;left:0;top:.05em;width:1.65rem;height:1.65rem;background:var(--ink);color:var(--paper);font-family:"Inter",sans-serif;font-weight:600;font-size:.82rem;display:flex;align-items:center;justify-content:center;border-radius:50%;}
+  li strong{font-weight:600}
+  blockquote{margin:2.6rem 0;font-family:"Fraunces",serif;font-weight:500;font-style:italic;font-size:clamp(1.5rem,3vw,2rem);line-height:1.32;color:var(--ink);padding-left:1.6rem;border-left:3px solid var(--accent);}
+  blockquote .attr{display:block;font-family:"Inter",sans-serif;font-style:normal;font-weight:500;font-size:.82rem;letter-spacing:.04em;color:var(--muted);margin-top:.9rem;}
+  .callout{margin:2rem 0;padding:1.3rem 1.5rem;background:var(--paper-2);border-left:3px solid var(--teal);}
+  .callout.warn{border-left-color:var(--accent)}
+  .callout .c-label{font-family:"Inter",sans-serif;font-weight:700;font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;color:var(--teal);display:block;margin-bottom:.4rem;}
+  .callout.warn .c-label{color:var(--accent)}
+  .callout p{margin:0;font-size:1.08rem;line-height:1.6}
+  .source-card{margin:2.2rem 0;padding:1.4rem 1.6rem;border:1px solid var(--rule);background:var(--paper-2);}
+  .source-card .c-label{font-family:"Inter",sans-serif;font-weight:700;font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:.5rem;}
+  .source-card p{font-size:1.05rem;line-height:1.58;margin:0 0 .8rem}
+  .source-card a.btn{font-family:"Inter",sans-serif;font-weight:600;font-size:.86rem;color:var(--paper);background:var(--ink);text-decoration:none;border:none;display:inline-block;padding:.55rem 1.1rem;transition:background .15s;}
+  .source-card a.btn:hover{background:var(--accent)}
+  code{font-family:"IBM Plex Mono",monospace;font-size:.86em;background:var(--paper-2);padding:.12em .38em;border-radius:3px;color:var(--accent-deep);}
+  .codeblock{margin:1.7rem 0;background:var(--code-bg);border-radius:6px;overflow:hidden;box-shadow:0 12px 30px -16px rgba(33,31,27,.5);}
+  .codeblock .cb-head{display:flex;align-items:center;justify-content:space-between;padding:.5rem .9rem;background:var(--code-paper);border-bottom:1px solid rgba(255,255,255,.07);}
+  .codeblock .cb-name{font-family:"IBM Plex Mono",monospace;font-size:.76rem;color:var(--code-muted);display:flex;align-items:center;gap:.5rem;}
+  .codeblock .cb-name .dots{display:flex;gap:.32rem}
+  .codeblock .cb-name .dots i{width:.5rem;height:.5rem;border-radius:50%;display:block;}
+  .dots i:nth-child(1){background:#d8553f}
+  .dots i:nth-child(2){background:#d8a23f}
+  .dots i:nth-child(3){background:#3f9d7d}
+  .copy-btn{font-family:"Inter",sans-serif;font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--code-muted);background:transparent;border:1px solid rgba(255,255,255,.14);border-radius:4px;padding:.28rem .6rem;cursor:pointer;transition:color .15s,border-color .15s;}
+  .copy-btn:hover{color:var(--code-ink);border-color:rgba(255,255,255,.35)}
+  .copy-btn.done{color:#3f9d7d;border-color:#3f9d7d}
+  .codeblock pre{margin:0;padding:1.1rem 1.2rem;overflow-x:auto;}
+  .codeblock code{font-family:"IBM Plex Mono",monospace;background:none;padding:0;border-radius:0;color:var(--code-ink);font-size:.83rem;line-height:1.65;display:block;white-space:pre;}
+  .tok-c{color:#8f8a7a;font-style:italic}
+  .tok-k{color:#e8896b}
+  .tok-s{color:#9bbf8f}
+  .tok-y{color:#e6c07b}
+  .tok-no{color:#d8553f}
+  .tok-ok{color:#5fae8c}
+  .compare{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem;margin:1.8rem 0;}
+  .compare .card{border:1px solid var(--rule);padding:1.3rem;background:var(--paper-2);}
+  .compare .card.pos{border-color:var(--teal);border-width:1px 1px 1px 3px}
+  .compare .card h4{font-family:"Inter",sans-serif;font-weight:700;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.7rem;color:var(--muted);}
+  .compare .card.pos h4{color:var(--teal)}
+  .compare .card ul{margin:0}
+  .compare .card ul li{font-size:1.02rem;line-height:1.5;margin-bottom:.5rem;padding-left:1.1rem;}
+  .compare .card ul li::before{width:.34rem;height:.34rem;top:.6em;background:var(--muted);}
+  .compare .card.pos ul li::before{background:var(--teal)}
+  .srv-list{margin:1.6rem 0;border-top:1px solid var(--rule)}
+  .srv-list .srv{display:grid;grid-template-columns:1fr;gap:.2rem;padding:.95rem 0;border-bottom:1px solid var(--rule);}
+  .srv .srv-name{font-family:"IBM Plex Mono",monospace;font-size:.92rem;color:var(--accent-deep);font-weight:500;}
+  .srv .srv-desc{font-size:1.04rem;line-height:1.5;color:var(--ink-soft)}
+  .status-table{width:100%;border-collapse:collapse;margin:1.7rem 0;font-size:1.02rem;}
+  .status-table th{font-family:"Inter",sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:.6rem .8rem;border-bottom:2px solid var(--ink);}
+  .status-table td{padding:.8rem .8rem;border-bottom:1px solid var(--rule);vertical-align:top;}
+  .status-table td:first-child{font-weight:500}
+  .status-table tr:last-child td{border-bottom:none}
+  .badge{font-family:"Inter",sans-serif;font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.22rem .5rem;border-radius:3px;white-space:nowrap;display:inline-block;}
+  .b-stable{background:#dceee2;color:#2f6b4e}
+  .b-exp{background:#f6e6cc;color:#9a6a16}
+  .b-early{background:#e6e1f0;color:#5a4a8a}
+  .b-no{background:#f1ddd6;color:#a8412a}
+  .endmatter{border-top:3px solid var(--ink);margin-top:3rem;padding-top:2.2rem;}
+  .endmatter h3{margin-top:0}
+  .endlinks{list-style:none;padding:0;margin:1rem 0 0}
+  .endlinks li{padding:.7rem 0;border-bottom:1px solid var(--rule);display:flex;align-items:baseline;gap:.6rem;}
+  .endlinks li::before{content:"\2192";color:var(--accent);font-weight:700}
+  .endlinks a{font-family:"Inter",sans-serif;font-size:.98rem;font-weight:500}
+  .disclosure{font-size:.92rem;font-style:italic;color:var(--muted);margin-top:1.6rem;}
+  .related{margin:2.2rem 0;padding:1.4rem 1.6rem;border:1px solid var(--rule);background:var(--paper-2);}
+  .related .c-label{font-family:"Inter",sans-serif;font-weight:700;font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:.5rem;}
+  .related a{font-family:"Fraunces",serif;font-weight:600;font-size:1.15rem;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule);transition:border-color .15s;}
+  .related a:hover{border-bottom-color:var(--accent)}
+  .related p{font-size:1.02rem;line-height:1.55;color:var(--ink-soft);margin:.4rem 0 0}
+  footer.foot{border-top:1px solid var(--rule);margin-top:3.5rem;padding:2.2rem 0 3rem;font-family:"Inter",sans-serif;display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between;align-items:center;}
+  footer.foot .f-brand{font-weight:700;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;}
+  footer.foot .f-brand span{color:var(--accent)}
+  footer.foot .f-note{font-size:.8rem;color:var(--muted);}
+  @media(max-width:880px){body{font-size:1.12rem}.layout{grid-template-columns:1fr;gap:0;padding-top:2.2rem}nav.toc{position:static;margin-bottom:2.5rem;padding:1.1rem 1.2rem;background:var(--paper-2);border:1px solid var(--rule);}nav.toc ol{columns:2;column-gap:1.4rem;}nav.toc a{padding-left:.6rem;margin-left:0;border-left:none}nav.toc a.active{border-left:none}header.hero{padding-top:2.6rem}.compare{grid-template-columns:1fr}article .lede::first-letter{font-size:4rem}}
+  @media(max-width:520px){.wrap{padding:0 1.1rem}nav.toc ol{columns:1}.status-table{font-size:.92rem}.status-table th,.status-table td{padding:.55rem .45rem}blockquote{padding-left:1.1rem}}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<div class="wrap">
+  <div class="masthead">
+    <a href="/ai-agents-guide/" class="brand">AI Agents <span>/</span> Field Guide</a>
+    <div class="issue">Field Review &middot; No. 04</div>
+  </div>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="kicker">Field Review</div>
+    <h1 class="title">DeepSeek V4: The $5.5M Model Taking on $100B Giants</h1>
+    <p class="standfirst">A 160-person team in Hangzhou built a frontier-class AI for the cost of a San Francisco seed round. Here's what the pricing, benchmarks, and independent tests actually reveal — and where the gaps remain.</p>
+    <div class="byline">
+      <span>Updated <strong>May 2026</strong></span>
+      <span class="dot"></span>
+      <span><strong>10 min</strong> read</span>
+      <span class="dot"></span>
+      <span>Data-driven analysis</span>
+    </div>
+    <figure class="hero-fig">
+      <img src="hero-image.png" alt="DeepSeek V4 architecture and pricing comparison visualization">
+      <figcaption>DeepSeek V4's MoE architecture packs 1.6T parameters with only 49B active per token — a design choice that directly translates to lower inference costs.</figcaption>
+    </figure>
+  </header>
+</div>
+
+<div class="wrap">
+  <div class="layout">
+
+    <nav class="toc" id="toc">
+      <div class="toc-label">Contents</div>
+      <ol>
+        <li><a href="#release">What Just Happened</a></li>
+        <li><a href="#pricing">The Pricing Disruption</a></li>
+        <li><a href="#benchmarks">Benchmark Reality Check</a></li>
+        <li><a href="#architecture">Architecture: Why It's Cheap</a></li>
+        <li><a href="#security">The Security Gap</a></li>
+        <li><a href="#verdict">The Bottom Line</a></li>
+      </ol>
+    </nav>
+
+    <article>
+
+<section class="section" id="release">
+  <span class="sec-num">COMPONENT 01</span>
+  <h2>What Just Happened</h2>
+  <p class="lede">On May 1, 2026, DeepSeek dropped V4 — a 1.6 trillion parameter mixture-of-experts model trained for $5.576 million, priced at $0.435 per million input tokens, and released under an MIT license that lets anyone self-host, fine-tune, or commercialize it.</p>
+
+  <p>For context, Anthropic's latest funding round valued the company at roughly $60 billion. OpenAI is reportedly seeking a $300 billion valuation. DeepSeek's entire training run cost less than the annual salary of a single senior AI researcher in Menlo Park.</p>
+
+  <p>The release came in two variants:</p>
+  <ul>
+    <li><strong>V4 Pro.</strong> The full 1.6T/49B-active model for complex coding and reasoning. $0.435/M input, $0.87/M output.</li>
+    <li><strong>V4 Flash.</strong> A 284B/13B-active distilled version for high-volume agent traffic. $0.14/M input, $0.28/M output.</li>
+  </ul>
+
+  <p>Both models ship with a 1 million token context window — up from 128K on V3.2 — and support up to 384K tokens of output per request. That's enough to ingest an entire codebase, a 300-page book, or roughly 750,000 words of context in a single pass.</p>
+
+  <div class="callout">
+    <span class="c-label">Key Specs at a Glance</span>
+    <p>Training cost: $5.576M (2.788M H800 GPU hours at $2/hr). Total parameters: 671B (V3) → 1.6T (V4). Active params per token: 37B (V3) → 49B (V4 Pro) / 13B (V4 Flash). Context: 128K → 1M tokens. License: MIT (open weights).</p>
+  </div>
+</section>
+
+<section class="section" id="pricing">
+  <span class="sec-num">COMPONENT 02</span>
+  <h2>The Pricing Disruption</h2>
+  <p>Here's where DeepSeek V4 stops being an academic curiosity and starts being a business problem for OpenAI and Anthropic.</p>
+
+  <figure class="hero-fig">
+    <img src="deepseek-pricing-permanent.png" alt="DeepSeek V4 Pro official pricing: 75% OFF now permanent, $0.435 input / $0.87 output">
+    <figcaption>DeepSeek's official pricing page showing the permanent 75% reduction. The original price of $1.74/$3.48 is now $0.435/$0.87 — and it's not a promo, it's the new baseline.</figcaption>
+  </figure>
+
+  <figure class="hero-fig">
+    <img src="deepseek-pricing-api.png" alt="DeepSeek V4 Pro API pricing breakdown: cache hit $0.03625, cache miss $0.435, output $0.87">
+    <figcaption>The API pricing breakdown. Cache-hit inputs drop to $0.03625/M — roughly 1% of Claude Opus 4.7's pricing for the same workload.</figcaption>
+  </figure>
+
+  <table class="status-table">
+    <thead><tr><th>Model</th><th>Input / 1M</th><th>Output / 1M</th><th>Cost vs V4 Pro</th></tr></thead>
+    <tbody>
+      <tr><td><strong>DeepSeek V4 Flash</strong></td><td>$0.14</td><td>$0.28</td><td><span class="badge b-stable">Baseline</span></td></tr>
+      <tr><td><strong>DeepSeek V4 Pro</strong></td><td>$0.435</td><td>$0.87</td><td><span class="badge b-stable">3.1x Flash</span></td></tr>
+      <tr><td>DeepSeek V3.2</td><td>$0.28</td><td>$0.42</td><td><span class="badge b-exp">2x input</span></td></tr>
+      <tr><td>Claude Sonnet 4.6</td><td>$3.00</td><td>$15.00</td><td><span class="badge b-exp">17x output</span></td></tr>
+      <tr><td>GPT-5.5</td><td>$5.00</td><td>$15.00–$30.00</td><td><span class="badge b-no">17–34x output</span></td></tr>
+      <tr><td>Claude Opus 4.7</td><td>$5.00</td><td>$25.00–$180.00</td><td><span class="badge b-no">29–207x output</span></td></tr>
+    </tbody>
+  </table>
+
+  <p>The comparison gets even starker when you factor in caching. DeepSeek's cached input pricing is <strong>$0.003625/M</strong> for Pro (shown in the official pricing screenshot above). If your workload involves repetitive prefixes — like coding agents that pass the same repository context with every request — your effective cost drops to roughly <strong>1% of the list price</strong>. And unlike promotional pricing that expires, DeepSeek made this cut <strong>permanent</strong> in May 2026.</p>
+
+  <p>Translated to a real workload: 100 million tokens per month, 80% input / 20% output, with a 70% cache hit rate on inputs. Your monthly bill on DeepSeek V4 Pro? Approximately <strong>$87</strong>. On Claude Opus 4.7? <strong>$3,400–$24,000</strong>, depending on output pricing tier.</p>
+
+  <blockquote>
+    The gap is widest on cyber-task suites and narrowest on math, where V4 Pro hits 97% on OTIS-AIME-2025, only three points behind GPT-5.5.
+    <span class="attr">— NIST CAISI Evaluation, May 2026</span>
+  </blockquote>
+</section>
+
+<section class="section" id="benchmarks">
+  <span class="sec-num">COMPONENT 03</span>
+  <h2>Benchmark Reality Check</h2>
+  <p>Pricing is only half the story. The other half is whether the model actually performs when you ask it to do real work.</p>
+
+  <p>On SWE-Bench Verified — the industry-standard test of whether an AI can fix real GitHub issues — DeepSeek V4 Pro scored <strong>80.6%</strong>. Claude Opus 4.7 scored <strong>80.8%</strong>. The gap is 0.2 percentage points. On Terminal-Bench, LiveCodeBench, and Codeforces, V4 Pro actually <em>leads</em> Opus 4.7.</p>
+
+  <p>But the NIST CAISI evaluation published May 1, 2026 paints a more nuanced picture. Across cyber, software engineering, math, and reasoning, DeepSeek V4 trails the US frontier by approximately <strong>8 months</strong>. The gap is largest on security tasks: V4 Pro scored 32% on CTF-Archive-Diamond versus GPT-5.5's 71%. On SWE-Bench Verified, the gap is 74% versus the frontier's 81%.</p>
+
+  <p>Where V4 shines is math reasoning. On OTIS-AIME-2025, it hit 97% — just 3 points behind GPT-5.5. And on price-normalized performance, nothing else comes close.</p>
+
+  <div class="compare">
+    <div class="card">
+      <h4>Where V4 Trails</h4>
+      <ul>
+        <li>Long-running agent loops with tool use</li>
+        <li>Multimodal workloads (vision, audio)</li>
+        <li>Security / jailbreak resistance (94% vs 8% for US models)</li>
+        <li>Ecosystem breadth (fewer integrations than OpenAI)</li>
+      </ul>
+    </div>
+    <div class="card pos">
+      <h4>Where V4 Leads</h4>
+      <ul>
+        <li>Cost per task on coding workloads</li>
+        <li>Terminal-Bench and LiveCodeBench scores</li>
+        <li>Math reasoning (OTIS-AIME-2025: 97%)</li>
+        <li>Context length per dollar (1M tokens at $0.435/M)</li>
+        <li>Open-weight flexibility (self-host, fine-tune)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="architecture">
+  <span class="sec-num">COMPONENT 04</span>
+  <h2>Architecture: Why It's Cheap</h2>
+  <p>The cost advantage isn't a marketing trick. It's structural. DeepSeek V4 uses a <strong>Mixture-of-Experts</strong> (MoE) architecture where only a fraction of the 1.6 trillion parameters are activated for any given token — 49 billion for Pro, 13 billion for Flash.</p>
+
+  <p>Two architectural innovations make the 1M context window feasible at these prices:</p>
+  <ul>
+    <li><strong>Compressed Sparse Attention (CSA).</strong> A hybrid attention mechanism that shrinks the KV-cache memory footprint to roughly <strong>2%</strong> of what a standard transformer would need for the same context length.</li>
+    <li><strong>Hybrid Attention (HCA).</strong> Alternates between full attention and compressed attention layers, keeping long-context inference inside ~10% of V3.2's KV-cache memory and 27% of its per-token FLOPs.</li>
+  </ul>
+
+  <p>The training efficiency came from the <strong>Muon optimizer</strong> — a new optimization method DeepSeek introduced specifically for this generation — and manifold-constrained hyper-connections (mHC), which improved transformer efficiency by an additional 6–7% during pre-training.</p>
+
+  <p>All of this runs on H800 GPUs — the export-controlled chips that are slower than H100s — suggesting the efficiency gains are real architectural breakthroughs, not just "throw more compute at it."</p>
+</section>
+
+<section class="section" id="security">
+  <span class="sec-num">COMPONENT 05</span>
+  <h2>The Security Gap</h2>
+  <p>There is one benchmark where DeepSeek V4 is not slightly behind — it's catastrophically behind.</p>
+
+  <p>NIST CAISI's jailbreak testing found that DeepSeek's most secure model still answered <strong>94%</strong> of malicious prompts. US reference models (Anthropic, OpenAI) answered <strong>8%</strong>. That's not a gap. That's a different planet.</p>
+
+  <p>Seven jurisdictions have already blocked DeepSeek, and the US government evaluation explicitly flagged this as a deployment risk. If you're building anything that touches user data, PII, or security-sensitive workflows, this is the single most important number in this entire article.</p>
+
+  <div class="callout warn">
+    <span class="c-label">Important</span>
+    <p>DeepSeek V4's open-weight release means the model can be fine-tuned to remove safety guardrails entirely. The MIT license places no restrictions on use case. This is a feature for researchers and a liability for production systems that handle sensitive data.</p>
+  </div>
+</section>
+
+<section class="section" id="verdict">
+  <span class="sec-num">COMPONENT 06</span>
+  <h2>The Bottom Line</h2>
+  <p>DeepSeek V4 is the most cost-effective frontier-class model available in May 2026, full stop. For coding workloads, document ingestion, and math-heavy tasks, it delivers 90%+ of the capability at 3–5% of the cost.</p>
+
+  <p>The 8-month gap NIST identified is real, but it matters less than the headlines suggest. In production software engineering — the task most teams actually pay for — V4 Pro is within 0.2% of Claude Opus 4.7 on SWE-Bench. The "8 months behind" figure is driven by cyber-security and multimodal gaps that most application developers never encounter.</p>
+
+  <p>For teams choosing a model in June 2026, the decision tree looks like this:</p>
+  <ul>
+    <li><strong>Use V4 Flash</strong> for high-volume chat, extraction, classification, and cache-heavy agent loops. At $0.14/M input, it's cheaper than V3.2 with 8x the context.</li>
+    <li><strong>Use V4 Pro</strong> for hard coding tasks, reasoning-heavy evaluations, and anywhere you need frontier-class performance without the frontier-class bill.</li>
+    <li><strong>Use Claude Opus 4.7 or GPT-5.5</strong> for multimodal work, security-sensitive deployments, or the most complex agentic systems where that last 5–10% of capability justifies a 20x price premium.</li>
+  </ul>
+
+  <p>The $45 billion valuation reportedly in discussion with Tencent and Alibaba no longer looks speculative. It looks like the market pricing in a permanent shift in AI economics — from "who has the most GPUs" to "who can extract the most intelligence per watt."</p>
+
+  <blockquote>
+    DeepSeek didn't just release a cheaper model. They proved that the frontier is no longer defined by who spends the most, but by who engineers the best.
+    <span class="attr">— Field Review, May 2026</span>
+  </blockquote>
+</section>
+
+      <div class="related">
+        <span class="c-label">Related Review</span>
+        <a href="../ai-coding-cost-2026/">The Real Cost of AI Coding Tools (2026)</a>
+        <p>A head-to-head pricing analysis of Cursor Composer 2.5, Claude Opus 4.7, and GPT-5.5 — with real benchmark data and cost-per-task breakdowns.</p>
+      </div>
+      <div class="endmatter">
+        <h3>Sources & Further Reading</h3>
+        <ul class="endlinks">
+          <li><a href="https://github.com/deepseek-ai/awesome-deepseek-agent">DeepSeek Official: Awesome DeepSeek Agent (Adapters & Integrations)</a></li>
+        <li><a href="https://github.com/Hmbown/CodeWhale">CodeWhale — TUI Terminal Client for DeepSeek V4</a></li>
+        <li><a href="https://api-docs.deepseek.com/quick_start/pricing">DeepSeek Official API Pricing</a></li>
+          <li><a href="https://sqmagazine.co.uk/deepseek-ai-statistics/">DeepSeek AI Statistics 2026 (SQ Magazine)</a></li>
+          <li><a href="https://codersera.com/blog/deepseek-v3-vs-deepseek-v4-a-deep-dive-into-ai-innovation-and-performance/">DeepSeek V3 vs V4: Benchmarks & Pricing (Codersera)</a></li>
+          <li><a href="https://techbullion.com/the-2026-llm-api-pricing-comparison-gpt-5-5-claude-sonnet-4-6-gemini-3-5-flash-and-deepseek-v4/">2026 LLM API Pricing Comparison (TechBullion)</a></li>
+          <li><a href="https://pricepertoken.com/pricing-page/model/deepseek-deepseek-v4-pro">DeepSeek V4 Pro Pricing (PricePerToken)</a></li>
+        </ul>
+        <p class="disclosure">This analysis is based on publicly available benchmark data, API pricing, and third-party evaluations as of May 2026. Pricing and benchmark scores change frequently; verify current rates before making production commitments.</p>
+      </div>
+    </article>
+  </div>
+</div>
+
+<div class="wrap">
+  <footer class="foot">
+    <div class="f-brand">AI Agents <span>/</span> Field Guide</div>
+    <div class="f-note">Last updated May 2026</div>
+  </footer>
+</div>
+
+<script>
+var progress=document.getElementById('progress');
+function updateProgress(){var h=document.documentElement;var max=h.scrollHeight-h.clientHeight;var pct=max>0?(h.scrollTop/max)*100:0;progress.style.width=pct+'%';}
+document.addEventListener('scroll',updateProgress,{passive:true});window.addEventListener('resize',updateProgress);updateProgress();
+
+var sections=Array.prototype.slice.call(document.querySelectorAll('section.section'));
+var tocLinks=Array.prototype.slice.call(document.querySelectorAll('#toc a'));
+function spy(){var pos=window.scrollY+window.innerHeight*0.3;var current=sections[0];for(var i=0;i<sections.length;i++){if(sections[i].offsetTop<=pos)current=sections[i];}tocLinks.forEach(function(a){a.classList.toggle('active',a.getAttribute('href')==='#'+current.id);});}
+document.addEventListener('scroll',spy,{passive:true});window.addEventListener('resize',spy);spy();
+
+document.querySelectorAll('.copy-btn').forEach(function(btn){btn.addEventListener('click',function(){var block=btn.closest('.codeblock');var code=block.querySelector('pre code');var text=code.innerText;navigator.clipboard.writeText(text).then(function(){btn.textContent='Copied';btn.classList.add('done');setTimeout(function(){btn.textContent='Copy';btn.classList.remove('done');},1800);}).catch(function(){btn.textContent='Error';setTimeout(function(){btn.textContent='Copy';},1800);});});});
+</script>
+</body>
+</html>
