@@ -22,6 +22,39 @@
             color: #1a1a1a;
             background: #fafafa;
         }
+        /* Navigation */
+        .navbar {
+            background: #1a1a1a;
+            color: #fff;
+            padding: 0 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 56px;
+        }
+        .nav-brand {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #fff;
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+        .nav-brand span { color: #f59e0b; }
+        .nav-back {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+        .nav-back:hover { color: #fff; }
+        .content { max-width: 720px; margin: 0 auto; padding: 32px 24px 48px; }
         h1 {
             font-size: 2rem;
             margin-bottom: 8px;
@@ -117,6 +150,15 @@
     </style>
 </head>
 <body>
+
+<nav class="navbar">
+    <div class="nav-inner">
+        <a href="/ai-agents-guide/" class="nav-brand">AI Agents <span>/</span> Field Guide</a>
+        <a href="/ai-agents-guide/" class="nav-back">← All Articles</a>
+    </div>
+</nav>
+
+<div class="content">
 
 <h1>Turning Claude Code Into a Real AI Dev Environment</h1>
 <p class="meta">Updated May 2026</p>
