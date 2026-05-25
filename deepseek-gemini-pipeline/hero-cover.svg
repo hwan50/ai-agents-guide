@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..600&amp;family=Inter:wght@400;500;600;700&amp;display=swap');
+    </style>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#F4F0E7"/>
+  
+  <!-- Corner Bracket Decorations -->
+  <!-- Top Left -->
+  <path d="M 40 70 L 40 40 L 70 40" stroke="#211F1B" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- Top Right -->
+  <path d="M 1130 40 L 1160 40 L 1160 70" stroke="#211F1B" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- Bottom Left -->
+  <path d="M 40 560 L 40 590 L 70 590" stroke="#211F1B" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- Bottom Right -->
+  <path d="M 1130 590 L 1160 590 L 1160 560" stroke="#211F1B" stroke-width="3" fill="none" stroke-linecap="round"/>
+  
+  <!-- Left Side: Title Block -->
+  <text x="80" y="200" font-family="Georgia, 'Fraunces', serif" font-size="72" font-weight="700" fill="#211F1B" letter-spacing="-0.02em">DEEPSEEK</text>
+  <text x="80" y="280" font-family="Georgia, 'Fraunces', serif" font-size="72" font-weight="700" fill="#211F1B" letter-spacing="-0.02em">+ GEMINI</text>
+  
+  <text x="80" y="340" font-family="Georgia, 'Fraunces', serif" font-size="28" font-weight="400" font-style="italic" fill="#B87333">A Multi-Model Coding Pipeline</text>
+  
+  <!-- Pill Tags -->
+  <rect x="80" y="390" width="90" height="32" rx="4" fill="none" stroke="#211F1B" stroke-width="1.5"/>
+  <text x="125" y="411" font-family="'Inter', sans-serif" font-size="11" font-weight="600" fill="#211F1B" text-anchor="middle" letter-spacing="0.08em">VISION</text>
+  
+  <rect x="185" y="390" width="110" height="32" rx="4" fill="none" stroke="#211F1B" stroke-width="1.5"/>
+  <text x="240" y="411" font-family="'Inter', sans-serif" font-size="11" font-weight="600" fill="#211F1B" text-anchor="middle" letter-spacing="0.08em">REASONING</text>
+  
+  <rect x="310" y="390" width="70" height="32" rx="4" fill="none" stroke="#211F1B" stroke-width="1.5"/>
+  <text x="345" y="411" font-family="'Inter', sans-serif" font-size="11" font-weight="600" fill="#211F1B" text-anchor="middle" letter-spacing="0.08em">MCP</text>
+  
+  <!-- Right Side: Workflow Cards -->
+  <!-- Card 1: Gemini Flash -->
+  <rect x="620" y="160" width="520" height="140" rx="2" fill="#FFD6C1" stroke="#211F1B" stroke-width="2"/>
+  <line x1="660" y1="160" x2="660" y2="300" stroke="#211F1B" stroke-width="1"/>
+  <text x="680" y="215" font-family="'Inter', sans-serif" font-size="14" font-weight="700" fill="#211F1B" letter-spacing="0.05em">01</text>
+  <text x="720" y="215" font-family="Georgia, 'Fraunces', serif" font-size="24" font-weight="600" fill="#211F1B">Gemini Flash</text>
+  <text x="720" y="250" font-family="'Inter', sans-serif" font-size="14" font-weight="400" fill="#46423A">image analysis · OCR · vision</text>
+  <text x="1090" y="230" font-family="'Inter', sans-serif" font-size="20" fill="#211F1B" text-anchor="end">›</text>
+  
+  <!-- Arrow -->
+  <line x1="880" y1="320" x2="880" y2="350" stroke="#211F1B" stroke-width="2"/>
+  <polygon points="875,345 880,355 885,345" fill="#211F1B"/>
+  
+  <!-- Card 2: DeepSeek V4 -->
+  <rect x="620" y="370" width="520" height="140" rx="2" fill="#C8D6C4" stroke="#211F1B" stroke-width="2"/>
+  <line x1="660" y1="370" x2="660" y2="510" stroke="#211F1B" stroke-width="1"/>
+  <text x="680" y="425" font-family="'Inter', sans-serif" font-size="14" font-weight="700" fill="#211F1B" letter-spacing="0.05em">02</text>
+  <text x="720" y="425" font-family="Georgia, 'Fraunces', serif" font-size="24" font-weight="600" fill="#211F1B">DeepSeek V4</text>
+  <text x="720" y="460" font-family="'Inter', sans-serif" font-size="14" font-weight="400" fill="#46423A">code generation · reasoning · 1M context</text>
+  <text x="1090" y="440" font-family="'Inter', sans-serif" font-size="20" fill="#211F1B" text-anchor="end">›</text>
+  
+  <!-- Bottom Right Credit -->
+  <text x="1100" y="600" font-family="'Inter', sans-serif" font-size="12" font-weight="500" fill="#7C7567" text-anchor="end" font-style="italic">@hwan50</text>
+  
+  <!-- Bottom Left: Protocol Label -->
+  <text x="80" y="600" font-family="'Inter', sans-serif" font-size="11" font-weight="600" fill="#7C7567" letter-spacing="0.1em">BUILT WITH MCP PROTOCOL</text>
+</svg>
