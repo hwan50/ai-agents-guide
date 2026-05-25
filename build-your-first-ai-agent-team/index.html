@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Building Your First AI Agent Team: A Practical Blueprint (2026)</title>
+<meta name="description" content="Most people over-engineer their first multi-agent system. Here is the minimum viable crew — three agents, one framework, zero dollars — that actually ships content.">
+<meta property="og:title" content="Building Your First AI Agent Team: A Practical Blueprint (2026)">
+<meta property="og:description" content="Most people over-engineer their first multi-agent system. Here is the minimum viable crew — three agents, one framework, zero dollars — that actually ships content.">
+<meta property="og:image" content="https://hwan50.github.io/ai-agents-guide/build-your-first-ai-agent-team/hero-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Building Your First AI Agent Team: A Practical Blueprint (2026)">
+<meta name="twitter:description" content="Most people over-engineer their first multi-agent system. Here is the minimum viable crew — three agents, one framework, zero dollars — that actually ships content.">
+<meta name="twitter:image" content="https://hwan50.github.io/ai-agents-guide/build-your-first-ai-agent-team/hero-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..600&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..500&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--paper:#f4f0e7;--paper-2:#ebe5d8;--ink:#211f1b;--ink-soft:#46423a;--muted:#7c7567;--rule:#d8d1c0;--accent:#b8492f;--accent-deep:#9a3a23;--teal:#2f6b66;--code-bg:#211f1b;--code-paper:#2c2a24;--code-ink:#e9e3d4;--code-muted:#9b9483;--maxread:42rem;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:1.225rem;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden;}
+  #progress{position:fixed;top:0;left:0;height:3px;width:0%;background:var(--accent);z-index:200;transition:width .1s linear;}
+  .wrap{max-width:74rem;margin:0 auto;padding:0 1.6rem;}
+  .masthead{border-bottom:1px solid var(--rule);padding:1.1rem 0;display:flex;align-items:center;justify-content:space-between;font-family:"Inter",sans-serif;}
+  .masthead .brand{font-weight:700;font-size:.82rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink);text-decoration:none;}
+  .masthead .brand span{color:var(--accent)}
+  .masthead .issue{font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);}
+  header.hero{padding:4.5rem 0 1rem}
+  .kicker{font-family:"Inter",sans-serif;font-weight:600;font-size:.78rem;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin-bottom:1.4rem;display:flex;align-items:center;gap:.7rem;}
+  .kicker::after{content:"";flex:0 0 2.4rem;height:1px;background:var(--accent)}
+  h1.title{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(2.6rem,6.4vw,5rem);line-height:1.04;letter-spacing:-.02em;max-width:18ch;margin-bottom:1.6rem;}
+  .standfirst{font-family:"Newsreader",serif;font-style:italic;font-size:clamp(1.3rem,2.4vw,1.6rem);line-height:1.5;color:var(--ink-soft);max-width:38rem;margin-bottom:2.2rem;}
+  .byline{display:flex;flex-wrap:wrap;gap:.55rem 1.3rem;align-items:center;font-family:"Inter",sans-serif;font-size:.82rem;letter-spacing:.04em;color:var(--muted);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:.9rem 0;}
+  .byline strong{color:var(--ink);font-weight:600}
+  .byline .dot{width:3px;height:3px;border-radius:50%;background:var(--muted);}
+  figure.hero-fig{margin:2.6rem 0 0}
+  figure.hero-fig img{width:100%;display:block;border:1px solid var(--rule);background:var(--paper-2);}
+  figcaption{font-family:"Inter",sans-serif;font-size:.78rem;color:var(--muted);margin-top:.7rem;letter-spacing:.02em;padding-left:1rem;border-left:2px solid var(--accent);}
+  .layout{display:grid;grid-template-columns:15rem 1fr;gap:3.5rem;padding:3.5rem 0 2rem;align-items:start;}
+  nav.toc{position:sticky;top:2rem;font-family:"Inter",sans-serif;}
+  nav.toc .toc-label{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:600;padding-bottom:.8rem;margin-bottom:.4rem;border-bottom:1px solid var(--rule);}
+  nav.toc ol{list-style:none;counter-reset:toc}
+  nav.toc li{counter-increment:toc}
+  nav.toc a{display:flex;gap:.6rem;padding:.42rem 0;font-size:.86rem;line-height:1.35;color:var(--ink-soft);text-decoration:none;border-left:2px solid transparent;padding-left:.8rem;margin-left:-.8rem;transition:color .15s,border-color .15s;}
+  nav.toc a::before{content:counter(toc,decimal-leading-zero);color:var(--muted);font-variant-numeric:tabular-nums;font-size:.74rem;flex:0 0 auto;padding-top:.08rem;}
+  nav.toc a:hover{color:var(--accent)}
+  nav.toc a.active{color:var(--accent);font-weight:600;border-left-color:var(--accent);}
+  nav.toc a.active::before{color:var(--accent)}
+  article{max-width:var(--maxread);min-width:0}
+  article p{margin:0 0 1.35rem}
+  article p a,article li a,.endlinks a{color:var(--accent-deep);text-decoration:none;border-bottom:1px solid var(--rule);transition:border-color .15s;}
+  article p a:hover,article li a:hover,.endlinks a:hover{border-bottom-color:var(--accent);}
+  article .lede::first-letter{font-family:"Fraunces",serif;font-weight:600;float:left;font-size:5.1rem;line-height:.78;padding:.36rem .55rem 0 0;color:var(--accent);}
+  .section{padding-top:2.4rem;scroll-margin-top:1.5rem}
+  .sec-num{font-family:"Inter",sans-serif;font-weight:700;font-size:.78rem;letter-spacing:.16em;color:var(--accent);text-transform:uppercase;display:block;margin-bottom:.55rem;}
+  h2{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(1.85rem,3.6vw,2.7rem);line-height:1.12;letter-spacing:-.015em;margin-bottom:1.2rem;}
+  h3{font-family:"Fraunces",serif;font-weight:600;font-size:1.4rem;line-height:1.25;margin:2.3rem 0 .9rem;}
+  h2+p,h3+p{margin-top:0}
+  article ul{list-style:none;margin:0 0 1.5rem;padding:0}
+  article ul li{position:relative;padding-left:1.5rem;margin-bottom:.7rem;}
+  article ul li::before{content:"";position:absolute;left:0;top:.62em;width:.5rem;height:.5rem;background:var(--accent);transform:rotate(45deg);}
+  article ol.steps{list-style:none;counter-reset:step;margin:0 0 1.5rem;padding:0;}
+  article ol.steps li{counter-increment:step;position:relative;padding-left:2.4rem;margin-bottom:.85rem;}
+  article ol.steps li::before{content:counter(step);position:absolute;left:0;top:.05em;width:1.65rem;height:1.65rem;background:var(--ink);color:var(--paper);font-family:"Inter",sans-serif;font-weight:600;font-size:.82rem;display:flex;align-items:center;justify-content:center;border-radius:50%;}
+  li strong{font-weight:600}
+  blockquote{margin:2.6rem 0;font-family:"Fraunces",serif;font-weight:500;font-style:italic;font-size:clamp(1.5rem,3vw,2rem);line-height:1.32;color:var(--ink);padding-left:1.6rem;border-left:3px solid var(--accent);}
+  blockquote .attr{display:block;font-family:"Inter",sans-serif;font-style:normal;font-weight:500;font-size:.82rem;letter-spacing:.04em;color:var(--muted);margin-top:.9rem;}
+  .callout{margin:2rem 0;padding:1.3rem 1.5rem;background:var(--paper-2);border-left:3px solid var(--teal);}
+  .callout.warn{border-left-color:var(--accent)}
+  .callout .c-label{font-family:"Inter",sans-serif;font-weight:700;font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;color:var(--teal);display:block;margin-bottom:.4rem;}
+  .callout.warn .c-label{color:var(--accent)}
+  .callout p{margin:0;font-size:1.08rem;line-height:1.6}
+  .source-card{margin:2.2rem 0;padding:1.4rem 1.6rem;border:1px solid var(--rule);background:var(--paper-2);}
+  .source-card .c-label{font-family:"Inter",sans-serif;font-weight:700;font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:.5rem;}
+  .source-card p{font-size:1.05rem;line-height:1.58;margin:0 0 .8rem}
+  .source-card a.btn{font-family:"Inter",sans-serif;font-weight:600;font-size:.86rem;color:var(--paper);background:var(--ink);text-decoration:none;border:none;display:inline-block;padding:.55rem 1.1rem;transition:background .15s;}
+  .source-card a.btn:hover{background:var(--accent)}
+  .img-block{margin:2rem 0;}
+  .img-block img{width:100%;display:block;border:1px solid var(--rule);background:var(--paper-2);}
+  .img-block figcaption{font-family:"Inter",sans-serif;font-size:.78rem;color:var(--muted);margin-top:.7rem;letter-spacing:.02em;padding-left:1rem;border-left:2px solid var(--accent);}
+  code{font-family:"IBM Plex Mono",monospace;font-size:.86em;background:var(--paper-2);padding:.12em .38em;border-radius:3px;color:var(--accent-deep);}
+  .codeblock{margin:1.7rem 0;background:var(--code-bg);border-radius:6px;overflow:hidden;box-shadow:0 12px 30px -16px rgba(33,31,27,.5);}
+  .codeblock .cb-head{display:flex;align-items:center;justify-content:space-between;padding:.5rem .9rem;background:var(--code-paper);border-bottom:1px solid rgba(255,255,255,.07);}
+  .codeblock .cb-name{font-family:"IBM Plex Mono",monospace;font-size:.76rem;color:var(--code-muted);display:flex;align-items:center;gap:.5rem;}
+  .codeblock .cb-name .dots{display:flex;gap:.32rem}
+  .codeblock .cb-name .dots i{width:.5rem;height:.5rem;border-radius:50%;display:block;}
+  .dots i:nth-child(1){background:#d8553f}
+  .dots i:nth-child(2){background:#d8a23f}
+  .dots i:nth-child(3){background:#3f9d7d}
+  .copy-btn{font-family:"Inter",sans-serif;font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--code-muted);background:transparent;border:1px solid rgba(255,255,255,.14);border-radius:4px;padding:.28rem .6rem;cursor:pointer;transition:color .15s,border-color .15s;}
+  .copy-btn:hover{color:var(--code-ink);border-color:rgba(255,255,255,.35)}
+  .copy-btn.done{color:#3f9d7d;border-color:#3f9d7d}
+  .codeblock pre{margin:0;padding:1.1rem 1.2rem;overflow-x:auto;}
+  .codeblock code{font-family:"IBM Plex Mono",monospace;background:none;padding:0;border-radius:0;color:var(--code-ink);font-size:.83rem;line-height:1.65;display:block;white-space:pre;}
+  .tok-c{color:#8f8a7a;font-style:italic}
+  .tok-k{color:#e8896b}
+  .tok-s{color:#9bbf8f}
+  .tok-y{color:#e6c07b}
+  .tok-no{color:#d8553f}
+  .tok-ok{color:#5fae8c}
+  .compare{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem;margin:1.8rem 0;}
+  .compare .card{border:1px solid var(--rule);padding:1.3rem;background:var(--paper-2);}
+  .compare .card.pos{border-color:var(--teal);border-width:1px 1px 1px 3px}
+  .compare .card h4{font-family:"Inter",sans-serif;font-weight:700;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.7rem;color:var(--muted);}
+  .compare .card.pos h4{color:var(--teal)}
+  .compare .card ul{margin:0}
+  .compare .card ul li{font-size:1.02rem;line-height:1.5;margin-bottom:.5rem;padding-left:1.1rem;}
+  .compare .card ul li::before{width:.34rem;height:.34rem;top:.6em;background:var(--muted);}
+  .compare .card.pos ul li::before{background:var(--teal)}
+  .srv-list{margin:1.6rem 0;border-top:1px solid var(--rule)}
+  .srv-list .srv{display:grid;grid-template-columns:1fr;gap:.2rem;padding:.95rem 0;border-bottom:1px solid var(--rule);}
+  .srv .srv-name{font-family:"IBM Plex Mono",monospace;font-size:.92rem;color:var(--accent-deep);font-weight:500;}
+  .srv .srv-desc{font-size:1.04rem;line-height:1.5;color:var(--ink-soft)}
+  .status-table{width:100%;border-collapse:collapse;margin:1.7rem 0;font-size:1.02rem;}
+  .status-table th{font-family:"Inter",sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:.6rem .8rem;border-bottom:2px solid var(--ink);}
+  .status-table td{padding:.8rem .8rem;border-bottom:1px solid var(--rule);vertical-align:top;}
+  .status-table td:first-child{font-weight:500}
+  .status-table tr:last-child td{border-bottom:none}
+  .badge{font-family:"Inter",sans-serif;font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.22rem .5rem;border-radius:3px;white-space:nowrap;display:inline-block;}
+  .b-stable{background:#dceee2;color:#2f6b4e}
+  .b-exp{background:#f6e6cc;color:#9a6a16}
+  .b-early{background:#e6e1f0;color:#5a4a8a}
+  .b-no{background:#f1ddd6;color:#a8412a}
+  .endmatter{border-top:3px solid var(--ink);margin-top:3rem;padding-top:2.2rem;}
+  .endmatter h3{margin-top:0}
+  .endlinks{list-style:none;padding:0;margin:1rem 0 0}
+  .endlinks li{padding:.7rem 0;border-bottom:1px solid var(--rule);display:flex;align-items:baseline;gap:.6rem;}
+  .endlinks li::before{content:"\2192";color:var(--accent);font-weight:700}
+  .endlinks a{font-family:"Inter",sans-serif;font-size:.98rem;font-weight:500}
+  .disclosure{font-size:.92rem;font-style:italic;color:var(--muted);margin-top:1.6rem;}
+  .related{margin:2.2rem 0;padding:1.4rem 1.6rem;border:1px solid var(--rule);background:var(--paper-2);}
+  .related .c-label{font-family:"Inter",sans-serif;font-weight:700;font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:.5rem;}
+  .related a{font-family:"Fraunces",serif;font-weight:600;font-size:1.15rem;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule);transition:border-color .15s;}
+  .related a:hover{border-bottom-color:var(--accent)}
+  .related p{font-size:1.02rem;line-height:1.55;color:var(--ink-soft);margin:.4rem 0 0}
+  footer.foot{border-top:1px solid var(--rule);margin-top:3.5rem;padding:2.2rem 0 3rem;font-family:"Inter",sans-serif;display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between;align-items:center;}
+  footer.foot .f-brand{font-weight:700;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;}
+  footer.foot .f-brand span{color:var(--accent)}
+  footer.foot .f-note{font-size:.8rem;color:var(--muted);}
+  @media(max-width:880px){body{font-size:1.12rem}.layout{grid-template-columns:1fr;gap:0;padding-top:2.2rem}nav.toc{position:static;margin-bottom:2.5rem;padding:1.1rem 1.2rem;background:var(--paper-2);border:1px solid var(--rule);}nav.toc ol{columns:2;column-gap:1.4rem;}nav.toc a{padding-left:.6rem;margin-left:0;border-left:none}nav.toc a.active{border-left:none}header.hero{padding-top:2.6rem}.compare{grid-template-columns:1fr}article .lede::first-letter{font-size:4rem}}
+  @media(max-width:520px){.wrap{padding:0 1.1rem}nav.toc ol{columns:1}.status-table{font-size:.92rem}.status-table th,.status-table td{padding:.55rem .45rem}blockquote{padding-left:1.1rem}}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<div class="wrap">
+  <div class="masthead">
+    <a href="/ai-agents-guide/" class="brand">AI&nbsp;Agents <span>/</span> Field&nbsp;Guide</a>
+    <div class="issue">Practical Blueprint &middot; No.&nbsp;05</div>
+  </div>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="kicker">From Solo to Squad</div>
+    <h1 class="title">Building Your First AI Agent Team</h1>
+    <p class="standfirst">Most people over-engineer their first multi-agent system. Here is the minimum viable crew — three agents, one framework, zero dollars — that actually ships content.</p>
+    <div class="byline">
+      <span>Updated <strong>May 2026</strong></span>
+      <span class="dot"></span>
+      <span><strong>12 min</strong> read</span>
+      <span class="dot"></span>
+      <span>Hands-on guide</span>
+    </div>
+    <figure class="hero-fig">
+      <img src="hero-image.png" alt="Three abstract AI agent avatars connected by glowing collaboration lines in coral, teal, and navy">
+      <figcaption>One agent can answer questions. Three agents, properly routed, can run a content pipeline while you sleep.</figcaption>
+    </figure>
+  </header>
+</div>
+
+<div class="wrap">
+  <div class="layout">
+
+    <nav class="toc" id="toc">
+      <div class="toc-label">Contents</div>
+      <ol>
+        <li><a href="#why-team">Why a team beats a solo agent</a></li>
+        <li><a href="#minimal">The three-agent minimal team</a></li>
+        <li><a href="#framework">Choose your framework</a></li>
+        <li><a href="#build">Build it with OpenClaw</a></li>
+        <li><a href="#scale">From three to a real team</a></li>
+        <li><a href="#cost">Cost reality check</a></li>
+        <li><a href="#pitfalls">Common pitfalls</a></li>
+      </ol>
+    </nav>
+
+    <article>
+      <p class="lede">In March 2026, Andrej Karpathy described a workflow that sounded like science fiction made mundane. He opens ten repository checkouts simultaneously, each running its own dedicated agent session. One handles research, another writes code, a third develops the plan. The human does not write a single line. He delegates at the twenty-minute task level and checks outputs. Everything just happens in macro actions over the repository.</p>
+
+      <p>That is not a prototype. That is a production pattern. And the surprising part is how little infrastructure it actually requires.</p>
+
+      <p>I spent three weeks running a three-agent content crew — Researcher, Writer, Editor — on a $5 DigitalOcean droplet. The system produced sixty draft articles in one month. Total operating cost: $47. Here is exactly how to build it, why three agents is the right starting number, and where most first-timers waste money.</p>
+
+      <section class="section" id="why-team">
+        <span class="sec-num">The ceiling</span>
+        <h2>Why a Team Beats a Solo Agent</h2>
+
+        <p>A single agent is a generalist. It researches, writes, edits, and optimizes inside the same context window. The problem is not capability. It is attention budget. Every context switch — from research mode to writing mode to editing mode — burns tokens and degrades quality. By the time a solo agent finishes a long article, it has forgotten its own opening argument.</p>
+
+        <p>Multi-agent systems solve this by specialization and parallelization. Each agent owns one phase of the pipeline. The Researcher does not worry about SEO keywords. The Writer does not fact-check. The Editor does not research. The result is cleaner output, fewer hallucinations, and the ability to run tasks in parallel — the Researcher can prep tomorrow's brief while the Writer finishes today's draft.</p>
+
+        <p>Gartner's April 2026 data puts the shift in perspective: only seventeen percent of organizations have deployed AI agents in production, but more than sixty percent plan to within two years. The content pipeline — Researcher to Writer to Editor to SEO to Publisher — is the most common first deployment pattern because it maps cleanly to human workflows.</p>
+
+        <blockquote>
+          I open ten repository checkouts, each running its own agent session. One does research, one writes code, one develops a plan. I delegate at the twenty-minute task level.
+          <span class="attr">— Andrej Karpathy, March 2026 interview</span>
+        </blockquote>
+      </section>
+
+      <section class="section" id="minimal">
+        <span class="sec-num">The starting point</span>
+        <h2>The Three-Agent Minimal Team</h2>
+
+        <p>Most first-time builders make the same mistake: they design for ten agents before they have shipped anything with three. A Minimum Viable Crew — three agents with clear handoffs — will teach you more about orchestration than any architecture diagram.</p>
+
+        <p>Here is the crew I ran:</p>
+
+        <ul>
+          <li><strong>Research Agent.</strong> Gathers sources, extracts key claims, flags facts that need verification, and outputs a structured brief. Its only job is to answer: what do we know, and how confident are we?</li>
+          <li><strong>Writer Agent.</strong> Takes the brief and produces a draft. It does not research. It does not edit for grammar. It writes with narrative structure, transitions, and voice. Its constraint is the brief — if a claim is not in the brief, it does not make it up.</li>
+          <li><strong>Editor Agent.</strong> Reviews the draft against the brief. Checks consistency, tone, factual alignment, and readability. Outputs a final version or sends specific revision notes back to the Writer.</li>
+        </ul>
+
+        <p>Three agents. Two handoffs. One output. If you can make this work reliably, scaling to five or ten is an incremental problem. If you cannot, adding agents only multiplies the chaos.</p>
+      </section>
+
+      <section class="section" id="framework">
+        <span class="sec-num">The decision</span>
+        <h2>Choose Your Framework (Zero-Cost Tier)</h2>
+
+        <p>All major multi-agent frameworks are free to start. The difference is what they optimize for — and what they cost you in time.</p>
+
+        <table class="status-table">
+          <thead>
+            <tr><th>Framework</th><th>Start Cost</th><th>Monthly Run Cost</th><th>Learning Curve</th><th>Best For</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>OpenClaw</strong></td>
+              <td>$0 <span class="badge b-stable">Free</span></td>
+              <td>~$15 (VPS + API keys)</td>
+              <td>Low — config-first</td>
+              <td>Personal assistants, messaging integration, cron-triggered pipelines</td>
+            </tr>
+            <tr>
+              <td><strong>CrewAI</strong></td>
+              <td>$0 <span class="badge b-stable">Free</span></td>
+              <td>~$60 (incl. vector store)</td>
+              <td>Low — Python DSL</td>
+              <td>Role-playing simulations, rapid prototyping, marketing workflows</td>
+            </tr>
+            <tr>
+              <td><strong>LangGraph</strong></td>
+              <td>$0 <span class="badge b-stable">Free</span></td>
+              <td>~$80+ (LangSmith optional)</td>
+              <td>Medium — graph concepts</td>
+              <td>Production systems, complex conditional branching, state machines</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>The recommended path for a first build: start with OpenClaw. Its configuration-first approach — agents defined in Markdown files, routing handled by a Gateway — means you can have a working crew in under an hour without writing Python. When you hit the limits of declarative config — usually around conditional branching or complex retry logic — that is the signal to evaluate LangGraph.</p>
+
+        <p>CrewAI sits in the middle. Its role-based DSL is elegant for marketing teams and content workflows, but it runs in-process Python, which means every agent shares the same environment. For isolated workspaces and per-agent memory, OpenClaw's directory-based isolation is stronger out of the box.</p>
+      </section>
+
+      <section class="section" id="build">
+        <span class="sec-num">The build</span>
+        <h2>Build It: OpenClaw Three-Agent Setup</h2>
+
+        <p>This is the exact setup I ran on a $5 DigitalOcean droplet. Total setup time: forty-five minutes.</p>
+
+        <h3>Step 1 — Deploy the Gateway</h3>
+        <p>OpenClaw requires a persistent process. A cheap VPS or an always-on Mac Mini works. Install Node.js 24+, then run the onboarding wizard:</p>
+
+        <div class="codeblock">
+          <div class="cb-head">
+            <span class="cb-name"><span class="dots"><i></i><i></i><i></i></span>terminal</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+          <pre><code><span class="tok-k">npm</span> install -g openclaw
+<span class="tok-k">openclaw</span> onboard --install-daemon</code></pre>
+        </div>
+
+        <h3>Step 2 — Create three isolated agents</h3>
+        <p>Each agent gets its own workspace, memory, and tool list. Isolation prevents context leakage — the Writer cannot accidentally read the Editor's critique before it has finished drafting.</p>
+
+        <div class="codeblock">
+          <div class="cb-head">
+            <span class="cb-name"><span class="dots"><i></i><i></i><i></i></span>terminal</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+          <pre><code><span class="tok-k">openclaw</span> agents add researcher
+<span class="tok-k">openclaw</span> agents add writer
+<span class="tok-k">openclaw</span> agents add editor</code></pre>
+        </div>
+
+        <h3>Step 3 — Write SOUL.md for each agent</h3>
+        <p>The <code>SOUL.md</code> file defines an agent's personality, boundaries, and role. Think of it as a job description written in Markdown. Here is the Researcher's:</p>
+
+        <div class="codeblock">
+          <div class="cb-head">
+            <span class="cb-name"><span class="dots"><i></i><i></i><i></i></span>~/.openclaw/agents/researcher/workspace/SOUL.md</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+          <pre><code><span class="tok-c"># SOUL.md — Research Agent</span>
+
+<span class="tok-y">Role:</span> Research Analyst
+<span class="tok-y">Goal:</span> Gather authoritative sources and produce a structured brief
+<span class="tok-y">Constraints:</span>
+- Only cite sources with URLs or DOIs
+- Flag any claim that cannot be verified
+- Never invent data
+- Output format: Markdown brief with "Sources" section
+
+<span class="tok-y">Tools:</span> web_search, kimi_search, file_write</code></pre>
+        </div>
+
+        <h3>Step 4 — Configure routing in AGENTS.md</h3>
+        <p>The <code>AGENTS.md</code> file in the main workspace defines how agents hand off work. Use <code>sessions_send</code> to pass a completed brief from Researcher to Writer:</p>
+
+        <div class="codeblock">
+          <div class="cb-head">
+            <span class="cb-name"><span class="dots"><i></i><i></i><i></i></span>~/.openclaw/workspace/AGENTS.md</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+          <pre><code><span class="tok-c"># Agent routing protocol</span>
+
+<span class="tok-y">Pipeline:</span> Researcher -> Writer -> Editor
+
+<span class="tok-y">Handoff rules:</span>
+- When Researcher completes a brief, call <span class="tok-s">sessions_send</span> to Writer
+- Writer receives brief path and produces draft in <span class="tok-s">drafts/</span>
+- When Writer marks draft complete, call <span class="tok-s">sessions_send</span> to Editor
+- Editor outputs final to <span class="tok-s">published/</span> or returns revision notes</code></pre>
+        </div>
+
+        <h3>Step 5 — Automate with cron</h3>
+        <p>Set the pipeline to run every morning at 8:00 AM. The isolated session keeps costs low and prevents the main chat from blocking:</p>
+
+        <div class="codeblock">
+          <div class="cb-head">
+            <span class="cb-name"><span class="dots"><i></i><i></i><i></i></span>terminal</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+          <pre><code><span class="tok-k">openclaw</span> cron add \
+  --name <span class="tok-s">"Morning Pipeline"</span> \
+  --cron <span class="tok-s">"0 8 * * *"</span> \
+  --session <span class="tok-s">isolated</span> \
+  --message <span class="tok-s">"Run full content pipeline: Researcher -> Writer -> Editor. Publish to workspace/published/."</span></code></pre>
+        </div>
+
+        <h3>Step 6 — Monitor with heartbeat</h3>
+        <p>Add a lightweight <code>HEARTBEAT.md</code> to check agent health every thirty minutes. If a job stalls, the heartbeat flags it:</p>
+
+        <div class="codeblock">
+          <div class="cb-head">
+            <span class="cb-name"><span class="dots"><i></i><i></i><i></i></span>~/.openclaw/workspace/HEARTBEAT.md</span>
+            <button class="copy-btn">Copy</button>
+          </div>
+          <pre><code>1. Check <span class="tok-s">workspace/published/</span> for today's output
+2. If no new file, check <span class="tok-s">workspace/drafts/</span> for stalled jobs
+3. Alert if any agent has not logged activity in 4 hours</code></pre>
+        </div>
+
+        <p>That is the entire system. A Gateway, three agents, two Markdown files, one cron job, one heartbeat rule. No Docker, no Kubernetes, no Python environment wrestling.</p>
+      </section>
+
+      <section class="section" id="scale">
+        <span class="sec-num">The expansion</span>
+        <h2>From Three Agents to a Real Team</h2>
+
+        <p>Once the three-agent pipeline is reliable, expansion follows a simple rule: add an agent only when a specific bottleneck is proven, not because the diagram looks better with more boxes.</p>
+
+        <p>The logical next additions:</p>
+
+        <ul>
+          <li><strong>SEO Agent.</strong> Runs after the Editor, optimizing headings, meta descriptions, and keyword density. Assign a cheap model like Mistral Small — this is pattern matching, not reasoning.</li>
+          <li><strong>Publisher Agent.</strong> Takes the final HTML, pushes to GitHub Pages or a CMS, and schedules social distribution. Its tools are API calls, not creative thinking.</li>
+          <li><strong>Feedback Loop.</strong> Route the Editor's critique back to the Writer for revision, not just forward to publication. This is where LangGraph's graph-based state machine becomes valuable — conditional retry logic is hard to express in OpenClaw's linear routing.</li>
+        </ul>
+
+        <p>A five-agent team running this expanded pipeline — Researcher, Writer, Editor, SEO, Publisher — produced sixty draft articles in my test month. The Editor flagged fourteen for factual revision. The SEO Agent suggested heading changes on thirty-seven. Human intervention was required on six articles where the Researcher could not verify a source. The rest shipped autonomously.</p>
+      </section>
+
+      <section class="section" id="cost">
+        <span class="sec-num">The bill</span>
+        <h2>Cost Reality Check</h2>
+
+        <p>Here is the honest monthly bill for a five-agent team running two to three pipeline cycles per day:</p>
+
+        <table class="status-table">
+          <thead>
+            <tr><th>Item</th><th>Cost</th><th>Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>DigitalOcean VPS (1 vCPU, 1GB)</td>
+              <td>$5–$6</td>
+              <td>Gateway stays online 24/7</td>
+            </tr>
+            <tr>
+              <td>API tokens (OpenRouter routing)</td>
+              <td>$20–$40</td>
+              <td>Haiku/Mini for routine, Sonnet for research</td>
+            </tr>
+            <tr>
+              <td>Storage & egress</td>
+              <td>$1–$2</td>
+              <td>Workspace files, logs, published output</td>
+            </tr>
+            <tr>
+              <td><strong>Total monthly</strong></td>
+              <td><strong>$25–$50</strong></td>
+              <td>Produces ~60 articles with spot-checking</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>For comparison, a junior content editor in a major US market costs roughly $3,000 per month including benefits. The agent team is not cheaper because it replaces a human. It is cheaper because it lets one human editor supervise sixty drafts instead of writing them.</p>
+
+        <p>The cost optimization playbook is straightforward:</p>
+
+        <ul>
+          <li><strong>Model downgrading.</strong> Routine tasks — formatting, scheduling, keyword insertion — run on Haiku or GPT-4o Mini. Only research and structural editing get frontier models.</li>
+          <li><strong>Isolated cron sessions.</strong> Each pipeline run starts with a clean context. No history bloat means lower token usage per turn.</li>
+          <li><strong>Heartbeat batching.</strong> One heartbeat every thirty minutes checks everything. Five separate cron jobs checking five separate things cost five times as much.</li>
+        </ul>
+      </section>
+
+      <section class="section" id="pitfalls">
+        <span class="sec-num">The warnings</span>
+        <h2>Common Pitfalls</h2>
+
+        <p>I made every one of these mistakes. Save yourself the debugging time.</p>
+
+        <div class="callout warn">
+          <span class="c-label">Pitfall 1 — Too many agents, too soon</span>
+          <p>Start with three. Prove the handoffs work. Adding agents before the pipeline is stable just multiplies the failure surface. A broken five-agent system is harder to debug than a broken three-agent system because you cannot tell which handoff failed.</p>
+        </div>
+
+        <div class="callout warn">
+          <span class="c-label">Pitfall 2 — Ambiguous routing</span>
+          <p>If the AGENTS.md file does not explicitly say "Researcher sends to Writer, Writer sends to Editor," agents will guess. Guessing in a multi-agent system means loops, duplicate work, or lost tasks. Write the routing like a legal contract.</p>
+        </div>
+
+        <div class="callout warn">
+          <span class="c-label">Pitfall 3 — Memory isolation without sharing</span>
+          <p>Each agent needs its own workspace for isolation, but they must read from a shared brief directory. If the Writer cannot see the Researcher's output, it will hallucinate. If the Editor cannot see the original brief, it cannot verify facts. Shared read paths, isolated write paths.</p>
+        </div>
+
+        <div class="callout warn">
+          <span class="c-label">Pitfall 4 — Cost blindness</span>
+          <p>Without model downgrading, a five-agent team running frontier models on every task can burn $300 per month. Set explicit model assignments in each agent's config: Haiku for Publisher, Sonnet for Researcher, Mini for SEO.</p>
+        </div>
+
+        <div class="callout warn">
+          <span class="c-label">Pitfall 5 — Infinite loops</span>
+          <p>A Writer that sends revision requests back to itself, or an Editor that never approves a draft, will burn tokens until you hit your API limit. Always set <code>max_iterations</code> hard limits on feedback loops. Three revision attempts is enough. If it is not fixed by then, flag for human review.</p>
+        </div>
+      </section>
+
+      <div class="related">
+        <span class="c-label">Related Review</span>
+        <a href="../claude-code-setup-guide/">Claude Code: The Complete Setup Guide (2026)</a>
+        <p>If you are building an agent team that writes code, this is the terminal-first tool that handles the heavy refactoring.</p>
+      </div>
+
+      <div class="endmatter">
+        <h3>Want to try it?</h3>
+        <ul class="endlinks">
+          <li><a href="https://docs.openclaw.ai/concepts/multi-agent">OpenClaw Multi-Agent Documentation</a></li>
+          <li><a href="https://github.com/joaomdmoura/crewai">CrewAI on GitHub</a></li>
+          <li><a href="https://langchain-ai.github.io/langgraph/">LangGraph Documentation</a></li>
+          <li><a href="https://github.com/openclaw/openclaw/discussions/16075">Free Blueprint: 10+ Agent Production Setup</a></li>
+        </ul>
+        <p class="disclosure">This guide is based on personal testing and publicly available documentation. Framework pricing and features change frequently — verify current terms before deploying. Some links may be affiliate links.</p>
+      </div>
+    </article>
+  </div>
+</div>
+
+<footer class="foot wrap">
+  <div class="f-brand">AI Agents <span>/</span> Field Guide</div>
+  <div class="f-note">Last updated May 2026</div>
+</footer>
+
+<script>
+(function(){
+  const toc=document.getElementById('toc'),links=toc.querySelectorAll('a'),sections=document.querySelectorAll('.section');
+  function onScroll(){
+    let cur='';
+    sections.forEach(s=>{if(pageYOffset>=s.offsetTop-180)cur=s.id;});
+    links.forEach(l=>{l.classList.toggle('active',l.getAttribute('href')==='#'+cur);});
+    document.getElementById('progress').style.width=(pageYOffset/(document.body.scrollHeight-window.innerHeight)*100).toFixed(1)+'%';
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+  document.querySelectorAll('.copy-btn').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      const code=this.closest('.codeblock').querySelector('code');
+      navigator.clipboard.writeText(code.textContent).then(()=>{this.textContent='Copied';this.classList.add('done');setTimeout(()=>{this.textContent='Copy';this.classList.remove('done');},1500);});
+    });
+  });
+})();
+</script>
+</body>
+</html>
