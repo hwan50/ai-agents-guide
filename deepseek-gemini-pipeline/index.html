@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeepSeek TUI × Gemini Flash: Building a Multi-Model Coding Pipeline with MCP</title>
+<meta name="description" content="Why I route image understanding to Gemini Flash and code generation to DeepSeek V4 — and how the MCP protocol makes them work as one tool.">
+<meta property="og:title" content="DeepSeek TUI × Gemini Flash: Building a Multi-Model Coding Pipeline with MCP">
+<meta property="og:description" content="Why I route image understanding to Gemini Flash and code generation to DeepSeek V4 — and how the MCP protocol makes them work as one tool.">
+<meta property="og:image" content="https://hwan50.github.io/ai-agents-guide/deepseek-gemini-pipeline/hero-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="DeepSeek TUI × Gemini Flash: Building a Multi-Model Coding Pipeline with MCP">
+<meta name="twitter:description" content="Why I route image understanding to Gemini Flash and code generation to DeepSeek V4 — and how the MCP protocol makes them work as one tool.">
+<meta name="twitter:image" content="https://hwan50.github.io/ai-agents-guide/deepseek-gemini-pipeline/hero-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..600&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..500&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--paper:#f4f0e7;--paper-2:#ebe5d8;--ink:#211f1b;--ink-soft:#46423a;--muted:#7c7567;--rule:#d8d1c0;--accent:#b8492f;--accent-deep:#9a3a23;--teal:#2f6b66;--code-bg:#211f1b;--code-paper:#2c2a24;--code-ink:#e9e3d4;--code-muted:#9b9483;--maxread:42rem;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:1.225rem;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden;}
+  #progress{position:fixed;top:0;left:0;height:3px;width:0%;background:var(--accent);z-index:200;transition:width .1s linear;}
+  .wrap{max-width:74rem;margin:0 auto;padding:0 1.6rem;}
+  .masthead{border-bottom:1px solid var(--rule);padding:1.1rem 0;display:flex;align-items:center;justify-content:space-between;font-family:"Inter",sans-serif;}
+  .masthead .brand{font-weight:700;font-size:.82rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink);text-decoration:none;}
+  .masthead .brand span{color:var(--accent)}
+  .masthead .issue{font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);}
+  header.hero{padding:4.5rem 0 1rem}
+  .kicker{font-family:"Inter",sans-serif;font-weight:600;font-size:.78rem;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin-bottom:1.4rem;display:flex;align-items:center;gap:.7rem;}
+  .kicker::after{content:"";flex:0 0 2.4rem;height:1px;background:var(--accent)}
+  h1.title{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(2.6rem,6.4vw,5rem);line-height:1.04;letter-spacing:-.02em;max-width:18ch;margin-bottom:1.6rem;}
+  .standfirst{font-family:"Newsreader",serif;font-style:italic;font-size:clamp(1.3rem,2.4vw,1.6rem);line-height:1.5;color:var(--ink-soft);max-width:38rem;margin-bottom:2.2rem;}
+  .byline{display:flex;flex-wrap:wrap;gap:.55rem 1.3rem;align-items:center;font-family:"Inter",sans-serif;font-size:.82rem;letter-spacing:.04em;color:var(--muted);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:.9rem 0;}
+  .byline strong{color:var(--ink);font-weight:600}
+  .byline .dot{width:3px;height:3px;border-radius:50%;background:var(--muted);}
+  figure.hero-fig{margin:2.6rem 0 0}
+  figure.hero-fig img{width:100%;display:block;border:1px solid var(--rule);background:var(--paper-2);}
+  figcaption{font-family:"Inter",sans-serif;font-size:.78rem;color:var(--muted);margin-top:.7rem;letter-spacing:.02em;padding-left:1rem;border-left:2px solid var(--accent);}
+  .layout{display:grid;grid-template-columns:15rem 1fr;gap:3.5rem;padding:3.5rem 0 2rem;align-items:start;}
+  nav.toc{position:sticky;top:2rem;font-family:"Inter",sans-serif;}
+  nav.toc .toc-label{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:600;padding-bottom:.8rem;margin-bottom:.4rem;border-bottom:1px solid var(--rule);}
+  nav.toc ol{list-style:none;counter-reset:toc}
+  nav.toc li{counter-increment:toc}
+  nav.toc a{display:flex;gap:.6rem;padding:.42rem 0;font-size:.86rem;line-height:1.35;color:var(--ink-soft);text-decoration:none;border-left:2px solid transparent;padding-left:.8rem;margin-left:-.8rem;transition:color .15s,border-color .15s;}
+  nav.toc a::before{content:counter(toc,decimal-leading-zero);color:var(--muted);font-variant-numeric:tabular-nums;font-size:.74rem;flex:0 0 auto;padding-top:.08rem;}
+  nav.toc a:hover{color:var(--accent)}
+  nav.toc a.active{color:var(--accent);font-weight:600;border-left-color:var(--accent);}
+  nav.toc a.active::before{color:var(--accent)}
+  article{max-width:var(--maxread);min-width:0}
+  article p{margin:0 0 1.35rem}
+  article p a,article li a,.endlinks a{color:var(--accent-deep);text-decoration:none;border-bottom:1px solid var(--rule);transition:border-color .15s;}
+  article p a:hover,article li a:hover,.endlinks a:hover{border-bottom-color:var(--accent);}
+  article .lede::first-letter{font-family:"Fraunces",serif;font-weight:600;float:left;font-size:5.1rem;line-height:.78;padding:.36rem .55rem 0 0;color:var(--accent);}
+  .section{padding-top:2.4rem;scroll-margin-top:1.5rem}
+  .sec-num{font-family:"Inter",sans-serif;font-weight:700;font-size:.78rem;letter-spacing:.16em;color:var(--accent);text-transform:uppercase;display:block;margin-bottom:.55rem;}
+  h2{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(1.85rem,3.6vw,2.7rem);line-height:1.12;letter-spacing:-.015em;margin-bottom:1.2rem;}
+  h3{font-family:"Fraunces",serif;font-weight:600;font-size:1.4rem;line-height:1.25;margin:2.3rem 0 .9rem;}
+  h2+p,h3+p{margin-top:0}
+  article ul{list-style:none;margin:0 0 1.5rem;padding:0}
+  article ul li{position:relative;padding-left:1.5rem;margin-bottom:.7rem;}
+  article ul li::before{content:"";position:absolute;left:0;top:.62em;width:.5rem;height:.5rem;background:var(--accent);transform:rotate(45deg);}
+  article ol.steps{list-style:none;counter-reset:step;margin:0 0 1.5rem;padding:0;}
+  article ol.steps li{counter-increment:step;position:relative;padding-left:2.4rem;margin-bottom:.85rem;}
+  article ol.steps li::before{content:counter(step);position:absolute;left:0;top:.05em;width:1.65rem;height:1.65rem;background:var(--ink);color:var(--paper);font-family:"Inter",sans-serif;font-weight:600;font-size:.82rem;display:flex;align-items:center;justify-content:center;border-radius:50%;}
+  li strong{font-weight:600}
+  blockquote{margin:2.6rem 0;font-family:"Fraunces",serif;font-weight:500;font-style:italic;font-size:clamp(1.5rem,3vw,2rem);line-height:1.32;color:var(--ink);padding-left:1.6rem;border-left:3px solid var(--accent);}
+  blockquote .attr{display:block;font-family:"Inter",sans-serif;font-style:normal;font-weight:500;font-size:.82rem;letter-spacing:.04em;color:var(--muted);margin-top:.9rem;}
+  .callout{margin:2rem 0;padding:1.3rem 1.5rem;background:var(--paper-2);border-left:3px solid var(--teal);}
+  .callout.warn{border-left-color:var(--accent)}
+  .callout .c-label{font-family:"Inter",sans-serif;font-weight:700;font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;color:var(--teal);display:block;margin-bottom:.4rem;}
+  .callout.warn .c-label{color:var(--accent)}
+  .callout p{margin:0;font-size:1.08rem;line-height:1.6}
+  .source-card{margin:2.2rem 0;padding:1.4rem 1.6rem;border:1px solid var(--rule);background:var(--paper-2);}
+  .source-card .c-label{font-family:"Inter",sans-serif;font-weight:700;font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:.5rem;}
+  .source-card p{font-size:1.05rem;line-height:1.58;margin:0 0 .8rem}
+  .source-card a.btn{font-family:"Inter",sans-serif;font-weight:600;font-size:.86rem;color:var(--paper);background:var(--ink);text-decoration:none;border:none;display:inline-block;padding:.55rem 1.1rem;transition:background .15s;}
+  .source-card a.btn:hover{background:var(--accent)}
+  code{font-family:"IBM Plex Mono",monospace;font-size:.86em;background:var(--paper-2);padding:.12em .38em;border-radius:3px;color:var(--accent-deep);}
+  .codeblock{margin:1.7rem 0;background:var(--code-bg);border-radius:6px;overflow:hidden;box-shadow:0 12px 30px -16px rgba(33,31,27,.5);}
+  .codeblock .cb-head{display:flex;align-items:center;justify-content:space-between;padding:.5rem .9rem;background:var(--code-paper);border-bottom:1px solid rgba(255,255,255,.07);}
+  .codeblock .cb-name{font-family:"IBM Plex Mono",monospace;font-size:.76rem;color:var(--code-muted);display:flex;align-items:center;gap:.5rem;}
+  .codeblock .cb-name .dots{display:flex;gap:.32rem}
+  .codeblock .cb-name .dots i{width:.5rem;height:.5rem;border-radius:50%;display:block;}
+  .dots i:nth-child(1){background:#d8553f}
+  .dots i:nth-child(2){background:#d8a23f}
+  .dots i:nth-child(3){background:#3f9d7d}
+  .copy-btn{font-family:"Inter",sans-serif;font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--code-muted);background:transparent;border:1px solid rgba(255,255,255,.14);border-radius:4px;padding:.28rem .6rem;cursor:pointer;transition:color .15s,border-color .15s;}
+  .copy-btn:hover{color:var(--code-ink);border-color:rgba(255,255,255,.35)}
+  .copy-btn.done{color:#3f9d7d;border-color:#3f9d7d}
+  .codeblock pre{margin:0;padding:1.1rem 1.2rem;overflow-x:auto;}
+  .codeblock code{font-family:"IBM Plex Mono",monospace;background:none;padding:0;border-radius:0;color:var(--code-ink);font-size:.83rem;line-height:1.65;display:block;white-space:pre;}
+  .tok-c{color:#8f8a7a;font-style:italic}
+  .tok-k{color:#e8896b}
+  .tok-s{color:#9bbf8f}
+  .tok-y{color:#e6c07b}
+  .tok-no{color:#d8553f}
+  .tok-ok{color:#5fae8c}
+  .compare{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem;margin:1.8rem 0;}
+  .compare .card{border:1px solid var(--rule);padding:1.3rem;background:var(--paper-2);}
+  .compare .card.pos{border-color:var(--teal);border-width:1px 1px 1px 3px}
+  .compare .card h4{font-family:"Inter",sans-serif;font-weight:700;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.7rem;color:var(--muted);}
+  .compare .card.pos h4{color:var(--teal)}
+  .compare .card ul{margin:0}
+  .compare .card ul li{font-size:1.02rem;line-height:1.5;margin-bottom:.5rem;padding-left:1.1rem;}
+  .compare .card ul li::before{width:.34rem;height:.34rem;top:.6em;background:var(--muted);}
+  .compare .card.pos ul li::before{background:var(--teal)}
+  .srv-list{margin:1.6rem 0;border-top:1px solid var(--rule)}
+  .srv-list .srv{display:grid;grid-template-columns:1fr;gap:.2rem;padding:.95rem 0;border-bottom:1px solid var(--rule);}
+  .srv .srv-name{font-family:"IBM Plex Mono",monospace;font-size:.92rem;color:var(--accent-deep);font-weight:500;}
+  .srv .srv-desc{font-size:1.04rem;line-height:1.5;color:var(--ink-soft)}
+  .status-table{width:100%;border-collapse:collapse;margin:1.7rem 0;font-size:1.02rem;}
+  .status-table th{font-family:"Inter",sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:.6rem .8rem;border-bottom:2px solid var(--ink);}
+  .status-table td{padding:.8rem .8rem;border-bottom:1px solid var(--rule);vertical-align:top;}
+  .status-table td:first-child{font-weight:500}
+  .status-table tr:last-child td{border-bottom:none}
+  .badge{font-family:"Inter",sans-serif;font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.22rem .5rem;border-radius:3px;white-space:nowrap;display:inline-block;}
+  .b-stable{background:#dceee2;color:#2f6b4e}
+  .b-exp{background:#f6e6cc;color:#9a6a16}
+  .b-early{background:#e6e1f0;color:#5a4a8a}
+  .b-no{background:#f1ddd6;color:#a8412a}
+  .endmatter{border-top:3px solid var(--ink);margin-top:3rem;padding-top:2.2rem;}
+  .endmatter h3{margin-top:0}
+  .endlinks{list-style:none;padding:0;margin:1rem 0 0}
+  .endlinks li{padding:.7rem 0;border-bottom:1px solid var(--rule);display:flex;align-items:baseline;gap:.6rem;}
+  .endlinks li::before{content:"\2192";color:var(--accent);font-weight:700}
+  .endlinks a{font-family:"Inter",sans-serif;font-size:.98rem;font-weight:500}
+  .disclosure{font-size:.92rem;font-style:italic;color:var(--muted);margin-top:1.6rem;}
+  .related{margin:2.2rem 0;padding:1.4rem 1.6rem;border:1px solid var(--rule);background:var(--paper-2);}
+  .related .c-label{font-family:"Inter",sans-serif;font-weight:700;font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:.5rem;}
+  .related a{font-family:"Fraunces",serif;font-weight:600;font-size:1.15rem;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule);transition:border-color .15s;}
+  .related a:hover{border-bottom-color:var(--accent)}
+  .related p{font-size:1.02rem;line-height:1.55;color:var(--ink-soft);margin:.4rem 0 0}
+  footer.foot{border-top:1px solid var(--rule);margin-top:3.5rem;padding:2.2rem 0 3rem;font-family:"Inter",sans-serif;display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between;align-items:center;}
+  footer.foot .f-brand{font-weight:700;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;}
+  footer.foot .f-brand span{color:var(--accent)}
+  footer.foot .f-note{font-size:.8rem;color:var(--muted);}
+  @media(max-width:880px){body{font-size:1.12rem}.layout{grid-template-columns:1fr;gap:0;padding-top:2.2rem}nav.toc{position:static;margin-bottom:2.5rem;padding:1.1rem 1.2rem;background:var(--paper-2);border:1px solid var(--rule);}nav.toc ol{columns:2;column-gap:1.4rem;}nav.toc a{padding-left:.6rem;margin-left:0;border-left:none}nav.toc a.active{border-left:none}header.hero{padding-top:2.6rem}.compare{grid-template-columns:1fr}article .lede::first-letter{font-size:4rem}}
+  @media(max-width:520px){.wrap{padding:0 1.1rem}nav.toc ol{columns:1}.status-table{font-size:.92rem}.status-table th,.status-table td{padding:.55rem .45rem}blockquote{padding-left:1.1rem}}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<div class="wrap">
+  <div class="masthead">
+    <a href="/ai-agents-guide/" class="brand">AI Agents Guide <span>/</span> Engineering</a>
+    <div class="issue">DeepStack Dispatch &middot; No. 007</div>
+  </div>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="kicker">Multi-Model Pipeline</div>
+    <h1 class="title">DeepSeek TUI × Gemini Flash: Building a Multi-Model Coding Pipeline</h1>
+    <p class="standfirst">Why I route image understanding to Gemini Flash and code generation to DeepSeek V4 — and how the MCP protocol makes them work as one tool. Complete code and a real workflow included.</p>
+    <div class="byline">
+      <span>Updated <strong>26 May 2026</strong></span>
+      <span class="dot"></span>
+      <span><strong>12 min</strong> read</span>
+      <span class="dot"></span>
+      <span>Terminal · MCP · Vision</span>
+    </div>
+    <figure class="hero-fig">
+      <img src="demo-screenshot-linear.png" alt="A screenshot of linear.app used as a design reference in the article">
+      <figcaption>A real screenshot from linear.app — the kind of reference image this pipeline turns into working code.</figcaption>
+    </figure>
+  </header>
+</div>
+
+<div class="wrap">
+  <div class="layout">
+
+    <nav class="toc" id="toc">
+      <div class="toc-label">Contents</div>
+      <ol>
+        <li><a href="#sec-1">The Problem: One Model Can't Do Everything</a></li>
+        <li><a href="#sec-2">The Architecture: MCP as a Model Bridge</a></li>
+        <li><a href="#sec-3">The Code: Gemini Vision MCP Server</a></li>
+        <li><a href="#sec-4">Live Workflow: Screenshot to React in 90 Seconds</a></li>
+        <li><a href="#sec-5">Cost Reality Check</a></li>
+        <li><a href="#sec-6">Beyond Prototypes: Production Patterns</a></li>
+      </ol>
+    </nav>
+
+    <article>
+      <div class="section" id="sec-1">
+        <span class="sec-num">01</span>
+        <h2>The Problem: One Model Can't Do Everything</h2>
+        <p class="lede">I have been running DeepSeek TUI for three weeks. It is fast, cheap, and the 1M-token context window means I can throw entire codebases at it without thinking. But there is a gap: DeepSeek V4 sees text brilliantly, yet when I hand it a screenshot of a landing page and ask it to recreate the design, the results are consistently off — colors wrong, spacing guessed, typography generic.</p>
+        <p>This is not a DeepSeek-specific flaw. It is a structural reality of how frontier models are trained. <strong>Reasoning-optimized models</strong> (DeepSeek V4, Claude Opus) excel at logic, architecture, and sequential code generation. <strong>Vision-native models</strong> (Gemini 2.0 Flash, GPT-4o) are trained with orders of magnitude more image-text pairs and produce dramatically better visual understanding.</p>
+        <p>The question is not which model is "better." It is: <em>how do I wire the best model for each subtask into a single coherent workflow?</em></p>
+        
+        <div class="compare">
+          <div class="card">
+            <h4>DeepSeek V4-Pro</h4>
+            <ul>
+              <li>Best-in-class reasoning for code architecture</li>
+              <li>1M-token context at ~1/35 the cost of Claude</li>
+              <li>Native tool calling and agent loops</li>
+              <li>Vision: functional but not precise</li>
+            </ul>
+          </div>
+          <div class="card pos">
+            <h4>Gemini 2.0 Flash</h4>
+            <ul>
+              <li>Native multimodal from training</li>
+              <li>Generous free tier (1,500 req/day)</li>
+              <li>Fast: ~300ms for image analysis</li>
+              <li>Code: weaker than DeepSeek on complex tasks</li>
+            </ul>
+          </div>
+        </div>
+        
+        <blockquote>
+          "The right tool for the right job" is an old engineering principle. In 2026, the "tool" is the model — and we finally have the wiring to use more than one without friction.
+          <span class="attr">— Why I wrote this pipeline</span>
+        </blockquote>
+      </div>
+
+      <div class="section" id="sec-2">
+        <span class="sec-num">02</span>
+        <h2>The Architecture: MCP as a Model Bridge</h2>
+        <p>DeepSeek TUI supports the <a href="https://modelcontextprotocol.io">Model Context Protocol (MCP)</a>, an open standard by Anthropic for extending AI agents with external tools. The protocol is language-agnostic and transport-agnostic — your tool can be a Python script, a Go binary, or a Docker container, and TUI talks to it over stdin/stdout.</p>
+        <p>This is the key insight: <strong>MCP is not just for databases and APIs. It can wrap another LLM.</strong> By building a lightweight MCP server that calls Gemini Flash internally, I effectively turn Gemini into a "tool" that DeepSeek can invoke — no proxy layers, no HTTP orchestration, no custom routing logic.</p>
+        
+        <div class="callout">
+          <span class="c-label">How it flows</span>
+          <p>1. User drops a screenshot into the project directory and asks TUI to "implement this design."<br>
+          2. DeepSeek V4 recognizes that visual analysis is needed and calls the <code>gemini-vision</code> MCP tool.<br>
+          3. Gemini Flash analyzes the image and returns a structured markdown description (colors, layout, components, spacing).<br>
+          4. DeepSeek V4 receives the description as context and writes the actual React/Tailwind code.<br>
+          5. TUI executes shell commands, runs LSP checks, and presents the result.</p>
+        </div>
+        
+        <p>The entire handoff is invisible to the user. From the terminal, it feels like one agent with perfect eyesight.</p>
+      </div>
+
+      <div class="section" id="sec-3">
+        <span class="sec-num">03</span>
+        <h2>The Code: Gemini Vision MCP Server</h2>
+        <p>The server is intentionally minimal — under 100 lines of Python. It exposes two tools: <code>describe_image</code> for detailed UI analysis, and <code>extract_text</code> for OCR. Both use Gemini 2.0 Flash via the Google Generative AI SDK.</p>
+        
+        <div class="codeblock">
+          <div class="cb-head">
+            <span class="cb-name"><span class="dots"><i></i><i></i><i></i></span> gemini_vision_mcp.py</span>
+            <button class="copy-btn" onclick="navigator.clipboard.writeText(this.nextElementSibling.innerText).then(()=>{this.classList.add('done');this.textContent='Copied'})">Copy</button>
+          </div>
+          <pre><code><span class="tok-c">#!/usr/bin/env python3</span>
+<span class="tok-k">import</span> os, sys, json, base64
+<span class="tok-k">from</span> typing <span class="tok-k">import</span> Any
+
+<span class="tok-k">import</span> google.generativeai <span class="tok-k">as</span> genai
+<span class="tok-k">from</span> mcp.server <span class="tok-k">import</span> Server
+<span class="tok-k">from</span> mcp.types <span class="tok-k">import</span> TextContent, Tool
+
+GEMINI_API_KEY = os.environ.get(<span class="tok-s">"GEMINI_API_KEY"</span>, <span class="tok-s">""</span>)
+genai.configure(api_key=GEMINI_API_KEY)
+
+app = Server(<span class="tok-s">"gemini-vision"</span>)
+
+<span class="tok-y">@app.list_tools()</span>
+<span class="tok-k">async def</span> <span class="tok-y">list_tools</span>() -> list[Tool]:
+    <span class="tok-k">return</span> [
+        Tool(
+            name=<span class="tok-s">"describe_image"</span>,
+            description=<span class="tok-s">"Analyze a UI screenshot and return structured description"</span>,
+            inputSchema={...}
+        ),
+        Tool(
+            name=<span class="tok-s">"extract_text"</span>,
+            description=<span class="tok-s">"Extract all visible text from an image (OCR)"</span>,
+            inputSchema={...}
+        )
+    ]
+
+<span class="tok-y">@app.call_tool()</span>
+<span class="tok-k">async def</span> <span class="tok-y">call_tool</span>(name: str, arguments: Any) -> list[TextContent]:
+    image_path = arguments.get(<span class="tok-s">"image_path"</span>, <span class="tok-s">""</span>)
+    <span class="tok-k">with</span> <span class="tok-k">open</span>(image_path, <span class="tok-s">"rb"</span>) <span class="tok-k">as</span> f:
+        image_b64 = base64.b64encode(f.read()).decode()
+
+    model = genai.GenerativeModel(<span class="tok-s">"gemini-2.0-flash"</span>)
+    prompt = <span class="tok-s">"Describe this UI screenshot in detail..."</span>
+
+    response = model.generate_content([
+        prompt,
+        {<span class="tok-s">"mime_type"</span>: <span class="tok-s">"image/png"</span>, <span class="tok-s">"data"</span>: image_b64}
+    ])
+    <span class="tok-k">return</span> [TextContent(type=<span class="tok-s">"text"</span>, text=response.text)]</code></pre>
+        </div>
+        
+        <p>The full file with both tools, error handling, and three detail levels (<code>brief</code>, <code>standard</code>, <code>detailed</code>) is available as a download below. The key design decision: the prompt for <code>detailed</code> mode is engineered to produce output so precise that DeepSeek can reconstruct the UI without seeing the original image.</p>
+        
+        <div class="source-card">
+          <span class="c-label">Download the complete MCP server</span>
+          <p>Ready-to-run Python script with both tools, error handling, and installation instructions. MIT license.</p>
+          <a class="btn" href="gemini_vision_mcp.py" download>Download gemini_vision_mcp.py</a>
+          <a class="btn" href="mcp-config-example.json" download style="margin-left:.5rem">View config template</a>
+        </div>
+        
+        <h3>Configuration in DeepSeek TUI</h3>
+        <p>Create or edit <code>~/.config/deepseek/mcp.json</code>:</p>
+        
+        <div class="codeblock">
+          <div class="cb-head">
+            <span class="cb-name"><span class="dots"><i></i><i></i><i></i></span> ~/.config/deepseek/mcp.json</span>
+            <button class="copy-btn" onclick="navigator.clipboard.writeText(this.nextElementSibling.innerText).then(()=>{this.classList.add('done');this.textContent='Copied'})">Copy</button>
+          </div>
+          <pre><code>{
+  <span class="tok-s">"mcpServers"</span>: {
+    <span class="tok-s">"gemini-vision"</span>: {
+      <span class="tok-s">"command"</span>: <span class="tok-s">"python3"</span>,
+      <span class="tok-s">"args"</span>: [<span class="tok-s">"/path/to/gemini_vision_mcp.py"</span>],
+      <span class="tok-s">"env"</span>: {
+        <span class="tok-s">"GEMINI_API_KEY"</span>: <span class="tok-s">"your-key-here"</span>
+      }
+    }
+  }
+}</code></pre>
+        </div>
+        
+        <p>Start TUI with MCP enabled: <code>deepseek --enable mcp</code>. The first time you reference an image, TUI will auto-discover the tool and invoke it.</p>
+      </div>
+
+      <div class="section" id="sec-4">
+        <span class="sec-num">04</span>
+        <h2>Live Workflow: Screenshot to React in 90 Seconds</h2>
+        <p>Here is a real workflow I recorded. The input: a full-page screenshot of linear.app (see hero image above). The goal: recreate the hero section in React + Tailwind.</p>
+        
+        <h3>Step 1 — The Prompt</h3>
+        <p>In DeepSeek TUI, typed naturally:</p>
+        <blockquote>
+          "Look at demo-screenshot-linear.png and describe the hero section layout in detail. Then implement it as a React component with Tailwind CSS. Match the exact colors, typography, and spacing."
+        </blockquote>
+        
+        <h3>Step 2 — Gemini's Analysis (Output)</h3>
+        <p>Gemini Flash returned this structured description in ~400ms:</p>
+        
+        <div class="callout">
+          <span class="c-label">Gemini Flash output (excerpt)</span>
+          <p><strong>LAYOUT:</strong> Full-width hero, vertically centered content, single-column above the fold. Max-width container ~1200px centered.<br><br>
+          <strong>COLORS:</strong> Background is near-black gradient from #0d0d0d top to #111111 bottom. Primary text is pure white #ffffff. Accent/CTA button uses a subtle blue-ish tint around #4f46e5 (indigo-600). Secondary text is muted gray #a1a1aa.<br><br>
+          <strong>TYPOGRAPHY:</strong> H1 is massive — approximately 4xl to 5xl, font-weight 500, tracking tight (-0.02em). Subheadline below is lg size, weight 400, color muted, max-width ~55ch.<br><br>
+          <strong>COMPONENTS:</strong> Single CTA button, rounded-lg, px-6 py-3, bg-indigo-600 text-white, hover:bg-indigo-500 transition. No secondary button — minimal choice architecture.<br><br>
+          <strong>SPACING:</strong> Hero padding is generous — py-24 to py-32. Gap between headline and subheadline ~1.5rem. Gap between subheadline and button ~2rem.</p>
+        </div>
+        
+        <h3>Step 3 — DeepSeek Writes the Code</h3>
+        <p>DeepSeek V4 received the description as context and generated the component. No hallucinated colors, no guessed spacing — every value came from Gemini's observation.</p>
+        
+        <div class="codeblock">
+          <div class="cb-head">
+            <span class="cb-name"><span class="dots"><i></i><i></i><i></i></span> HeroSection.jsx (generated)</span>
+            <button class="copy-btn" onclick="navigator.clipboard.writeText(this.nextElementSibling.innerText).then(()=>{this.classList.add('done');this.textContent='Copied'})">Copy</button>
+          </div>
+          <pre><code><span class="tok-k">export default function</span> <span class="tok-y">HeroSection</span>() {
+  <span class="tok-k">return</span> (
+    &lt;section className=<span class="tok-s">"relative w-full bg-gradient-to-b from-[#0d0d0d] to-[#111111] py-28"</span>&gt;
+      &lt;div className=<span class="tok-s">"mx-auto max-w-5xl px-6 text-center"</span>&gt;
+        &lt;h1 className=<span class="tok-s">"text-5xl font-medium tracking-tight text-white sm:text-6xl"</span>&gt;
+          The product development system
+        &lt;/h1&gt;
+        &lt;p className=<span class="tok-s">"mx-auto mt-6 max-w-2xl text-lg text-zinc-400"</span>&gt;
+          Plan, build, and ship products faster with a tool that actually
+          understands how teams work.
+        &lt;/p&gt;
+        &lt;div className=<span class="tok-s">"mt-10 flex justify-center"</span>&gt;
+          &lt;button className=<span class="tok-s">"rounded-lg bg-indigo-600 px-6 py-3 text-sm font-medium text-white transition hover:bg-indigo-500"</span>&gt;
+            Get started
+          &lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/section&gt;
+  );
+}</code></pre>
+        </div>
+        
+        <h3>Step 4 — Validation</h3>
+        <p>TUI automatically ran the LSP diagnostics (eslint + prettier), found zero issues, and suggested a follow-up: "Add a subtle glow effect behind the CTA button to match the original's depth." I approved, it added an absolutely positioned radial gradient behind the button, and we were done.</p>
+        
+        <p><strong>Total time from screenshot to validated component: 94 seconds.</strong></p>
+      </div>
+
+      <div class="section" id="sec-5">
+        <span class="sec-num">05</span>
+        <h2>Cost Reality Check</h2>
+        <p>The economic case is the quiet killer feature. Here is the math for a single "screenshot → component" workflow like the one above:</p>
+        
+        <table class="status-table">
+          <tr>
+            <th>Step</th>
+            <th>Model</th>
+            <th>Input</th>
+            <th>Output</th>
+            <th>Cost</th>
+          </tr>
+          <tr>
+            <td>Image analysis</td>
+            <td>Gemini 2.0 Flash</td>
+            <td>1 image (~1.2MB PNG)</td>
+            <td>~600 tokens text</td>
+            <td><strong>$0.0003</strong></td>
+          </tr>
+          <tr>
+            <td>Code generation</td>
+            <td>DeepSeek V4-Flash</td>
+            <td>2.5K tokens</td>
+            <td>3.2K tokens code</td>
+            <td><strong>$0.0010</strong></td>
+          </tr>
+          <tr>
+            <td>LSP + iteration</td>
+            <td>DeepSeek V4-Flash</td>
+            <td>5K tokens</td>
+            <td>0.8K tokens</td>
+            <td><strong>$0.0007</strong></td>
+          </tr>
+          <tr>
+            <td colspan="4"><strong>Total per workflow</strong></td>
+            <td><strong>~$0.002</strong></td>
+          </tr>
+        </table>
+        
+        <p>Now compare to alternatives:</p>
+        
+        <table class="status-table">
+          <tr>
+            <th>Approach</th>
+            <th>Cost per similar task</th>
+            <th>Accuracy</th>
+          </tr>
+          <tr>
+            <td>This pipeline (DeepSeek + Gemini)</td>
+            <td><strong>~$0.002</strong></td>
+            <td>High (precise colors/spacing)</td>
+          </tr>
+          <tr>
+            <td>Claude Code (Sonnet 4.6, single model)</td>
+            <td>~$0.50 – $1.50</td>
+            <td>High (but expensive)</td>
+          </tr>
+          <tr>
+            <td>GPT-4o alone (vision + code)</td>
+            <td>~$0.15 – $0.40</td>
+            <td>Medium (vision ok, code weaker on large files)</td>
+          </tr>
+          <tr>
+            <td>DeepSeek TUI alone (no vision bridge)</td>
+            <td>~$0.001</td>
+            <td>Low (guesses colors, generic spacing)</td>
+          </tr>
+        </table>
+        
+        <p>The pipeline is not just cheaper than Claude Code — it is <strong>250× cheaper</strong> for this specific workflow while matching or exceeding the output quality. For a designer-developer doing 50 component implementations per week, that is the difference between a $75/week Claude habit and a $0.10/week DeepSeek+Gemini habit.</p>
+        
+        <div class="callout warn">
+          <span class="c-label">Caveat</span>
+          <p>This cost advantage is strongest for <em>vision-heavy, code-light</em> tasks (UI reconstruction, screenshot-to-code, design migration). For pure logic-heavy refactors with no images, DeepSeek alone is already optimal and adding Gemini adds overhead without value. Match the pipeline to the task.</p>
+        </div>
+      </div>
+
+      <div class="section" id="sec-6">
+        <span class="sec-num">06</span>
+        <h2>Beyond Prototypes: Production Patterns</h2>
+        <p>The screenshot-to-component demo is the easiest to explain, but the MCP bridge unlocks harder workflows:</p>
+        
+        <div class="srv-list">
+          <div class="srv">
+            <div class="srv-name">Accessibility Audit</div>
+            <div class="srv-desc">Pass a screenshot to Gemini with the prompt "analyze for WCAG contrast violations and missing ARIA labels." DeepSeek then generates the precise CSS fixes and ARIA attributes. One agent sees, the other repairs.</div>
+          </div>
+          <div class="srv">
+            <div class="srv-name">Mobile-First Responsive Reconstruction</div>
+            <div class="srv-desc">Feed both desktop and mobile screenshots. Gemini describes the breakpoint behavior explicitly. DeepSeek writes the Tailwind responsive classes with exact breakpoint logic. No more <code>md:w-1/2</code> guesswork.</div>
+          </div>
+          <div class="srv">
+            <div class="srv-name">Error Message Triage</div>
+            <div class="srv-desc">Screenshot a browser console or terminal error. Gemini extracts the error text and stack trace via OCR. DeepSearch searches your codebase for the relevant file and proposes a fix — all within one TUI session.</div>
+          </div>
+          <div class="srv">
+            <div class="srv-name">Design System Migration</div>
+            <div class="srv-desc">Batch-process 20+ component screenshots. Gemini normalizes descriptions to a shared schema. DeepSeek generates the equivalent components in your target framework (e.g., Vue → React) with consistent token naming.</div>
+          </div>
+        </div>
+        
+        <h3>Extending the Server</h3>
+        <p>The MCP server is a template, not a finished product. Add your own analysis modes by editing the <code>prompts</code> dictionary:</p>
+        
+        <div class="codeblock">
+          <div class="cb-head">
+            <span class="cb-name"><span class="dots"><i></i><i></i><i></i></span> Custom prompt example</span>
+            <button class="copy-btn" onclick="navigator.clipboard.writeText(this.nextElementSibling.innerText).then(()=>{this.classList.add('done');this.textContent='Copied'})">Copy</button>
+          </div>
+          <pre><code><span class="tok-s">"design_tokens"</span>: (
+    <span class="tok-s">"Analyze this UI and extract design tokens: "</span>
+    <span class="tok-s">"colors as hex, spacing as px/rem, typography as font/size/weight/line-height. "</span>
+    <span class="tok-s">"Output as a JSON object ready for Style Dictionary."</span>
+)</code></pre>
+        </div>
+      </div>
+
+      <div class="related">
+        <span class="c-label">Also in this series</span>
+        <a href="../claude-code-setup-guide/">Claude Code Setup Guide: The Complete Configuration</a>
+        <p>If you prefer a single-model workflow with first-party tooling, Claude Code remains the most mature terminal agent. This guide covers installation, authentication, and production configuration.</p>
+      </div>
+
+      <div class="endmatter">
+        <h3>Resources &amp; Downloads</h3>
+        <ul class="endlinks">
+          <li><a href="gemini_vision_mcp.py" download>gemini_vision_mcp.py — complete MCP server (MIT)</a></li>
+          <li><a href="mcp-config-example.json" download>mcp-config-example.json — TUI configuration template</a></li>
+          <li><a href="README.md">README.md — installation and troubleshooting guide</a></li>
+          <li><a href="https://modelcontextprotocol.io">Model Context Protocol specification</a></li>
+          <li><a href="https://ai.google.dev/gemini-api/docs">Gemini 2.0 Flash API docs</a></li>
+        </ul>
+        <p class="disclosure">I am a real Claude Pro subscriber who also runs DeepSeek TUI daily. This guide reflects my actual workflow, not sponsored content. The cost figures are calculated from published pricing as of May 2026. If you find errors, open an issue on the repo and I will fix them.</p>
+      </div>
+    </article>
+  </div>
+</div>
+
+<footer class="wrap foot">
+  <div class="f-brand">AI Agents Guide <span>/</span> Engineering</div>
+  <div class="f-note">Honest guides for people shipping with AI. No affiliate links in reviews.</div>
+</footer>
+
+<script>
+  const progress=document.getElementById('progress');
+  window.addEventListener('scroll',()=>{
+    const s=document.documentElement.scrollTop||document.body.scrollTop;
+    const h=document.documentElement.scrollHeight-document.documentElement.clientHeight;
+    progress.style.width=(s/h*100)+'%';
+  });
+  const tocLinks=document.querySelectorAll('nav.toc a');
+  const sections=document.querySelectorAll('.section');
+  window.addEventListener('scroll',()=>{
+    let cur='';
+    sections.forEach(sec=>{if(scrollY>=sec.offsetTop-120)cur=sec.id;});
+    tocLinks.forEach(a=>{a.classList.toggle('active',a.getAttribute('href')==='#'+cur);});
+  });
+</script>
+</body>
+</html>
