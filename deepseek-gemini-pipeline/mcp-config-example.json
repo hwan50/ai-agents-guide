@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "gemini-vision": {
+      "command": "python3",
+      "args": [
+        "/ABSOLUTE/PATH/TO/gemini_vision_mcp.py"
+      ],
+      "env": {
+        "GEMINI_API_KEY": "YOUR_GEMINI_API_KEY_HERE"
+      }
+    }
+  }
+}
