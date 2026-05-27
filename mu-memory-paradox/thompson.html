@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..600&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..500&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root{--paper:#f4f0e7;--paper-2:#ebe5d8;--ink:#211f1b;--ink-soft:#46423a;--muted:#7c7567;--rule:#d8d1c0;--accent:#b8492f;--accent-deep:#9a3a23;--teal:#2f6b66;--code-bg:#211f1b;--code-paper:#2c2a24;--code-ink:#e9e3d4;--maxread:42rem;}
+  :root{--paper:#f4f0e7;--paper-2:#ebe5d8;--ink:#211f1b;--ink-soft:#46423a;--muted:#7c7567;--rule:#d8d1c0;--accent:#b8492f;--accent-deep:#9a3a23;--teal:#2f6b66;--maxread:42rem;}
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
   body{background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:1.225rem;line-height:1.72;-webkit-font-smoothing:antialiased;}
@@ -70,19 +70,11 @@
   .callout .c-label{font-family:"Inter",sans-serif;font-weight:700;font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;color:var(--teal);display:block;margin-bottom:.4rem;}
   .callout.warn .c-label{color:var(--accent)}
   .callout p{margin:0;font-size:1.08rem;line-height:1.6}
-  .source-card{margin:2.2rem 0;padding:1.4rem 1.6rem;border:1px solid var(--rule);background:var(--paper-2);}
-  .source-card .c-label{font-family:"Inter",sans-serif;font-weight:700;font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:.5rem;}
-  .source-card p{font-size:1.05rem;line-height:1.58;margin:0 0 .8rem}
-  .source-card a.btn{font-family:"Inter",sans-serif;font-weight:600;font-size:.86rem;color:var(--paper);background:var(--ink);text-decoration:none;border:none;display:inline-block;padding:.55rem 1.1rem;transition:background .15s;}
-  .source-card a.btn:hover{background:var(--accent)}
-  code{font-family:"IBM Plex Mono",monospace;font-size:.86em;background:var(--paper-2);padding:.12em .38em;border-radius:3px;color:var(--accent-deep);}
   .status-table{width:100%;border-collapse:collapse;margin:1.7rem 0;font-size:1.02rem;}
   .status-table th{font-family:"Inter",sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:.6rem .8rem;border-bottom:2px solid var(--ink);}
   .status-table td{padding:.8rem .8rem;border-bottom:1px solid var(--rule);vertical-align:top;}
   .status-table td:first-child{font-weight:500}
   .status-table tr:last-child td{border-bottom:none}
-  .badge{font-family:"Inter",sans-serif;font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.22rem .5rem;border-radius:3px;white-space:nowrap;display:inline-block;}
-  .b-stable{background:#dceee2;color:#2f6b4e}
   .endmatter{border-top:3px solid var(--ink);margin-top:3rem;padding-top:2.2rem;}
   .endmatter h3{margin-top:0}
   .endlinks{list-style:none;padding:0;margin:1rem 0 0}
@@ -99,8 +91,6 @@
   footer.foot .f-brand{font-weight:700;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;}
   footer.foot .f-brand span{color:var(--accent)}
   footer.foot .f-note{font-size:.8rem;color:var(--muted);}
-  .thompson-callout{font-family:"Inter",sans-serif;font-size:.88rem;font-weight:600;letter-spacing:.04em;color:var(--accent);text-transform:uppercase;display:block;margin-top:2.5rem;margin-bottom:.8rem;}
-  .punchline{font-family:"Fraunces",serif;font-weight:500;font-style:italic;font-size:1.25rem;color:var(--ink);margin:1.5rem 0;padding-left:1.2rem;border-left:3px solid var(--teal);line-height:1.5;}
   @media(max-width:880px){body{font-size:1.12rem}.layout{grid-template-columns:1fr;gap:0;padding-top:2.2rem}nav.toc{position:static;margin-bottom:2.5rem;padding:1.1rem 1.2rem;background:var(--paper-2);border:1px solid var(--rule);}nav.toc ol{columns:2;column-gap:1.4rem;}nav.toc a{padding-left:.6rem;margin-left:0;border-left:none}nav.toc a.active{border-left:none}header.hero{padding-top:2.6rem}}
   @media(max-width:520px){.wrap{padding:0 1.1rem}nav.toc ol{columns:1}.status-table{font-size:.92rem}.status-table th,.status-table td{padding:.55rem .45rem}blockquote{padding-left:1.1rem}}
 </style>
@@ -119,11 +109,11 @@
   <header class="hero">
     <div class="kicker">The Political Premium</div>
     <h1 class="title">Micron at $886: Memory as Flag, Memory as Infrastructure</h1>
-    <p class="standfirst">Micron just became a trillion-dollar company. The market is not pricing a memory chipmaker. It is pricing American memory — and that is a different thing entirely. A framework for understanding why Micron trades at 11.6× while SK Hynix trades at 6.9×, and what that gap is actually worth.</p>
+    <p class="standfirst">Micron just became a trillion-dollar company. The market is not pricing a memory chipmaker. It is pricing American memory — and that is a different thing entirely.</p>
     <div class="byline">
       <span>Updated <strong>May 2026</strong></span>
       <span class="dot"></span>
-      <span><strong>12 min</strong> read</span>
+      <span><strong>10 min</strong> read</span>
       <span class="dot"></span>
       <span>Independent research. Not financial advice.</span>
     </div>
@@ -144,7 +134,6 @@
         <li><a href="#premium">The Political Premium</a></li>
         <li><a href="#price-believes">What the Price Already Believes</a></li>
         <li><a href="#cracks">Where the Premium Cracks First</a></li>
-        <li><a href="#seven-questions">Seven Sharp Questions</a></li>
         <li><a href="#the-trade">The Trade</a></li>
       </ol>
     </nav>
@@ -155,23 +144,20 @@
   <span class="sec-num">Argument 01</span>
   <h2>The Hynix Problem</h2>
   
+  <p>I want to start with the fact pattern, because the fact pattern is the entire argument.</p>
+  
   <p>SK Hynix posted a 75% gross margin last quarter — a record for the memory industry. Micron posted 58%. SK Hynix leads in HBM3E volume and is ahead on HBM4 qualification. SK Hynix trades at 6.86× forward earnings. Micron trades at 11.57×.</p>
   
   <p>In any framework that treats memory as memory, this is incoherent. The higher-margin, higher-share producer should command the premium, not trade at a 40% discount. The market's verdict, then, is that we are not in a framework that treats memory as memory.</p>
   
-  <figure class="hero-fig">
-    <img src="industry-comps.png" alt="Memory industry comparison">
-    <figcaption>Industry comps sorted by Forward P/E. SK Hynix at 4.6× with 75% gross margin is the fundamental leader. Micron at 11.6× carries a 69% premium as the only US-based HBM supplier.</figcaption>
-  </figure>
-  
-  <p>The price journey tells the rest of the story. MU traded sideways around $100 through mid-2025, accelerated in Q1 2026, and went vertical in Q2. From the March 18 FY26 Q2 print at $343 to the UBS target-price day at $886, the stock added 158% in just over two months.</p>
+  <p>The price journey makes the disconnect concrete. Micron traded sideways around $100 through mid-2025, accelerated in Q1 2026, and went vertical in Q2. From the March 18 FY26 Q2 print at $343 to the UBS target-price day at $886, the stock added 158% in just over two months — while SK Hynix, with its better margins and better roadmap, gained 6.6% on the same UBS day that Micron gained 18.1%.</p>
   
   <figure class="hero-fig">
     <img src="price-journey.png" alt="MU price journey">
     <figcaption>From $96 to $886 in 12 months. Key inflection points: HBM demand acceleration, Q2 earnings (+42% beat), and the UBS $1,625 target.</figcaption>
   </figure>
   
-  <div class="punchline">The 69% premium has a name, and it isn't HBM.</div>
+  <p>The 69% premium has a name, and it isn't HBM.</p>
 </section>
 
 <section class="section" id="premium">
@@ -180,22 +166,22 @@
   
   <p>What we are in, instead, is a framework where Micron's value derives from being the only U.S.-headquartered HBM supplier in a market the U.S. government has designated as strategic. This is not a side factor. It is the dominant factor — and it deserves a name. <strong>Call it the Political Premium.</strong></p>
   
-  <p>The Political Premium has three components:</p>
+  <p>The Political Premium rests on three supports, each independently real, and each independently fragile.</p>
   
-  <ol class="steps">
-    <li><strong>Export controls and the CHIPS Act</strong> make a domestic HBM supplier strategically valuable independent of price. Being the only U.S. firm that can supply HBM domestically is worth something, even if that something is hard to quantify with a DCF.</li>
-    <li><strong>Hyperscaler demand</strong>, which will spend $1.15 trillion on AI infrastructure through 2027, has political and contractual reasons to single-source domestic. The new Enhanced LTA includes five-year contracts with partially fixed pricing — locking in volume at levels that would not exist without the political overlay.</li>
-    <li><strong>Valuation-framework arbitrage.</strong> UBS's Timothy Arcuri argues that if memory is infrastructure, Micron should trade at NVDA's multiple. The logic: "MU has no reason to trade at a P/E much different from NVDA's." This is a re-rating argument, not a cash-flow argument — it assumes the market will apply tech multiples to a business that has historically traded at cyclical multiples.</li>
-  </ol>
+  <p>The first is policy. Export controls on advanced memory, combined with CHIPS Act incentives, have made domestic HBM capacity strategically valuable independent of its economics. The U.S. government will not let an American AI buildout depend entirely on Korean and Taiwanese supply chains. That conviction is now embedded in capital allocation across the hyperscaler stack, and Micron is the only public-equity vehicle that lets you express it.</p>
   
-  <p>This is a real thesis. I do not think it is wrong. I think it is <em>partially priced</em> — and the market has already extrapolated it to its endpoint.</p>
+  <p>The second is structural demand. Hyperscalers are projected to spend $1.15 trillion on AI infrastructure through 2027. That spend has political and contractual reasons to source domestic, and it has produced an instrument the memory industry has never had before: the Enhanced Long-Term Agreement. Five-year contracts with partially fixed pricing lock in volume at levels that would not exist in a pure spot market. Micron has signed its first such Strategic Customer Agreement. UBS believes up to 30% of industry DRAM output is heading into similar structures.</p>
+  
+  <p>The third support is the most aggressive: a valuation-framework arbitrage. UBS's Timothy Arcuri argues that if memory is now infrastructure, Micron should trade at NVIDIA's multiple. His exact language — "MU has no reason to trade at a P/E much different from NVDA's" — is doing enormous work. It assumes the market will permanently apply tech multiples to a business that has historically traded at cyclical ones. 15× P/E times an upgraded EPS curve gets you to $1,625. The math is real. The assumption underneath the math is the entire bet.</p>
+  
+  <p>I do not think the Political Premium thesis is wrong. I think it is partially priced, and the market has already extrapolated it to its endpoint.</p>
   
   <figure class="hero-fig">
     <img src="valuation-spectrum.png" alt="Three-pole valuation spectrum">
     <figcaption>Three-pole spectrum: UBS $1,625 (AI Infra, 15× P/E) vs Bernstein $510 vs Morningstar $455. Current $886 is 95% of the way to UBS and 0% of the way to Morningstar.</figcaption>
   </figure>
   
-  <div class="punchline">Strip out the flag and Micron is a 58% gross-margin commodity producer trading at twice the multiple of its 75% gross-margin Korean rival. There is no honest financial model that justifies that gap. There is only a geopolitical bet.</div>
+  <p>Strip out the flag and Micron is a 58% gross-margin commodity producer trading at twice the multiple of its 75% gross-margin Korean rival. There is no honest financial model that justifies that gap on operating fundamentals. There is only a geopolitical bet — and the question is not whether to take it, but at what price.</p>
 </section>
 
 <section class="section" id="price-believes">
@@ -204,109 +190,60 @@
   
   <p>The current price of $886 sits 9% below UBS's $1,625 target and 95% above Morningstar's $455 fair value. Bernstein's mid-case at $510 is, in price-distance terms, irrelevant. The stock is trading as if Bernstein does not exist.</p>
   
-  <p>For the price to make sense, four things must be true simultaneously:</p>
+  <p>For that price to make sense, four things must be true at once.</p>
   
-  <ul>
-    <li><strong>Hyperscaler capex must keep growing.</strong> From $443B in 2025 to $650B in 2026, and continue into 2027. Goldman Sachs's $1.15T three-year estimate is already priced in. The question is whether it holds.</li>
-    <li><strong>Samsung must fail to close the HBM4 gap.</strong> Samsung passed NVDA certification in March 2026. If yield exceeds 60% and share exceeds 25%, Micron's "only domestic supplier" story weakens.</li>
-    <li><strong>LTAs must hold through a memory downturn.</strong> Enhanced LTA coverage above 20% is the structural argument. If push comes to shove, will hyperscalers honor five-year contracts when spot prices collapse?</li>
-    <li><strong>Memory's multiple must permanently re-rate to tech infrastructure levels.</strong> UBS assumes 15× P/E. The historical range for memory is 4–12×. A permanent step-up requires the market to stop treating memory as cyclical.</li>
-  </ul>
+  <p>Hyperscaler capex must keep growing — not just hold at 2026's projected $650B, but continue the trajectory into 2027. Goldman's $1.15T three-year estimate is already implied in the multiple. If 2027 plateaus or compresses, the entire demand thesis recalibrates downward.</p>
+  
+  <p>Samsung must fail to close the HBM4 gap. Samsung passed NVIDIA certification in March 2026. If yield exceeds 60% and share rises above 25%, the "only domestic supplier" premise weakens in real time, and the U.S. ecosystem's dependence on Micron specifically becomes optional rather than structural.</p>
+  
+  <p>LTAs must hold through a downturn. The Enhanced LTA structure is the architectural backbone of the supercycle argument. But these contracts have not yet been tested against a real demand collapse. When spot prices crater — and historically they always have — will hyperscalers honor five-year volume commitments, or will they push back on pricing the way they are already reported to be pushing back on NVIDIA?</p>
+  
+  <p>And memory's multiple must permanently re-rate to tech infrastructure levels. The historical range for memory P/E is 4-12×. UBS assumes 15× as the new normal. That requires the market to permanently stop treating memory as cyclical — a paradigm shift that has been called many times before, and has never held.</p>
   
   <figure class="hero-fig">
     <img src="hyperscaler-capex.png" alt="Hyperscaler AI CapEx">
     <figcaption>Hyperscaler CapEx: $443B (2025 actual) → $650B (2026 projected, +47%). Goldman estimates $1.15T total 2025–2027.</figcaption>
   </figure>
   
-  <p>Each of these is plausible. All four together is a stack. If three of the four hold and one breaks, the stock probably compresses 30–40%. If all four hold, the stock goes to roughly where UBS says it goes. You are being offered "all four work out" upside in exchange for "any one breaks" downside.</p>
+  <p>Each of these four assumptions is individually plausible. All four holding simultaneously is a stack. If three hold and one breaks, the stock probably compresses 30-40% as the multiple reverts. If all four hold, the stock goes roughly where UBS says it goes. The asymmetry is unfavorable: you are being offered "all four work out" upside in exchange for "any one breaks" downside.</p>
   
-  <div class="punchline">You don't need to predict which of those four things breaks. You need to notice that the price is already implying none of them will.</div>
+  <p>You do not need to predict which of those four breaks. You need to notice that the price is already implying none of them will.</p>
 </section>
 
 <section class="section" id="cracks">
   <span class="sec-num">Argument 04</span>
   <h2>Where the Premium Cracks First</h2>
   
-  <p>The Political Premium does not go to zero — the strategic logic that built it doesn't disappear. But it <em>compresses</em> the moment any support gives way, and the most likely first crack is the one the bull case cannot argue against: Samsung HBM4 catching up.</p>
+  <p>I think the first crack is mechanical. The Political Premium does not go to zero — the strategic logic that built it does not disappear. But it <em>compresses</em> the moment any support gives way, and the most likely first crack is the one the bull case cannot argue against: Samsung HBM4 catching up.</p>
   
-  <p>The moment NVIDIA qualifies Samsung at scale, "the only U.S. HBM supplier" stops being "the only supplier the U.S. ecosystem needs," and the premium recalibrates. Samsung's yield trajectory is the binary variable that matters most — because it is the variable the UBS thesis cannot absorb.</p>
+  <p>The reasoning is mechanical. Policy support is durable on legislative timescales — years. Hyperscaler capex is sticky on contract timescales — quarters. But supplier qualification is binary on quarterly timescales — it can happen on a single earnings call. The moment NVIDIA qualifies Samsung at scale, "the only U.S. HBM supplier" stops being "the only supplier the U.S. ecosystem needs," and the Political Premium loses its sharpest support.</p>
   
-  <p>Other cracks to watch:</p>
+  <p>This is the variable the UBS thesis cannot absorb. UBS can model continued capex growth into its multiple. It can model LTA coverage expansion. It can model multiple re-rating. It cannot model "Samsung ships HBM4 at competitive yield with NVIDIA qualification" — because that single event undermines the only component of the thesis that is genuinely Micron-specific rather than industry-wide.</p>
   
-  <ul>
-    <li><strong>NVDA Q2 earnings (July).</strong> Any CapEx guidance cut ripples through the entire AI supply chain — not just NVDA.</li>
-    <li><strong>DRAM spot price.</strong> Three consecutive months of decline would signal the supercycle is peaking.</li>
-    <li><strong>Inventory days (DOI).</strong> Above 130 days with order pushouts = demand destruction.</li>
-  </ul>
+  <p>Other supports could crack first. NVIDIA could guide capex down in Q2 earnings. DRAM spot could break three months in a row. Inventory days could blow past 130 with order pushouts. Each would be a yellow flag. But the Samsung trajectory is the red flag, because it cannot be argued around. The only counter is "Samsung will fail," and Samsung has not been failing.</p>
   
   <figure class="hero-fig">
     <img src="catalyst-timeline.png" alt="Catalyst timeline">
     <figcaption>Catalyst chain: Jun 24 Q3 earnings → Jul-Aug NVDA Q2 → Aug-Sep Samsung HBM4 ramp → Oct-Nov Q4 FY26 guidance. Each is a binary event.</figcaption>
   </figure>
   
-  <div class="punchline">The bull case requires three more years of uninterrupted hyperscaler capex, no Samsung HBM4 catch-up, and a permanent re-rating of memory to tech multiples. The price is already implying all three.</div>
+  <p>The bull case requires three more years of uninterrupted hyperscaler capex, no Samsung HBM4 catch-up, and a permanent re-rating of memory to tech multiples. The price is already implying all three.</p>
 </section>
 
-<section class="section" id="seven-questions">
+<section class="section" id="the-trade">
   <span class="sec-num">Argument 05</span>
-  <h2>Seven Sharp Questions</h2>
+  <h2>The Trade</h2>
   
-  <p>Every buy-side investor not already positioned faces a brutal choice. These seven questions frame that choice — each with a trigger, a current status, and a monitoring frequency.</p>
+  <p>The trade is not to short Micron. The Political Premium is real, the upside scenarios are achievable, and shorting a name with this much political wind behind it is a bad use of risk capital.</p>
   
-  <h3>Q1 · Cycle Ending: What Are the Exit Triggers?</h3>
+  <p>The trade is to recognize that buying Micron at $886 means paying full price for the Political Premium thesis while bearing the full risk of its first leg cracking. There is a structure that solves for that asymmetry: selling puts at $750.</p>
   
-  <table class="status-table">
-    <thead><tr><th>Trigger</th><th>Status</th><th>Warning</th><th>Frequency</th></tr></thead>
-    <tbody>
-      <tr><td>Samsung HBM4 qualification</td><td>Passed NVDA cert, Mar 2026</td><td>Yield >60%, share >25%</td><td>Monthly</td></tr>
-      <tr><td>Hyperscaler capex</td><td>~$650B in 2026 (+47%)</td><td>NVDA Q2 guidance cut</td><td>Quarterly</td></tr>
-      <tr><td>DRAM/NAND spot price</td><td>Q2 contract +57%/+65%</td><td>3 consecutive months down</td><td>Weekly</td></tr>
-      <tr><td>Inventory (DOI)</td><td>MU DOI = 123 days</td><td>DOI > 130 days</td><td>Quarterly</td></tr>
-    </tbody>
-  </table>
-  
-  <h3>Q2 · How Much of +20% Is Short Squeeze?</h3>
-  <p>Short interest sits at 37.27M shares — just 3.31% of float, with days-to-cover at 1.0. The short base has actually <em>grown</em> from 29.37M in February to 37.27M in April. Monday's pop is not a classic short squeeze; it is a gamma squeeze layered on FOMO.</p>
-  
-  <h3>Q3 · Will AI CapEx Ramp Persist?</h3>
-  <p>AMZN says it is "monetizing capacity as fast as we install it." GOOGL's TPU self-sufficiency reduces external GPU demand. NVIDIA is up only 14% YTD versus MU's 204%. The market is more cautious on the GPU supplier than the memory beneficiary — which is a tell.</p>
-  
-  <h3>Q4 · How Does the MU vs SKH Spread Close?</h3>
-  <p>Current spread: MU 11.57× / SKH 6.86× = <strong>1.69× premium</strong>. A naive pair trade (long MU / short SKH) shorts the lower-multiple, higher-margin producer — expensive. A better approach is to monitor the spread as a sector-sentiment proxy.</p>
-  
-  <h3>Q5 · If Not in Position, When to Act?</h3>
-  
-  <table class="status-table">
-    <thead><tr><th>Option</th><th>Strategy</th><th>Pros</th><th>Cons</th></tr></thead>
-    <tbody>
-      <tr><td>A. Chase ATH</td><td>Buy at $886</td><td>No FOMO</td><td>No margin of safety, squeeze risk</td></tr>
-      <tr><td>B. Wait pullback</td><td>$800–820 entry</td><td>Better price</td><td>May never come</td></tr>
-      <tr><td>C. Wait catalyst</td><td>Samsung HBM4 news</td><td>More info</td><td>Time decay</td></tr>
-      <tr><td>D. <strong>Sell put $750</strong></td><td>Collect premium</td><td>Path-independent, defined risk</td><td>Capped upside, needs margin</td></tr>
-    </tbody>
-  </table>
-  
-  <h3>Q6 · Where Is the Margin of Safety?</h3>
-  <p>Sell Jul/Aug $750 put (45–60 DTE). Breakeven ~$730 = 1.6× Morningstar FV. Annualized yield ~25–30%. Pre-earnings IV is rich. If assigned, you own MU at a 17.6% discount.</p>
+  <p>The mechanics are clean. If Micron rises to $1,000, you collect premium and walk away. If it falls to $750, you are assigned at a cost basis of roughly $730 — 17.6% below the current price, and at a level that already builds in the first wave of Political Premium compression. If it falls further, your downside is capped by the strike. If it rallies, your upside is capped by the premium. Pre-earnings IV is rich, the annualized yield runs 25-30%, and the breakeven of $730 sits at roughly 1.6× Morningstar's fair value — leaving meaningful margin of safety even in the bear case.</p>
   
   <figure class="hero-fig">
     <img src="sell-put-analysis.png" alt="Sell Put analysis">
     <figcaption>Sell Put $750 strike: ~28% annualized yield, breakeven ~$730. Path-independent entry with built-in margin of safety.</figcaption>
   </figure>
-  
-  <h3>Q7 · Is the Catalyst Path Explicit?</h3>
-  <p>Mark your calendar: Jun 24 Q3 earnings (LTA details) → Jul-Aug NVDA Q2 (CapEx guidance) → Aug-Sep Samsung HBM4 ramp → Oct-Nov Q4 FY26 (2027 guide). Each is binary.</p>
-  
-  <div class="punchline">You are not betting on memory prices. You are betting on whether memory has become infrastructure — and whether the market will keep paying a political premium for the answer.</div>
-</section>
-
-<section class="section" id="the-trade">
-  <span class="sec-num">Argument 06</span>
-  <h2>The Trade</h2>
-  
-  <p>The trade is not to short Micron. The trade is to recognize that buying Micron at $886 means paying full price for the Political Premium thesis while bearing the full risk of its first leg cracking.</p>
-  
-  <p>The buy-side answer is selling puts at $750 — entering only at a price that already builds in the first 15% of recalibration. If MU rises to $1,000, you collect premium. If MU falls to $750, you are assigned at a cost basis of roughly $730 — 17.6% below the current price. If it falls further, your downside is capped by the strike. If it rallies, your upside is capped by the premium.</p>
   
   <p>This is not a thesis about whether memory is infrastructure. It is a thesis about what is already in the price.</p>
   
@@ -315,14 +252,11 @@
     <p>You are being offered "all four bull-case legs work out" upside in exchange for "any one breaks" downside. The price is 95% of the way to the bull case and 0% of the way to the bear case. That is not a balanced bet. That is a specific directional position — and if you are going to take it, you should know exactly what you are betting on.</p>
   </div>
   
-  <p>Three valuation poles, but only one of them — Morningstar's $455 — starts with "this is a commodity business" and lands at a defensible number. UBS's $1,625 starts with the share price and reverse-engineers the multiple to justify it. Bernstein splits the difference because that is what sell-side analysts do when they don't want to be wrong.</p>
+  <p>Three valuation poles exist on this stock — but only one of them, Morningstar's $455, starts with "this is a commodity business" and lands at a defensible number. UBS's $1,625 starts with the share price and reverse-engineers the multiple to justify it. Bernstein splits the difference because that is what sell-side analysts do when they do not want to be wrong.</p>
   
   <p>The market has already chosen. Your job is to notice.</p>
   
-  <blockquote>
-    Research confirms value. Discipline manages behavior. Time absorbs deviation. Risk control keeps you alive.
-    <span class="attr">— The only system that doesn't depend on timing</span>
-  </blockquote>
+  <p>The Political Premium is a real thesis. It is also a fully priced one. Those are the same sentence.</p>
   
   <div class="related">
     <span class="c-label">Related Framework</span>
