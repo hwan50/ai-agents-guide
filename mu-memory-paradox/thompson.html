@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Political Premium: Micron at $886 — A Buy-Side Framework</title>
+<meta name="description" content="Micron just became a trillion-dollar company. The market is not pricing a memory chipmaker. It is pricing American memory.">
+<meta property="og:title" content="The Political Premium: Micron at $886">
+<meta property="og:description" content="A framework for understanding why Micron trades at 11.6× while SK Hynix trades at 6.9× — and what that gap is actually worth.">
+<meta property="og:image" content="https://hwan50.github.io/ai-agents-guide/mu-memory-paradox/dashboard-v1.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Political Premium: Micron at $886">
+<meta name="twitter:description" content="A framework for understanding why Micron trades at 11.6× while SK Hynix trades at 6.9×.">
+<meta name="twitter:image" content="https://hwan50.github.io/ai-agents-guide/mu-memory-paradox/dashboard-v1.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..600&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..500&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--paper:#f4f0e7;--paper-2:#ebe5d8;--ink:#211f1b;--ink-soft:#46423a;--muted:#7c7567;--rule:#d8d1c0;--accent:#b8492f;--accent-deep:#9a3a23;--teal:#2f6b66;--code-bg:#211f1b;--code-paper:#2c2a24;--code-ink:#e9e3d4;--maxread:42rem;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:1.225rem;line-height:1.72;-webkit-font-smoothing:antialiased;}
+  #progress{position:fixed;top:0;left:0;height:3px;width:0%;background:var(--accent);z-index:200;transition:width .1s linear;}
+  .wrap{max-width:74rem;margin:0 auto;padding:0 1.6rem;}
+  .masthead{border-bottom:1px solid var(--rule);padding:1.1rem 0;display:flex;align-items:center;justify-content:space-between;font-family:"Inter",sans-serif;}
+  .masthead .brand{font-weight:700;font-size:.82rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink);text-decoration:none;}
+  .masthead .brand span{color:var(--accent)}
+  .masthead .issue{font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);}
+  header.hero{padding:4.5rem 0 1rem}
+  .kicker{font-family:"Inter",sans-serif;font-weight:600;font-size:.78rem;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin-bottom:1.4rem;display:flex;align-items:center;gap:.7rem;}
+  .kicker::after{content:"";flex:0 0 2.4rem;height:1px;background:var(--accent)}
+  h1.title{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(2.6rem,6.4vw,5rem);line-height:1.04;letter-spacing:-.02em;max-width:18ch;margin-bottom:1.6rem;}
+  .standfirst{font-family:"Newsreader",serif;font-style:italic;font-size:clamp(1.3rem,2.4vw,1.6rem);line-height:1.5;color:var(--ink-soft);max-width:38rem;margin-bottom:2.2rem;}
+  .byline{display:flex;flex-wrap:wrap;gap:.55rem 1.3rem;align-items:center;font-family:"Inter",sans-serif;font-size:.82rem;letter-spacing:.04em;color:var(--muted);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:.9rem 0;}
+  .byline strong{color:var(--ink);font-weight:600}
+  .byline .dot{width:3px;height:3px;border-radius:50%;background:var(--muted);}
+  figure.hero-fig{margin:2.6rem 0 0}
+  figure.hero-fig img{width:100%;display:block;border:1px solid var(--rule);background:var(--paper-2);}
+  figcaption{font-family:"Inter",sans-serif;font-size:.78rem;color:var(--muted);margin-top:.7rem;letter-spacing:.02em;padding-left:1rem;border-left:2px solid var(--accent);}
+  .layout{display:grid;grid-template-columns:15rem 1fr;gap:3.5rem;padding:3.5rem 0 2rem;align-items:start;}
+  nav.toc{position:sticky;top:2rem;font-family:"Inter",sans-serif;}
+  nav.toc .toc-label{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:600;padding-bottom:.8rem;margin-bottom:.4rem;border-bottom:1px solid var(--rule);}
+  nav.toc ol{list-style:none;counter-reset:toc}
+  nav.toc li{counter-increment:toc}
+  nav.toc a{display:flex;gap:.6rem;padding:.42rem 0;font-size:.86rem;line-height:1.35;color:var(--ink-soft);text-decoration:none;border-left:2px solid transparent;padding-left:.8rem;margin-left:-.8rem;transition:color .15s,border-color .15s;}
+  nav.toc a::before{content:counter(toc,decimal-leading-zero);color:var(--muted);font-variant-numeric:tabular-nums;font-size:.74rem;flex:0 0 auto;padding-top:.08rem;}
+  nav.toc a:hover{color:var(--accent)}
+  nav.toc a.active{color:var(--accent);font-weight:600;border-left-color:var(--accent);}
+  nav.toc a.active::before{color:var(--accent)}
+  article{max-width:var(--maxread);min-width:0}
+  article p{margin:0 0 1.35rem}
+  article p a,article li a,.endlinks a{color:var(--accent-deep);text-decoration:none;border-bottom:1px solid var(--rule);transition:border-color .15s;}
+  article p a:hover,article li a:hover,.endlinks a:hover{border-bottom-color:var(--accent);}
+  .section{padding-top:2.4rem;scroll-margin-top:1.5rem}
+  .sec-num{font-family:"Inter",sans-serif;font-weight:700;font-size:.78rem;letter-spacing:.16em;color:var(--accent);text-transform:uppercase;display:block;margin-bottom:.55rem;}
+  h2{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(1.85rem,3.6vw,2.7rem);line-height:1.12;letter-spacing:-.015em;margin-bottom:1.2rem;}
+  h3{font-family:"Fraunces",serif;font-weight:600;font-size:1.4rem;line-height:1.25;margin:2.3rem 0 .9rem;}
+  h2+p,h3+p{margin-top:0}
+  article ul{list-style:none;margin:0 0 1.5rem;padding:0}
+  article ul li{position:relative;padding-left:1.5rem;margin-bottom:.7rem;}
+  article ul li::before{content:"";position:absolute;left:0;top:.62em;width:.5rem;height:.5rem;background:var(--accent);transform:rotate(45deg);}
+  article ol.steps{list-style:none;counter-reset:step;margin:0 0 1.5rem;padding:0;}
+  article ol.steps li{counter-increment:step;position:relative;padding-left:2.4rem;margin-bottom:.85rem;}
+  article ol.steps li::before{content:counter(step);position:absolute;left:0;top:.05em;width:1.65rem;height:1.65rem;background:var(--ink);color:var(--paper);font-family:"Inter",sans-serif;font-weight:600;font-size:.82rem;display:flex;align-items:center;justify-content:center;border-radius:50%;}
+  li strong{font-weight:600}
+  blockquote{margin:2.6rem 0;font-family:"Fraunces",serif;font-weight:500;font-style:italic;font-size:clamp(1.5rem,3vw,2rem);line-height:1.32;color:var(--ink);padding-left:1.6rem;border-left:3px solid var(--accent);}
+  blockquote .attr{display:block;font-family:"Inter",sans-serif;font-style:normal;font-weight:500;font-size:.82rem;letter-spacing:.04em;color:var(--muted);margin-top:.9rem;}
+  .callout{margin:2rem 0;padding:1.3rem 1.5rem;background:var(--paper-2);border-left:3px solid var(--teal);}
+  .callout.warn{border-left-color:var(--accent)}
+  .callout .c-label{font-family:"Inter",sans-serif;font-weight:700;font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;color:var(--teal);display:block;margin-bottom:.4rem;}
+  .callout.warn .c-label{color:var(--accent)}
+  .callout p{margin:0;font-size:1.08rem;line-height:1.6}
+  .source-card{margin:2.2rem 0;padding:1.4rem 1.6rem;border:1px solid var(--rule);background:var(--paper-2);}
+  .source-card .c-label{font-family:"Inter",sans-serif;font-weight:700;font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:.5rem;}
+  .source-card p{font-size:1.05rem;line-height:1.58;margin:0 0 .8rem}
+  .source-card a.btn{font-family:"Inter",sans-serif;font-weight:600;font-size:.86rem;color:var(--paper);background:var(--ink);text-decoration:none;border:none;display:inline-block;padding:.55rem 1.1rem;transition:background .15s;}
+  .source-card a.btn:hover{background:var(--accent)}
+  code{font-family:"IBM Plex Mono",monospace;font-size:.86em;background:var(--paper-2);padding:.12em .38em;border-radius:3px;color:var(--accent-deep);}
+  .status-table{width:100%;border-collapse:collapse;margin:1.7rem 0;font-size:1.02rem;}
+  .status-table th{font-family:"Inter",sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:.6rem .8rem;border-bottom:2px solid var(--ink);}
+  .status-table td{padding:.8rem .8rem;border-bottom:1px solid var(--rule);vertical-align:top;}
+  .status-table td:first-child{font-weight:500}
+  .status-table tr:last-child td{border-bottom:none}
+  .badge{font-family:"Inter",sans-serif;font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.22rem .5rem;border-radius:3px;white-space:nowrap;display:inline-block;}
+  .b-stable{background:#dceee2;color:#2f6b4e}
+  .endmatter{border-top:3px solid var(--ink);margin-top:3rem;padding-top:2.2rem;}
+  .endmatter h3{margin-top:0}
+  .endlinks{list-style:none;padding:0;margin:1rem 0 0}
+  .endlinks li{padding:.7rem 0;border-bottom:1px solid var(--rule);display:flex;align-items:baseline;gap:.6rem;}
+  .endlinks li::before{content:"\2192";color:var(--accent);font-weight:700}
+  .endlinks a{font-family:"Inter",sans-serif;font-size:.98rem;font-weight:500}
+  .disclosure{font-size:.92rem;font-style:italic;color:var(--muted);margin-top:1.6rem;}
+  .related{margin:2.2rem 0;padding:1.4rem 1.6rem;border:1px solid var(--rule);background:var(--paper-2);}
+  .related .c-label{font-family:"Inter",sans-serif;font-weight:700;font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:.5rem;}
+  .related a{font-family:"Fraunces",serif;font-weight:600;font-size:1.15rem;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule);transition:border-color .15s;}
+  .related a:hover{border-bottom-color:var(--accent)}
+  .related p{font-size:1.02rem;line-height:1.55;color:var(--ink-soft);margin:.4rem 0 0}
+  footer.foot{border-top:1px solid var(--rule);margin-top:3.5rem;padding:2.2rem 0 3rem;font-family:"Inter",sans-serif;display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between;align-items:center;}
+  footer.foot .f-brand{font-weight:700;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;}
+  footer.foot .f-brand span{color:var(--accent)}
+  footer.foot .f-note{font-size:.8rem;color:var(--muted);}
+  .thompson-callout{font-family:"Inter",sans-serif;font-size:.88rem;font-weight:600;letter-spacing:.04em;color:var(--accent);text-transform:uppercase;display:block;margin-top:2.5rem;margin-bottom:.8rem;}
+  .punchline{font-family:"Fraunces",serif;font-weight:500;font-style:italic;font-size:1.25rem;color:var(--ink);margin:1.5rem 0;padding-left:1.2rem;border-left:3px solid var(--teal);line-height:1.5;}
+  @media(max-width:880px){body{font-size:1.12rem}.layout{grid-template-columns:1fr;gap:0;padding-top:2.2rem}nav.toc{position:static;margin-bottom:2.5rem;padding:1.1rem 1.2rem;background:var(--paper-2);border:1px solid var(--rule);}nav.toc ol{columns:2;column-gap:1.4rem;}nav.toc a{padding-left:.6rem;margin-left:0;border-left:none}nav.toc a.active{border-left:none}header.hero{padding-top:2.6rem}}
+  @media(max-width:520px){.wrap{padding:0 1.1rem}nav.toc ol{columns:1}.status-table{font-size:.92rem}.status-table th,.status-table td{padding:.55rem .45rem}blockquote{padding-left:1.1rem}}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<div class="wrap">
+  <div class="masthead">
+    <a href="/ai-agents-guide/" class="brand">AI Agents <span>/</span> Field Guide</a>
+    <div class="issue">Framework Essay · No. 09</div>
+  </div>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="kicker">The Political Premium</div>
+    <h1 class="title">Micron at $886: Memory as Flag, Memory as Infrastructure</h1>
+    <p class="standfirst">Micron just became a trillion-dollar company. The market is not pricing a memory chipmaker. It is pricing American memory — and that is a different thing entirely. A framework for understanding why Micron trades at 11.6× while SK Hynix trades at 6.9×, and what that gap is actually worth.</p>
+    <div class="byline">
+      <span>Updated <strong>May 2026</strong></span>
+      <span class="dot"></span>
+      <span><strong>12 min</strong> read</span>
+      <span class="dot"></span>
+      <span>Independent research. Not financial advice.</span>
+    </div>
+    <figure class="hero-fig">
+      <img src="dashboard-v1.png" alt="Micron Memory Paradox Executive Dashboard">
+      <figcaption>Micron at $886 sits 9% below UBS's $1,625 target and 95% above Morningstar's $455. The market has already picked a side.</figcaption>
+    </figure>
+  </header>
+</div>
+
+<div class="wrap">
+  <div class="layout">
+
+    <nav class="toc" id="toc">
+      <div class="toc-label">Contents</div>
+      <ol>
+        <li><a href="#hynix">The Hynix Problem</a></li>
+        <li><a href="#premium">The Political Premium</a></li>
+        <li><a href="#price-believes">What the Price Already Believes</a></li>
+        <li><a href="#cracks">Where the Premium Cracks First</a></li>
+        <li><a href="#seven-questions">Seven Sharp Questions</a></li>
+        <li><a href="#the-trade">The Trade</a></li>
+      </ol>
+    </nav>
+
+    <article>
+
+<section class="section" id="hynix">
+  <span class="sec-num">Argument 01</span>
+  <h2>The Hynix Problem</h2>
+  
+  <p>SK Hynix posted a 75% gross margin last quarter — a record for the memory industry. Micron posted 58%. SK Hynix leads in HBM3E volume and is ahead on HBM4 qualification. SK Hynix trades at 6.86× forward earnings. Micron trades at 11.57×.</p>
+  
+  <p>In any framework that treats memory as memory, this is incoherent. The higher-margin, higher-share producer should command the premium, not trade at a 40% discount. The market's verdict, then, is that we are not in a framework that treats memory as memory.</p>
+  
+  <figure class="hero-fig">
+    <img src="industry-comps.png" alt="Memory industry comparison">
+    <figcaption>Industry comps sorted by Forward P/E. SK Hynix at 4.6× with 75% gross margin is the fundamental leader. Micron at 11.6× carries a 69% premium as the only US-based HBM supplier.</figcaption>
+  </figure>
+  
+  <p>The price journey tells the rest of the story. MU traded sideways around $100 through mid-2025, accelerated in Q1 2026, and went vertical in Q2. From the March 18 FY26 Q2 print at $343 to the UBS target-price day at $886, the stock added 158% in just over two months.</p>
+  
+  <figure class="hero-fig">
+    <img src="price-journey.png" alt="MU price journey">
+    <figcaption>From $96 to $886 in 12 months. Key inflection points: HBM demand acceleration, Q2 earnings (+42% beat), and the UBS $1,625 target.</figcaption>
+  </figure>
+  
+  <div class="punchline">The 69% premium has a name, and it isn't HBM.</div>
+</section>
+
+<section class="section" id="premium">
+  <span class="sec-num">Argument 02</span>
+  <h2>The Political Premium</h2>
+  
+  <p>What we are in, instead, is a framework where Micron's value derives from being the only U.S.-headquartered HBM supplier in a market the U.S. government has designated as strategic. This is not a side factor. It is the dominant factor — and it deserves a name. <strong>Call it the Political Premium.</strong></p>
+  
+  <p>The Political Premium has three components:</p>
+  
+  <ol class="steps">
+    <li><strong>Export controls and the CHIPS Act</strong> make a domestic HBM supplier strategically valuable independent of price. Being the only U.S. firm that can supply HBM domestically is worth something, even if that something is hard to quantify with a DCF.</li>
+    <li><strong>Hyperscaler demand</strong>, which will spend $1.15 trillion on AI infrastructure through 2027, has political and contractual reasons to single-source domestic. The new Enhanced LTA includes five-year contracts with partially fixed pricing — locking in volume at levels that would not exist without the political overlay.</li>
+    <li><strong>Valuation-framework arbitrage.</strong> UBS's Timothy Arcuri argues that if memory is infrastructure, Micron should trade at NVDA's multiple. The logic: "MU has no reason to trade at a P/E much different from NVDA's." This is a re-rating argument, not a cash-flow argument — it assumes the market will apply tech multiples to a business that has historically traded at cyclical multiples.</li>
+  </ol>
+  
+  <p>This is a real thesis. I do not think it is wrong. I think it is <em>partially priced</em> — and the market has already extrapolated it to its endpoint.</p>
+  
+  <figure class="hero-fig">
+    <img src="valuation-spectrum.png" alt="Three-pole valuation spectrum">
+    <figcaption>Three-pole spectrum: UBS $1,625 (AI Infra, 15× P/E) vs Bernstein $510 vs Morningstar $455. Current $886 is 95% of the way to UBS and 0% of the way to Morningstar.</figcaption>
+  </figure>
+  
+  <div class="punchline">Strip out the flag and Micron is a 58% gross-margin commodity producer trading at twice the multiple of its 75% gross-margin Korean rival. There is no honest financial model that justifies that gap. There is only a geopolitical bet.</div>
+</section>
+
+<section class="section" id="price-believes">
+  <span class="sec-num">Argument 03</span>
+  <h2>What the Price Already Believes</h2>
+  
+  <p>The current price of $886 sits 9% below UBS's $1,625 target and 95% above Morningstar's $455 fair value. Bernstein's mid-case at $510 is, in price-distance terms, irrelevant. The stock is trading as if Bernstein does not exist.</p>
+  
+  <p>For the price to make sense, four things must be true simultaneously:</p>
+  
+  <ul>
+    <li><strong>Hyperscaler capex must keep growing.</strong> From $443B in 2025 to $650B in 2026, and continue into 2027. Goldman Sachs's $1.15T three-year estimate is already priced in. The question is whether it holds.</li>
+    <li><strong>Samsung must fail to close the HBM4 gap.</strong> Samsung passed NVDA certification in March 2026. If yield exceeds 60% and share exceeds 25%, Micron's "only domestic supplier" story weakens.</li>
+    <li><strong>LTAs must hold through a memory downturn.</strong> Enhanced LTA coverage above 20% is the structural argument. If push comes to shove, will hyperscalers honor five-year contracts when spot prices collapse?</li>
+    <li><strong>Memory's multiple must permanently re-rate to tech infrastructure levels.</strong> UBS assumes 15× P/E. The historical range for memory is 4–12×. A permanent step-up requires the market to stop treating memory as cyclical.</li>
+  </ul>
+  
+  <figure class="hero-fig">
+    <img src="hyperscaler-capex.png" alt="Hyperscaler AI CapEx">
+    <figcaption>Hyperscaler CapEx: $443B (2025 actual) → $650B (2026 projected, +47%). Goldman estimates $1.15T total 2025–2027.</figcaption>
+  </figure>
+  
+  <p>Each of these is plausible. All four together is a stack. If three of the four hold and one breaks, the stock probably compresses 30–40%. If all four hold, the stock goes to roughly where UBS says it goes. You are being offered "all four work out" upside in exchange for "any one breaks" downside.</p>
+  
+  <div class="punchline">You don't need to predict which of those four things breaks. You need to notice that the price is already implying none of them will.</div>
+</section>
+
+<section class="section" id="cracks">
+  <span class="sec-num">Argument 04</span>
+  <h2>Where the Premium Cracks First</h2>
+  
+  <p>The Political Premium does not go to zero — the strategic logic that built it doesn't disappear. But it <em>compresses</em> the moment any support gives way, and the most likely first crack is the one the bull case cannot argue against: Samsung HBM4 catching up.</p>
+  
+  <p>The moment NVIDIA qualifies Samsung at scale, "the only U.S. HBM supplier" stops being "the only supplier the U.S. ecosystem needs," and the premium recalibrates. Samsung's yield trajectory is the binary variable that matters most — because it is the variable the UBS thesis cannot absorb.</p>
+  
+  <p>Other cracks to watch:</p>
+  
+  <ul>
+    <li><strong>NVDA Q2 earnings (July).</strong> Any CapEx guidance cut ripples through the entire AI supply chain — not just NVDA.</li>
+    <li><strong>DRAM spot price.</strong> Three consecutive months of decline would signal the supercycle is peaking.</li>
+    <li><strong>Inventory days (DOI).</strong> Above 130 days with order pushouts = demand destruction.</li>
+  </ul>
+  
+  <figure class="hero-fig">
+    <img src="catalyst-timeline.png" alt="Catalyst timeline">
+    <figcaption>Catalyst chain: Jun 24 Q3 earnings → Jul-Aug NVDA Q2 → Aug-Sep Samsung HBM4 ramp → Oct-Nov Q4 FY26 guidance. Each is a binary event.</figcaption>
+  </figure>
+  
+  <div class="punchline">The bull case requires three more years of uninterrupted hyperscaler capex, no Samsung HBM4 catch-up, and a permanent re-rating of memory to tech multiples. The price is already implying all three.</div>
+</section>
+
+<section class="section" id="seven-questions">
+  <span class="sec-num">Argument 05</span>
+  <h2>Seven Sharp Questions</h2>
+  
+  <p>Every buy-side investor not already positioned faces a brutal choice. These seven questions frame that choice — each with a trigger, a current status, and a monitoring frequency.</p>
+  
+  <h3>Q1 · Cycle Ending: What Are the Exit Triggers?</h3>
+  
+  <table class="status-table">
+    <thead><tr><th>Trigger</th><th>Status</th><th>Warning</th><th>Frequency</th></tr></thead>
+    <tbody>
+      <tr><td>Samsung HBM4 qualification</td><td>Passed NVDA cert, Mar 2026</td><td>Yield >60%, share >25%</td><td>Monthly</td></tr>
+      <tr><td>Hyperscaler capex</td><td>~$650B in 2026 (+47%)</td><td>NVDA Q2 guidance cut</td><td>Quarterly</td></tr>
+      <tr><td>DRAM/NAND spot price</td><td>Q2 contract +57%/+65%</td><td>3 consecutive months down</td><td>Weekly</td></tr>
+      <tr><td>Inventory (DOI)</td><td>MU DOI = 123 days</td><td>DOI > 130 days</td><td>Quarterly</td></tr>
+    </tbody>
+  </table>
+  
+  <h3>Q2 · How Much of +20% Is Short Squeeze?</h3>
+  <p>Short interest sits at 37.27M shares — just 3.31% of float, with days-to-cover at 1.0. The short base has actually <em>grown</em> from 29.37M in February to 37.27M in April. Monday's pop is not a classic short squeeze; it is a gamma squeeze layered on FOMO.</p>
+  
+  <h3>Q3 · Will AI CapEx Ramp Persist?</h3>
+  <p>AMZN says it is "monetizing capacity as fast as we install it." GOOGL's TPU self-sufficiency reduces external GPU demand. NVIDIA is up only 14% YTD versus MU's 204%. The market is more cautious on the GPU supplier than the memory beneficiary — which is a tell.</p>
+  
+  <h3>Q4 · How Does the MU vs SKH Spread Close?</h3>
+  <p>Current spread: MU 11.57× / SKH 6.86× = <strong>1.69× premium</strong>. A naive pair trade (long MU / short SKH) shorts the lower-multiple, higher-margin producer — expensive. A better approach is to monitor the spread as a sector-sentiment proxy.</p>
+  
+  <h3>Q5 · If Not in Position, When to Act?</h3>
+  
+  <table class="status-table">
+    <thead><tr><th>Option</th><th>Strategy</th><th>Pros</th><th>Cons</th></tr></thead>
+    <tbody>
+      <tr><td>A. Chase ATH</td><td>Buy at $886</td><td>No FOMO</td><td>No margin of safety, squeeze risk</td></tr>
+      <tr><td>B. Wait pullback</td><td>$800–820 entry</td><td>Better price</td><td>May never come</td></tr>
+      <tr><td>C. Wait catalyst</td><td>Samsung HBM4 news</td><td>More info</td><td>Time decay</td></tr>
+      <tr><td>D. <strong>Sell put $750</strong></td><td>Collect premium</td><td>Path-independent, defined risk</td><td>Capped upside, needs margin</td></tr>
+    </tbody>
+  </table>
+  
+  <h3>Q6 · Where Is the Margin of Safety?</h3>
+  <p>Sell Jul/Aug $750 put (45–60 DTE). Breakeven ~$730 = 1.6× Morningstar FV. Annualized yield ~25–30%. Pre-earnings IV is rich. If assigned, you own MU at a 17.6% discount.</p>
+  
+  <figure class="hero-fig">
+    <img src="sell-put-analysis.png" alt="Sell Put analysis">
+    <figcaption>Sell Put $750 strike: ~28% annualized yield, breakeven ~$730. Path-independent entry with built-in margin of safety.</figcaption>
+  </figure>
+  
+  <h3>Q7 · Is the Catalyst Path Explicit?</h3>
+  <p>Mark your calendar: Jun 24 Q3 earnings (LTA details) → Jul-Aug NVDA Q2 (CapEx guidance) → Aug-Sep Samsung HBM4 ramp → Oct-Nov Q4 FY26 (2027 guide). Each is binary.</p>
+  
+  <div class="punchline">You are not betting on memory prices. You are betting on whether memory has become infrastructure — and whether the market will keep paying a political premium for the answer.</div>
+</section>
+
+<section class="section" id="the-trade">
+  <span class="sec-num">Argument 06</span>
+  <h2>The Trade</h2>
+  
+  <p>The trade is not to short Micron. The trade is to recognize that buying Micron at $886 means paying full price for the Political Premium thesis while bearing the full risk of its first leg cracking.</p>
+  
+  <p>The buy-side answer is selling puts at $750 — entering only at a price that already builds in the first 15% of recalibration. If MU rises to $1,000, you collect premium. If MU falls to $750, you are assigned at a cost basis of roughly $730 — 17.6% below the current price. If it falls further, your downside is capped by the strike. If it rallies, your upside is capped by the premium.</p>
+  
+  <p>This is not a thesis about whether memory is infrastructure. It is a thesis about what is already in the price.</p>
+  
+  <div class="callout warn">
+    <span class="c-label">The Core Trade-Off</span>
+    <p>You are being offered "all four bull-case legs work out" upside in exchange for "any one breaks" downside. The price is 95% of the way to the bull case and 0% of the way to the bear case. That is not a balanced bet. That is a specific directional position — and if you are going to take it, you should know exactly what you are betting on.</p>
+  </div>
+  
+  <p>Three valuation poles, but only one of them — Morningstar's $455 — starts with "this is a commodity business" and lands at a defensible number. UBS's $1,625 starts with the share price and reverse-engineers the multiple to justify it. Bernstein splits the difference because that is what sell-side analysts do when they don't want to be wrong.</p>
+  
+  <p>The market has already chosen. Your job is to notice.</p>
+  
+  <blockquote>
+    Research confirms value. Discipline manages behavior. Time absorbs deviation. Risk control keeps you alive.
+    <span class="attr">— The only system that doesn't depend on timing</span>
+  </blockquote>
+  
+  <div class="related">
+    <span class="c-label">Related Framework</span>
+    <a href="../deepseek-gemini-pipeline/">DeepSeek TUI × Gemini Flash: A Multi-Model Coding Pipeline</a>
+    <p>How I built a $0.002-per-workflow pipeline that turns screenshots into React code — 250× cheaper than Claude Code.</p>
+  </div>
+  
+  <div class="endmatter">
+    <h3>Sources & Data</h3>
+    <ul class="endlinks">
+      <li><a href="https://www.morningstar.com/stocks/xnas/mu/quote">Morningstar — MU Fair Value & Moat Analysis</a></li>
+      <li><a href="https://finance.yahoo.com/quote/MU/">Yahoo Finance — Real-time MU Data</a></li>
+      <li><a href="https://www.marketbeat.com/stocks/NASDAQ/MU/">MarketBeat — Analyst Ratings & Short Interest</a></li>
+      <li><a href="https://www.tipranks.com/analysts/timothy-arcuri">TipRanks — Timothy Arcuri (UBS) Track Record</a></li>
+      <li><a href="https://seekingalpha.com/article/4742011-micron-technology-mu-ubs-arcuri-1625-price-target">SeekingAlpha — UBS Arcuri $1,625 Target (May 26, 2026)</a></li>
+      <li><a href="https://finance.yahoo.com/news/bernstein-memory-tracker-may-2026.html">Yahoo Finance — Bernstein Memory Tracker (May 7, 2026)</a></li>
+    </ul>
+    <p class="disclosure">This analysis is independent research for educational purposes only. The author holds no position in MU at the time of publication. Not financial advice. Do your own due diligence before making investment decisions.</p>
+  </div>
+</section>
+
+    </article>
+  </div>
+</div>
+
+<div class="wrap">
+  <footer class="foot">
+    <div class="f-brand">AI Agents <span>/</span> Field Guide</div>
+    <div class="f-note">Published May 2026 · Independent research · Not financial advice</div>
+  </footer>
+</div>
+
+<script>
+var progress=document.getElementById('progress');
+function updateProgress(){var h=document.documentElement;var max=h.scrollHeight-h.clientHeight;var pct=max>0?(h.scrollTop/max)*100:0;progress.style.width=pct+'%';}
+document.addEventListener('scroll',updateProgress,{passive:true});window.addEventListener('resize',updateProgress);updateProgress();
+
+var sections=Array.prototype.slice.call(document.querySelectorAll('section.section'));
+var tocLinks=Array.prototype.slice.call(document.querySelectorAll('#toc a'));
+function spy(){var pos=window.scrollY+window.innerHeight*0.3;var current=sections[0];for(var i=0;i<sections.length;i++){if(sections[i].offsetTop<=pos)current=sections[i];}tocLinks.forEach(function(a){a.classList.toggle('active',a.getAttribute('href')==='#'+current.id);});}
+document.addEventListener('scroll',spy,{passive:true});window.addEventListener('resize',spy);spy();
+</script>
+</body>
+</html>
