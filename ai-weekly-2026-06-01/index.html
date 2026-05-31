@@ -1,44 +1,44 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI 周报 · 2026年6月1日 — 新王登基，旧王犹在</title>
-<meta name="description" content="Anthropic估值超越OpenAI，推理元年开启，Broadcom迎来ASIC时刻，NVIDIA投资转向应用层，Intel涨500%但缺基本面，能源硬约束逼近。">
-<meta property="og:title" content="AI 周报 · 2026年6月1日 — 新王登基，旧王犹在">
-<meta property="og:description" content="Anthropic估值超越OpenAI，推理元年开启，Broadcom迎来ASIC时刻。">
+<title>The Inference Pivot: What AI's Direction Change Means for Capital — A Framework</title>
+<meta name="description" content="Anthropic just passed OpenAI in valuation on one-third the revenue. NVIDIA is buying its own customers. Broadcom is about to announce something on June 3. The industry is not slowing down — it is changing direction.">
+<meta property="og:title" content="The Inference Pivot: What AI's Direction Change Means for Capital">
+<meta property="og:description" content="Anthropic just passed OpenAI in valuation on one-third the revenue. NVIDIA is buying its own customers. Broadcom is about to announce something on June 3.">
 <meta property="og:image" content="https://hwan50.github.io/ai-agents-guide/ai-weekly-2026-06-01/cover.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="AI 周报 · 2026年6月1日 — 新王登基，旧王犹在">
-<meta name="twitter:description" content="Anthropic估值超越OpenAI，推理元年开启，Broadcom迎来ASIC时刻。">
+<meta name="twitter:title" content="The Inference Pivot: What AI's Direction Change Means for Capital">
+<meta name="twitter:description" content="Anthropic just passed OpenAI in valuation on one-third the revenue. The industry is not slowing down — it is changing direction.">
 <meta name="twitter:image" content="https://hwan50.github.io/ai-agents-guide/ai-weekly-2026-06-01/cover.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..600&family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..600&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..500&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{--paper:#f4f0e7;--paper-2:#ebe5d8;--ink:#211f1b;--ink-soft:#46423a;--muted:#7c7567;--rule:#d8d1c0;--accent:#b8492f;--accent-deep:#9a3a23;--teal:#2f6b66;--maxread:42rem;}
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
-  body{background:var(--paper);color:var(--ink);font-family:"Noto Serif SC","STSong","FangSong",Georgia,serif;font-size:1.15rem;line-height:1.85;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  body{background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:1.225rem;line-height:1.72;-webkit-font-smoothing:antialiased;}
   #progress{position:fixed;top:0;left:0;height:3px;width:0%;background:var(--accent);z-index:200;transition:width .1s linear;}
   .wrap{max-width:74rem;margin:0 auto;padding:0 1.6rem;}
-  .masthead{border-bottom:1px solid var(--rule);padding:1.1rem 0;display:flex;align-items:center;justify-content:space-between;font-family:"Inter","Noto Sans SC",sans-serif;}
+  .masthead{border-bottom:1px solid var(--rule);padding:1.1rem 0;display:flex;align-items:center;justify-content:space-between;font-family:"Inter",sans-serif;}
   .masthead .brand{font-weight:700;font-size:.82rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink);text-decoration:none;}
   .masthead .brand span{color:var(--accent)}
   .masthead .issue{font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);}
   header.hero{padding:4.5rem 0 1rem}
-  .kicker{font-family:"Inter","Noto Sans SC",sans-serif;font-weight:600;font-size:.78rem;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin-bottom:1.4rem;display:flex;align-items:center;gap:.7rem;}
+  .kicker{font-family:"Inter",sans-serif;font-weight:600;font-size:.78rem;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin-bottom:1.4rem;display:flex;align-items:center;gap:.7rem;}
   .kicker::after{content:"";flex:0 0 2.4rem;height:1px;background:var(--accent)}
-  h1.title{font-family:"Fraunces","Noto Serif SC",serif;font-weight:600;font-size:clamp(2.4rem,5.5vw,4.2rem);line-height:1.1;letter-spacing:.02em;max-width:22ch;margin-bottom:1.6rem;}
-  .standfirst{font-family:"Noto Serif SC","STSong",serif;font-style:normal;font-weight:400;font-size:clamp(1.2rem,2.2vw,1.5rem);line-height:1.7;color:var(--ink-soft);max-width:38rem;margin-bottom:2.2rem;}
-  .byline{display:flex;flex-wrap:wrap;gap:.55rem 1.3rem;align-items:center;font-family:"Inter","Noto Sans SC",sans-serif;font-size:.82rem;letter-spacing:.04em;color:var(--muted);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:.9rem 0;}
+  h1.title{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(2.6rem,6.4vw,5rem);line-height:1.04;letter-spacing:-.02em;max-width:18ch;margin-bottom:1.6rem;}
+  .standfirst{font-family:"Newsreader",serif;font-style:italic;font-size:clamp(1.3rem,2.4vw,1.6rem);line-height:1.5;color:var(--ink-soft);max-width:38rem;margin-bottom:2.2rem;}
+  .byline{display:flex;flex-wrap:wrap;gap:.55rem 1.3rem;align-items:center;font-family:"Inter",sans-serif;font-size:.82rem;letter-spacing:.04em;color:var(--muted);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:.9rem 0;}
   .byline strong{color:var(--ink);font-weight:600}
   .byline .dot{width:3px;height:3px;border-radius:50%;background:var(--muted);}
   figure.hero-fig{margin:2.6rem 0 0}
   figure.hero-fig img{width:100%;display:block;border:1px solid var(--rule);background:var(--paper-2);}
-  figcaption{font-family:"Inter","Noto Sans SC",sans-serif;font-size:.78rem;color:var(--muted);margin-top:.7rem;letter-spacing:.02em;padding-left:1rem;border-left:2px solid var(--accent);line-height:1.5;}
+  figcaption{font-family:"Inter",sans-serif;font-size:.78rem;color:var(--muted);margin-top:.7rem;letter-spacing:.02em;padding-left:1rem;border-left:2px solid var(--accent);}
   .layout{display:grid;grid-template-columns:15rem 1fr;gap:3.5rem;padding:3.5rem 0 2rem;align-items:start;}
-  nav.toc{position:sticky;top:2rem;font-family:"Inter","Noto Sans SC",sans-serif;}
+  nav.toc{position:sticky;top:2rem;font-family:"Inter",sans-serif;}
   nav.toc .toc-label{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:600;padding-bottom:.8rem;margin-bottom:.4rem;border-bottom:1px solid var(--rule);}
   nav.toc ol{list-style:none;counter-reset:toc}
   nav.toc li{counter-increment:toc}
@@ -48,46 +48,38 @@
   nav.toc a.active{color:var(--accent);font-weight:600;border-left-color:var(--accent);}
   nav.toc a.active::before{color:var(--accent)}
   article{max-width:var(--maxread);min-width:0}
-  article p{margin:0 0 1.5rem;text-align:justify;}
+  article p{margin:0 0 1.35rem}
   article p a,article li a,.endlinks a{color:var(--accent-deep);text-decoration:none;border-bottom:1px solid var(--rule);transition:border-color .15s;}
   article p a:hover,article li a:hover,.endlinks a:hover{border-bottom-color:var(--accent);}
   .section{padding-top:2.4rem;scroll-margin-top:1.5rem}
-  .sec-num{font-family:"Inter","Noto Sans SC",sans-serif;font-weight:700;font-size:.78rem;letter-spacing:.16em;color:var(--accent);text-transform:uppercase;display:block;margin-bottom:.55rem;}
-  h2{font-family:"Fraunces","Noto Serif SC",serif;font-weight:600;font-size:clamp(1.7rem,3.2vw,2.4rem);line-height:1.18;letter-spacing:.02em;margin-bottom:1.2rem;}
-  h3{font-family:"Fraunces","Noto Serif SC",serif;font-weight:600;font-size:1.3rem;line-height:1.3;margin:2.3rem 0 .9rem;}
+  .sec-num{font-family:"Inter",sans-serif;font-weight:700;font-size:.78rem;letter-spacing:.16em;color:var(--accent);text-transform:uppercase;display:block;margin-bottom:.55rem;}
+  h2{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(1.85rem,3.6vw,2.7rem);line-height:1.12;letter-spacing:-.015em;margin-bottom:1.2rem;}
+  h3{font-family:"Fraunces",serif;font-weight:600;font-size:1.4rem;line-height:1.25;margin:2.3rem 0 .9rem;}
   h2+p,h3+p{margin-top:0}
-  article blockquote{margin:2.6rem 0;font-family:"Noto Serif SC","STSong",serif;font-weight:600;font-size:clamp(1.2rem,2.2vw,1.45rem);line-height:1.6;color:var(--ink);padding-left:1.6rem;border-left:3px solid var(--accent);text-align:justify;}
-  article blockquote .attr{display:block;font-family:"Inter","Noto Sans SC",sans-serif;font-weight:500;font-style:normal;font-size:.82rem;letter-spacing:.04em;color:var(--muted);margin-top:.9rem;}
+  article blockquote{margin:2.6rem 0;font-family:"Fraunces",serif;font-weight:500;font-style:italic;font-size:clamp(1.5rem,3vw,2rem);line-height:1.32;color:var(--ink);padding-left:1.6rem;border-left:3px solid var(--accent);}
+  article blockquote .attr{display:block;font-family:"Inter",sans-serif;font-style:normal;font-weight:500;font-size:.82rem;letter-spacing:.04em;color:var(--muted);margin-top:.9rem;}
   .callout{margin:2rem 0;padding:1.3rem 1.5rem;background:var(--paper-2);border-left:3px solid var(--teal);}
   .callout.warn{border-left-color:var(--accent)}
-  .callout .c-label{font-family:"Inter","Noto Sans SC",sans-serif;font-weight:700;font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;color:var(--teal);display:block;margin-bottom:.4rem;}
+  .callout .c-label{font-family:"Inter",sans-serif;font-weight:700;font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;color:var(--teal);display:block;margin-bottom:.4rem;}
   .callout.warn .c-label{color:var(--accent)}
-  .callout p{margin:0;font-size:1.08rem;line-height:1.7}
-  .data-box{margin:1.8rem 0;padding:1.2rem 1.4rem;background:var(--paper-2);border:1px solid var(--rule);}
-  .data-box .db-label{font-family:"Inter","Noto Sans SC",sans-serif;font-weight:700;font-size:.72rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:.6rem;}
-  .data-box .db-num{font-family:"Fraunces",serif;font-weight:600;font-size:2rem;color:var(--accent);line-height:1;}
-  .data-box .db-desc{font-family:"Inter","Noto Sans SC",sans-serif;font-size:.88rem;color:var(--muted);margin-top:.4rem;}
-  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin:1.8rem 0;}
-  .grid-2 .card{border:1px solid var(--rule);padding:1.3rem;background:var(--paper-2);}
-  .grid-2 .card h4{font-family:"Inter","Noto Sans SC",sans-serif;font-weight:700;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.7rem;color:var(--muted);}
-  .grid-2 .card p{margin:0;font-size:1.02rem;line-height:1.6;color:var(--ink-soft);}
+  .callout p{margin:0;font-size:1.08rem;line-height:1.6}
   .endmatter{border-top:3px solid var(--ink);margin-top:3rem;padding-top:2.2rem;}
-  .endmatter h3{margin-top:0;font-family:"Fraunces","Noto Serif SC",serif;font-weight:600;font-size:1.4rem;}
+  .endmatter h3{margin-top:0}
   .endlinks{list-style:none;padding:0;margin:1rem 0 0}
   .endlinks li{padding:.7rem 0;border-bottom:1px solid var(--rule);display:flex;align-items:baseline;gap:.6rem;}
   .endlinks li::before{content:"\2192";color:var(--accent);font-weight:700}
-  .endlinks a{font-family:"Inter","Noto Sans SC",sans-serif;font-size:.98rem;font-weight:500}
-  .disclosure{font-size:.92rem;font-style:italic;color:var(--muted);margin-top:1.6rem;font-family:"Noto Serif SC",serif;}
+  .endlinks a{font-family:"Inter",sans-serif;font-size:.98rem;font-weight:500}
+  .disclosure{font-size:.92rem;font-style:italic;color:var(--muted);margin-top:1.6rem;}
   .related{margin:2.2rem 0;padding:1.4rem 1.6rem;border:1px solid var(--rule);background:var(--paper-2);}
-  .related .c-label{font-family:"Inter","Noto Sans SC",sans-serif;font-weight:700;font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:.5rem;}
-  .related a{font-family:"Fraunces","Noto Serif SC",serif;font-weight:600;font-size:1.15rem;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule);transition:border-color .15s;}
+  .related .c-label{font-family:"Inter",sans-serif;font-weight:700;font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:.5rem;}
+  .related a{font-family:"Fraunces",serif;font-weight:600;font-size:1.15rem;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule);transition:border-color .15s;}
   .related a:hover{border-bottom-color:var(--accent)}
   .related p{font-size:1.02rem;line-height:1.55;color:var(--ink-soft);margin:.4rem 0 0}
-  footer.foot{border-top:1px solid var(--rule);margin-top:3.5rem;padding:2.2rem 0 3rem;font-family:"Inter","Noto Sans SC",sans-serif;display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between;align-items:center;}
+  footer.foot{border-top:1px solid var(--rule);margin-top:3.5rem;padding:2.2rem 0 3rem;font-family:"Inter",sans-serif;display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between;align-items:center;}
   footer.foot .f-brand{font-weight:700;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;}
   footer.foot .f-brand span{color:var(--accent)}
   footer.foot .f-note{font-size:.8rem;color:var(--muted);}
-  @media(max-width:880px){body{font-size:1.05rem}.layout{grid-template-columns:1fr;gap:0;padding-top:2.2rem}nav.toc{position:static;margin-bottom:2.5rem;padding:1.1rem 1.2rem;background:var(--paper-2);border:1px solid var(--rule);}nav.toc ol{columns:2;column-gap:1.4rem;}nav.toc a{padding-left:.6rem;margin-left:0;border-left:none}nav.toc a.active{border-left:none}header.hero{padding-top:2.6rem}.grid-2{grid-template-columns:1fr}}
+  @media(max-width:880px){body{font-size:1.12rem}.layout{grid-template-columns:1fr;gap:0;padding-top:2.2rem}nav.toc{position:static;margin-bottom:2.5rem;padding:1.1rem 1.2rem;background:var(--paper-2);border:1px solid var(--rule);}nav.toc ol{columns:2;column-gap:1.4rem;}nav.toc a{padding-left:.6rem;margin-left:0;border-left:none}nav.toc a.active{border-left:none}header.hero{padding-top:2.6rem}}
   @media(max-width:520px){.wrap{padding:0 1.1rem}nav.toc ol{columns:1}blockquote{padding-left:1.1rem}}
 </style>
 </head>
@@ -97,21 +89,21 @@
 <div class="wrap">
   <div class="masthead">
     <a href="/ai-agents-guide/" class="brand">AI Agents <span>/</span> Field Guide</a>
-    <div class="issue">AI Weekly · Jun 1, 2026</div>
+    <div class="issue">Framework Essay · No. 10</div>
   </div>
 </div>
 
 <div class="wrap">
   <header class="hero">
-    <div class="kicker">Industry Pulse</div>
-    <h1 class="title">新王登基，旧王犹在</h1>
-    <p class="standfirst">Anthropic 估值超越 OpenAI，推理元年开启，Broadcom 迎来 ASIC 时刻。这不是财务事件，而是信号——资本市场正在用估值投票，选出一个不同的未来。</p>
+    <div class="kicker">The Inference Pivot</div>
+    <h1 class="title">What AI's Direction Change Means for Capital</h1>
+    <p class="standfirst">Anthropic just passed OpenAI in valuation on one-third the revenue. NVIDIA is buying its own customers. Broadcom is about to announce something on June 3. The industry is not slowing down — it is changing direction.</p>
     <div class="byline">
-      <span>发布于 <strong>2026年6月1日</strong></span>
+      <span>Updated <strong>Jun 1, 2026</strong></span>
       <span class="dot"></span>
-      <span><strong>8 min</strong> read</span>
+      <span><strong>10 min</strong> read</span>
       <span class="dot"></span>
-      <span>独立研究，仅供参考</span>
+      <span>Independent research. Not financial advice.</span>
     </div>
   </header>
 </div>
@@ -120,148 +112,132 @@
   <div class="layout">
 
     <nav class="toc" id="toc">
-      <div class="toc-label">目录</div>
+      <div class="toc-label">Contents</div>
       <ol>
-        <li><a href="#throne">新王登基，旧王犹在</a></li>
-        <li><a href="#inference">推理元年</a></li>
-        <li><a href="#intel">500% 与 50 分</a></li>
-        <li><a href="#policy">一条政策，两个市场</a></li>
-        <li><a href="#energy">能源：即将到来的硬约束</a></li>
-        <li><a href="#apple">Apple iOS 27 与端侧 AI</a></li>
-        <li><a href="#watch">明日观察</a></li>
+        <li><a href="#inversion">The Valuation Inversion</a></li>
+        <li><a href="#pivot">The Inference Pivot</a></li>
+        <li><a href="#two-speed">The Two-Speed Market</a></li>
+        <li><a href="#split">The Policy Split</a></li>
+        <li><a href="#ceiling">The Physical Ceiling</a></li>
       </ol>
     </nav>
 
     <article>
 
-<section class="section" id="throne">
-  <span class="sec-num">01</span>
-  <h2>新王登基，旧王犹在</h2>
-  
-  <p>Anthropic 终于得到了那个头衔。NYT 本周报道，这家以安全为信条的初创公司，估值已压倒 OpenAI，成为全球最有价值的人工智能公司。</p>
-  
-  <p>这与其说是财务事件，不如说是信号。OpenAI 的收入仍是 Anthropic 的三到四倍——前者 2024 年约 37 亿美元，后者约 10 亿——但资本市场已不再按收入定价。它们在赌一个尚未确定的未来：企业客户愿意为"可信的 AI"支付 20% 到 40% 的溢价。参照企业软件市场中"合规云"的定价逻辑，安全本身正在成为定价权。</p>
-  
-  <p>与此同时，OpenAI 内部已迭代到 GPT-5.5，并落地了 Braintrust + Codex 的代码生成工作流。迭代速度仍然领先，但市场选择了相信更安全的那一个。</p>
+<section class="section" id="inversion">
+  <span class="sec-num">Argument 01</span>
+  <h2>The Valuation Inversion</h2>
+
+  <p>I want to start with the fact pattern, because the fact pattern is the entire argument.</p>
+
+  <p>The New York Times reported this week that Anthropic has overtaken OpenAI as the most valuable artificial intelligence company in the world. Anthropic's 2024 revenue was roughly $1 billion. OpenAI's was roughly $3.7 billion. And yet the market has priced Anthropic higher.</p>
+
+  <p>In any framework that values companies by revenue, this is incoherent. The smaller producer should trade at a discount, not a premium. The market's verdict, then, is that we are not in a framework that values AI companies by revenue.</p>
+
+  <p>The market is pricing something else. It is pricing the premium that enterprise customers will pay for AI they consider trustworthy — a 20% to 40% markup over commodity inference, by the pricing logic of the compliance-cloud market. OpenAI may ship faster. GPT-5.5 may iterate ahead. Braintrust and Codex may be the better code-generation workflow. But the market has already voted, and it voted for safety.</p>
+
+  <p>The valuation inversion has a name, and it isn't scale.</p>
 </section>
 
-<section class="section" id="inference">
-  <span class="sec-num">02</span>
-  <h2>推理元年</h2>
-  
-  <p>AI 的行业重心正在经历一次静默但显著的转移：从训练走向推理。</p>
-  
-  <div class="grid-2">
-    <div class="card">
-      <h4>需求端</h4>
-      <p>Goldman Sachs 研究显示，AI Agent 将把 token 消耗量推高 <strong style="color:var(--accent);">24 倍</strong>。推理需求在算力总盘中的占比将从 30% 向 70% 倾斜。</p>
-    </div>
-    <div class="card">
-      <h4>成本端</h4>
-      <p>Pinterest 去掉模型的视觉层，AI 成本下降了 <strong style="color:var(--accent);">90%</strong>。降本不是需求减少的预兆，而是 24 倍增长的前提条件。</p>
-    </div>
-  </div>
-  
-  <p>这三个数字放在一起形成了一个逻辑闭环：24 倍需求 × 单价降 90% = 总支出增长约 2.4 倍。企业预算消化得了。</p>
-  
-  <p>MeMo 记忆模型无需重训练即可将性能提升 26%，同样指向同一个方向：模型瘦身和推理优化的边际回报正在快速上升。</p>
-  
-  <p>这就是为什么 Broadcom 突然被多家媒体同时点名。Broadcom 不做通用 GPU，它给 Google 设计 TPU，给 Apple 设计 AI 芯片。在推理这个场景下，定制 ASIC 的每 token 成本比通用方案低出数倍。当推理占据算力需求的七成，一个数量级的成本差距就不再是边际优势，而是结构性倾斜。多家媒体预测它将在 6 月 3 日发布重大消息——这可能是推理芯片市场格局变化的催化剂。</p>
-  
-  <div class="callout">
-    <span class="c-label">关键推演</span>
-    <p>当推理占据算力需求的 70%，ASIC 相对于 GPU 的成本优势将从"可选优化"变为"结构性刚需"。Broadcom 的 6 月 3 日事件，是这一转换的第一个压力测试。</p>
-  </div>
-  
-  <p>NVIDIA 也看到了方向。38 亿美元——今天它买入两家 AI 公司股票的金额。相对于三万亿市值的体量，这笔钱微不足道（0.13%），但方向本身就是信号。它不是买芯片同行，而是买 AI 应用公司——那些用 NVIDIA 显卡跑业务的客户。卖铲子的正在变成挖金矿的股东。CUDA 的护城河正在加深，形式从技术绑定变成了资本绑定。</p>
+<section class="section" id="pivot">
+  <span class="sec-num">Argument 02</span>
+  <h2>The Inference Pivot</h2>
+
+  <p>What we are in, instead, is a framework where AI's economic value is migrating from training to inference. This is not a side trend. It is the dominant structural shift — and it deserves a name. <strong>Call it the Inference Pivot.</strong></p>
+
+  <p>The Inference Pivot rests on three supports, each independently real, and each independently priced.</p>
+
+  <p>The first is demand. Goldman Sachs research estimates AI Agents will push token consumption up 24×. That is not a marginal increase. It is a demand-structure inversion that moves inference from 30% of total compute spend to 70%. The businesses that are already AI companies — Microsoft, Amazon — will absorb the first wave. The businesses that are not will absorb it later. But the direction is uniform.</p>
+
+  <p>The second is cost. Pinterest stripped the vision layer from its model and cut AI costs by 90%. MeMo memory models improve performance 26% without retraining. The marginal return on model-slimming and inference optimization is rising faster than the marginal return on scale training. That changes the economics of deployment, not just the economics of development.</p>
+
+  <p>The third is architecture. Broadcom does not make general-purpose GPUs. It designs custom ASICs — TPU for Google, AI silicon for Apple. In inference, a custom ASIC delivers token costs an order of magnitude below a general-purpose GPU. When inference dominates the compute stack, that gap stops being a marginal advantage and becomes structural tilt. The June 3 announcement that multiple outlets are predicting will be the first test of whether that tilt is already priced in or still arriving.</p>
+
+  <p>NVIDIA sees the same vector. $3.8 billion — the amount it spent this week acquiring two AI application companies. Against a $3 trillion market cap, the dollars are negligible. But the direction is the entire signal. NVIDIA is not buying chip competitors. It is buying its customers — the companies that run on NVIDIA hardware. The shovel-maker is becoming a shareholder in the gold mines. CUDA's moat is deepening, but its form is shifting from technical lock-in to capital lock-in.</p>
+
+  <p>I do not think the Inference Pivot thesis is wrong. I think it is early, and the market is already pricing its endpoint.</p>
 </section>
 
-<section class="section" id="intel">
-  <span class="sec-num">03</span>
-  <h2>500% 与 50 分</h2>
-  
-  <p>Intel 的股价在过去一年里涨了近 500%。但这是一次典型的低基数反弹——2025 年它曾跌至 20 美元附近。Gaudi 3 加速器在 LLM 推理市场的份额仍未突破 5%。涨的是"Intel 要翻身了"的叙事，AI 产品线的收入占比仍然极低。这个 500% 缺少基本面支撑。</p>
-  
-  <p>与此形成对照的是 ITBench-AA 的基准测试：前沿模型在企业 IT 任务上得分不到 50%。在代码生成和客服等已验证的垂直场景中，Agent 初具实战能力；但在权限管理、工单处理这类更通用的企业任务上，它们还远不合格。</p>
-  
+<section class="section" id="two-speed">
+  <span class="sec-num">Argument 03</span>
+  <h2>The Two-Speed Market</h2>
+
+  <p>Intel's stock is up nearly 500% in the past year. But this is a low-base rebound — it traded near $20 in 2025. Gaudi 3 holds less than 5% share in LLM inference. The 500% is narrative, not product.</p>
+
+  <p>The contrast is ITBench-AA: frontier models score below 50% on enterprise IT tasks. In coding and customer service, agents are operationally viable. In permission management and ticket routing, they are not.</p>
+
   <blockquote>
-    于是有了一个表面上的矛盾：Goldman Sachs 预测 Agent 驱动 token 需求暴增 24 倍，而 Agent 被证明连 IT 部门的日常杂务都做不好。
+    Goldman Sachs predicts 24× token demand growth. ITBench proves agents cannot handle basic enterprise work. Both are true.
   </blockquote>
-  
-  <p>矛盾是因为混淆了两个市场。24 倍来自头部 5% 的企业——那些本身就是 AI 公司的企业（Microsoft、Amazon），以及代码生成、客服等已验证的场景。不及格的基准得分说的是通用 Agent 在更广泛的企业场景中的不成熟。</p>
-  
-  <p>两者现实地共存，但 18 到 24 个月的时间差意味着：<strong>推理芯片先涨，Agent 平台后涨。</strong>节奏比方向更关键。</p>
+
+  <p>The contradiction is an artifact of conflating two markets. The 24× is coming from the top 5% of enterprises — the ones that are already AI companies — and from validated verticals like coding and customer service. The sub-50% scores describe general-purpose agents in broader enterprise contexts. Both realities coexist, but they are separated by an 18-to-24-month maturity gap.</p>
+
+  <p>The implication is temporal, not directional. Inference chips rise first. Agent platforms rise later. Timing the gap matters more than calling the direction.</p>
 </section>
 
-<section class="section" id="policy">
-  <span class="sec-num">04</span>
-  <h2>一条政策，两个市场</h2>
-  
-  <p>两则新闻在同一天出现，像精心编排过。</p>
-  
-  <p>Reuters 报道美国对 NVIDIA 向中国出口芯片施加了新限制。Oracle 宣布签下美国国防部的合同，在机密云上部署 AI。</p>
-  
-  <p>两件事的共同指向是：全球 AI 市场正在被政策力量一分为二。一边是政府合规市场——高单价、长周期、严准入、以可靠性而非价格竞争。另一边是消费市场——价格透明、竞争残酷、迭代迅速。</p>
-  
-  <p>Oracle 这笔合同的真正意义，不在于金额大小，而在于它验证了"政府愿意为安全的 AI 支付高溢价"这个假说。政府 AI 市场估值在 300 亿到 500 亿美元之间，年增速超过 25%，且定价是大众市场的 1.5 到 2 倍。</p>
-  
-  <div class="grid-2">
-    <div class="card">
-      <h4>政府合规市场</h4>
-      <p>高单价、长周期、严准入。Oracle 已切入，Amazon、Microsoft 跟进中。OpenAI 和 Anthropic 尚未获得 FedRAMP 认证。</p>
-    </div>
-    <div class="card">
-      <h4>消费市场</h4>
-      <p>价格透明、竞争残酷、迭代迅速。NVIDIA 中国相关收入占 20-25%，正被出口限制切断。华为昇腾 910B 加速国产替代。</p>
-    </div>
+<section class="section" id="split">
+  <span class="sec-num">Argument 04</span>
+  <h2>The Policy Split</h2>
+
+  <p>Two stories landed on the same day. Reuters reported new U.S. export restrictions on NVIDIA chips to China. Oracle announced a contract to deploy AI on classified clouds for the Department of Defense.</p>
+
+  <p>The coincidence is not coincidence. The global AI market is being split in two by policy.</p>
+
+  <p>On one side is the government-compliance market: high unit prices, long contracts, strict certification, reliability over cost. Oracle's deal validates the hypothesis that governments will pay a premium for secure AI. That market is valued at $30 billion to $50 billion, growing over 25% annually, and pricing at 1.5 to 2× the consumer tier.</p>
+
+  <p>On the other side is the consumer market: transparent pricing, brutal competition, rapid iteration. NVIDIA's China-related revenue is roughly 20% to 25% of total. The export restrictions cut that stream off. The government contracts are replacing it.</p>
+
+  <p>OpenAI and Anthropic are not yet in the government market — neither has FedRAMP certification. The premium is going to systems integrators and cloud providers. The AI labs built the models. The policy framework is deciding who gets paid for them.</p>
+
+  <div class="callout warn">
+    <span class="c-label">The Redistribution</span>
+    <p>America is restricting NVIDIA's access to 20-25% of its revenue base. It is simultaneously creating a government AI market valued at $30-50B with 1.5-2× pricing power. The net effect is not a loss. It is a transfer — from consumer-margin chips to government-margin contracts, from NVIDIA's P&L to Oracle's.</p>
   </div>
-  
-  <p>美国出口限制正在切断 NVIDIA 约 20-25% 的中国相关收入，但政府合同的溢价正在补上这个缺口。一条政策切出了两个世界，而两个世界的定价逻辑完全不同。</p>
 </section>
 
-<section class="section" id="energy">
-  <span class="sec-num">05</span>
-  <h2>能源：即将到来的硬约束</h2>
-  
-  <p>分析到这一步，还缺一个很多人不愿面对的变量：电力。</p>
-  
-  <p>AI 用电量正以年增 300% 的速度膨胀。一次大规模训练耗电约 10 兆瓦时，NVIDIA H100 和 B200 集群的部署已受限于数据中心的电力容量。Google 和 Microsoft 已经开始在核电站旁边选址建设数据中心。</p>
-  
-  <p>能效比——每瓦特产生的推理量——正在取代峰值算力成为芯片竞争的新维度。而数据中心建设周期已从 12 个月拉长至 24 个月。这个物理约束可能比芯片短缺更早成为行业瓶颈。</p>
-</section>
+<section class="section" id="ceiling">
+  <span class="sec-num">Argument 05</span>
+  <h2>The Physical Ceiling</h2>
 
-<section class="section" id="apple">
-  <span class="sec-num">06</span>
-  <h2>Apple iOS 27 与端侧 AI</h2>
-  
-  <p>Bloomberg 报道，Apple 将全面重构 iOS 27 的 Siri 和相关 AI 功能。这是 Apple Intelligence 推出以来最大的技术更新。结合 Google I/O 上 Gemini 端侧能力的展示，端侧 AI 正在从"尝鲜"阶段进入"规模化"阶段。</p>
-  
-  <p>端侧推理占总体算力消耗的比例，可能在一年内从不足 5% 跃升至 20-30%。这对芯片格局的影响是深远的：Apple Silicon（M4 及后续）和 Qualcomm 将受益。</p>
-</section>
+  <p>There is one variable most analyses skip because it is uncomfortable: electricity.</p>
 
-<section class="section" id="watch">
-  <span class="sec-num">07</span>
-  <h2>明日观察</h2>
-  
-  <p>这三件事值得在接下来 24 小时内跟踪。</p>
-  
-  <p><strong>第一，Broadcom 的 6 月 3 日事件。</strong>如果确实是推理芯片或数据中心订单的公告，ASIC 接棒 GPU 的逻辑就算通过了第一次压力测试。</p>
-  
-  <p><strong>第二，Apple iOS 27 重构的更多细节。</strong>这将决定端侧 AI 的竞争格局——自研模型还是接入 Google Gemini，两种路径的行业影响截然不同。</p>
-  
-  <p><strong>第三，Oracle 国防部合同的连锁反应。</strong>Amazon 和 Microsoft 是否跟进，将确认政府 AI 市场的定价逻辑。</p>
-  
+  <p>AI power consumption is expanding at 300% annually. A large training run consumes roughly 10 MWh. H100 and B200 cluster deployments are already constrained by data center power capacity. Google and Microsoft are siting new facilities next to nuclear plants.</p>
+
+  <p>Energy efficiency — inference per watt — is replacing peak FLOPS as the competitive dimension for chips. And data center construction timelines have stretched from 12 months to 24 months. That physical constraint may bind the industry before chip supply does.</p>
+
+  <p>Apple is moving Siri and core AI functions to on-device processing in iOS 27. Google demonstrated Gemini running on-device at I/O. Edge AI is shifting from experimental to scaled, potentially moving 20% to 30% of inference compute off the cloud within a year. Apple Silicon and Qualcomm benefit not because they are faster than data center GPUs, but because they are faster than the power grid.</p>
+
+  <p>The trade is not to pick winners in each layer. The trade is to notice that the market has already priced the endpoint of every thesis — Anthropic's Trust Premium, Broadcom's ASIC tilt, NVIDIA's capital lock-in, the Policy Split's redistribution — while the physical infrastructure to support them is still being built. The market is pricing certainty about direction without pricing uncertainty about timing.</p>
+
+  <p>Three events in the next 48 hours will test which of these theses are priced in and which are still arriving.</p>
+
+  <p>Broadcom's June 3 announcement. If it confirms large-scale inference ASIC or data center orders, the structural-tilt thesis passes its first stress test.</p>
+
+  <p>Apple's iOS 27 AI details. Whether Siri runs on an Apple model or a Google Gemini backend determines whether edge AI is a platform shift or a distribution deal.</p>
+
+  <p>Oracle's DoD contract follow-through. If Amazon and Microsoft announce similar classified-cloud deployments, the government-premium thesis is confirmed as a market-wide repricing, not a single-company anomaly.</p>
+
+  <p>The market has already chosen. Your job is to notice which bets are fully priced and which are still building.</p>
+
+  <p>The Trust Premium is a real thesis. The Inference Pivot is a real thesis. The Policy Split is a real thesis. They are also, in different corners of the market, fully priced ones. <strong>Those are the same sentence.</strong></p>
+
+  <div class="related">
+    <span class="c-label">Related Framework</span>
+    <a href="../mu-memory-paradox/">The Political Premium: Micron at $886</a>
+    <p>Memory as flag, memory as infrastructure — a buy-side framework for why Micron trades at twice the multiple of its Korean rival.</p>
+  </div>
+
   <div class="endmatter">
-    <h3>数据来源</h3>
+    <h3>Sources & Data</h3>
     <ul class="endlinks">
-      <li><a href="https://www.nytimes.com">NYT — Anthropic 估值报道</a></li>
-      <li><a href="https://www.goldmansachs.com">Goldman Sachs — AI Agent Token 消耗预测</a></li>
-      <li><a href="https://www.reuters.com">Reuters — NVIDIA 出口限制报道</a></li>
-      <li><a href="https://www.bloomberg.com">Bloomberg — Apple iOS 27 重构报道</a></li>
-      <li><a href="https://venturebeat.com">VentureBeat — 推理芯片市场分析</a></li>
-      <li><a href="https://arstechnica.com">Ars Technica — ITBench-AA 基准测试</a></li>
+      <li><a href="https://www.nytimes.com">NYT — Anthropic Valuation Report</a></li>
+      <li><a href="https://www.goldmansachs.com">Goldman Sachs — AI Agent Token Consumption Forecast</a></li>
+      <li><a href="https://www.reuters.com">Reuters — U.S. Export Restrictions on NVIDIA China Chips</a></li>
+      <li><a href="https://www.bloomberg.com">Bloomberg — Apple iOS 27 AI Rebuild</a></li>
+      <li><a href="https://venturebeat.com">VentureBeat — Inference Chip Market Analysis</a></li>
+      <li><a href="https://arstechnica.com">Ars Technica — ITBench-AA Enterprise Agent Benchmarks</a></li>
     </ul>
-    <p class="disclosure">本文数据来源包括 NYT、Goldman Sachs、Reuters、Bloomberg、VentureBeat、Ars Technica 等公开报道。仅供参考，不构成投资建议。</p>
+    <p class="disclosure">This analysis is independent research for educational purposes only. All price targets, forecasts, and estimates are cited from named analysts and institutions. Past performance does not predict future results. Do your own due diligence before making investment decisions.</p>
   </div>
 </section>
 
@@ -272,7 +248,7 @@
 <div class="wrap">
   <footer class="foot">
     <div class="f-brand">AI Agents <span>/</span> Field Guide</div>
-    <div class="f-note">Published Jun 1, 2026 · 独立研究 · 仅供参考</div>
+    <div class="f-note">Published Jun 2026 · Independent research · Not financial advice</div>
   </footer>
 </div>
 
