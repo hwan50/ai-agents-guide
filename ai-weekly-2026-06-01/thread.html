@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Inference Pivot — Thread</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..900&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700;800&display=swap');
+  :root{--paper:#0a0a0a;--ink:#f4f0e7;--muted:#7c7567;--accent:#b8492f;--teal:#2f6b66;--gold:#c9a84c;--rule:#2a2a2a;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:"Inter",sans-serif;max-width:620px;margin:0 auto;padding:3rem 1.5rem 4rem;line-height:1.6;}
+  .thread-header{text-align:center;margin-bottom:3rem;padding-bottom:2rem;border-bottom:2px solid var(--rule);}
+  .thread-header .kicker{font-family:"IBM Plex Mono",monospace;font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.2em;color:var(--accent);margin-bottom:1rem;}
+  .thread-header h1{font-family:"Fraunces",serif;font-weight:700;font-size:2rem;line-height:1.1;letter-spacing:-0.01em;margin-bottom:.8rem;}
+  .thread-header .sub{font-size:.95rem;color:var(--muted);font-weight:500;}
+  .tweet{margin-bottom:2.5rem;padding:1.8rem 1.5rem;border:1px solid var(--rule);border-radius:12px;background:#111;position:relative;}
+  .tweet::before{content:attr(data-num);position:absolute;top:-.6rem;left:1.2rem;font-family:"IBM Plex Mono",monospace;font-size:.65rem;font-weight:600;background:var(--paper);color:var(--muted);padding:.15rem .5rem;border:1px solid var(--rule);}
+  .tweet.lead{border-color:var(--accent);background:linear-gradient(135deg,#1a0f0f,#111);}
+  .tweet.lead::before{background:var(--accent);color:var(--paper);border-color:var(--accent);}
+  .tweet-body{font-size:1.15rem;line-height:1.65;font-weight:400;}
+  .tweet-body strong{font-weight:700;color:var(--ink);}
+  .tweet-body .metric{font-family:"Fraunces",serif;font-weight:700;font-size:1.5rem;color:var(--accent);display:inline;}
+  .tweet-body .metric.teal{color:var(--teal);}
+  .tweet-body .metric.gold{color:var(--gold);}
+  .tweet-meta{margin-top:1rem;padding-top:.8rem;border-top:1px solid var(--rule);display:flex;gap:1rem;font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--muted);}
+  .data-card{background:#1a1a1a;border:1px solid var(--rule);border-radius:8px;padding:1.2rem;margin:1rem 0;display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+  .data-item{text-align:center;}
+  .data-item .val{font-family:"Fraunces",serif;font-weight:700;font-size:1.8rem;color:var(--accent);}
+  .data-item .val.teal{color:var(--teal);}
+  .data-item .val.gold{color:var(--gold);}
+  .data-item .label{font-size:.75rem;color:var(--muted);margin-top:.3rem;font-family:"IBM Plex Mono",monospace;text-transform:uppercase;letter-spacing:.08em;}
+  .arrow{text-align:center;margin:1rem 0;color:var(--muted);font-size:1.2rem;}
+  .cta-box{background:linear-gradient(135deg,var(--accent),#7a2a1a);color:var(--paper);padding:1.5rem;border-radius:8px;text-align:center;margin-top:2rem;}
+  .cta-box p{font-weight:600;font-size:1.1rem;margin:0;}
+  .footer{margin-top:3rem;text-align:center;font-size:.75rem;color:var(--muted);font-family:"IBM Plex Mono",monospace;}
+</style>
+</head>
+<body>
+
+<div class="thread-header">
+  <div class="kicker">Thread · Jun 1, 2026</div>
+  <h1>The Inference Pivot</h1>
+  <div class="sub">Five signals. One direction change. What capital is pricing — and what it isn't.</div>
+</div>
+
+<div class="tweet lead" data-num="1/5">
+  <div class="tweet-body">
+    <span class="metric">$ANTH</span> vs <span class="metric teal">$OAI</span><br><br>
+    ~$1B rev &nbsp;vs&nbsp; ~$3.7B rev<br><br>
+    The market just chose the smaller one.<br><br>
+    That's not a fluke. That's a re-pricing.
+  </div>
+  <div class="tweet-meta">
+    <span>The Valuation Inversion</span>
+  </div>
+</div>
+
+<div class="tweet" data-num="2/5">
+  <div class="tweet-body">
+    In any framework that prices AI by revenue, this is incoherent.<br><br>
+    The market is no longer pricing AI by revenue.<br><br>
+    <strong>It's pricing AI by who you'd let near your data.</strong><br><br>
+    OpenAI ships faster. Anthropic ships safer. The market voted.
+  </div>
+  <div class="tweet-meta">
+    <span>Trust Premium → 20-40% markup</span>
+  </div>
+</div>
+
+<div class="tweet" data-num="3/5">
+  <div class="tweet-body">
+    Three signals, one direction:
+  </div>
+  <div class="data-card">
+    <div class="data-item">
+      <div class="val">24×</div>
+      <div class="label">Token demand growth</div>
+    </div>
+    <div class="data-item">
+      <div class="val teal">−90%</div>
+      <div class="label">$PINS cost cut</div>
+    </div>
+    <div class="data-item">
+      <div class="val">$3.8B</div>
+      <div class="label">$NVDA buys customers</div>
+    </div>
+    <div class="data-item">
+      <div class="val gold">$AVGO</div>
+      <div class="label">ASIC · Watch Jun 3</div>
+    </div>
+  </div>
+  <div class="tweet-body">
+    The shift: training → inference. Custom ASIC → general-purpose GPU.<br><br>
+    Shovel-maker is becoming shareholder in the gold mines.
+  </div>
+  <div class="tweet-meta">
+    <span>The Inference Pivot</span>
+  </div>
+</div>
+
+<div class="tweet" data-num="4/5">
+  <div class="tweet-body">
+    AI power use: <span class="metric">+300%</span> YoY<br>
+    Data center builds: <strong>12 → 24 months</strong><br><br>
+    $GOOGL and $MSFT siting next to nuclear plants.<br><br>
+    Edge AI's real advantage isn't compute speed.<br><br>
+    <strong>It's that the power grid hasn't been built yet.</strong>
+  </div>
+  <div class="tweet-meta">
+    <span>Physical Ceiling</span>
+    <span>$AAPL · $QCOM</span>
+  </div>
+</div>
+
+<div class="tweet" data-num="5/5">
+  <div class="tweet-body">
+    The market has priced direction.<br><br>
+    It hasn't priced timing.<br><br>
+    What I'm watching:<br>
+    • $AVGO June 3 — inference ASIC test<br>
+    • $AAPL iOS 27 — platform or distribution deal?<br>
+    • $AMZN / $MSFT response to $ORCL DoD contract<br><br>
+    Bookmark for Tuesday. Then we'll know which thesis is "priced" and which is "arriving."
+  </div>
+  <div class="tweet-meta">
+    <span>Which is most fully priced? Bear case in replies.</span>
+  </div>
+</div>
+
+<div class="cta-box">
+  <p>Full framework with sources → hwan50.github.io/ai-agents-guide/ai-weekly-2026-06-01/</p>
+</div>
+
+<div class="footer">
+  AI Agents Field Guide · Independent research · Not financial advice
+</div>
+
+</body>
+</html>
