@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Inference Pivot — Dashboard</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700;800&display=swap');
+  :root{--paper:#f4f0e7;--ink:#211f1b;--ink-soft:#46423a;--muted:#7c7567;--rule:#d8d1c0;--accent:#b8492f;--teal:#2f6b66;--navy:#1e3a5f;--gold:#c9a84c;--green:#3a7d44;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:"Inter",sans-serif;padding:2rem 1.5rem;min-height:100vh;display:flex;flex-direction:column;align-items:center;}
+  .board{width:100%;max-width:900px;margin:0 auto;}
+  .board-header{text-align:center;margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:3px solid var(--ink);}
+  .board-header h1{font-family:"Fraunces",serif;font-weight:700;font-size:2.4rem;line-height:1.1;letter-spacing:-0.02em;margin-bottom:.6rem;}
+  .board-header .sub{font-size:1rem;color:var(--muted);font-weight:500;letter-spacing:0.04em;}
+  .board-header .date{font-family:"IBM Plex Mono",monospace;font-size:.82rem;color:var(--muted);margin-top:.5rem;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem;}
+  .card{background:var(--paper);border:2px solid var(--ink);padding:1.6rem 1.4rem;position:relative;overflow:hidden;}
+  .card::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--accent);}
+  .card.teal::before{background:var(--teal);}
+  .card.navy::before{background:var(--navy);}
+  .card.gold::before{background:var(--gold);}
+  .card.green::before{background:var(--green);}
+  .card-label{font-family:"IBM Plex Mono",monospace;font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);margin-bottom:.8rem;}
+  .card-metric{font-family:"Fraunces",serif;font-weight:700;font-size:2.6rem;line-height:1;letter-spacing:-0.02em;color:var(--ink);margin-bottom:.4rem;}
+  .card-metric.small{font-size:1.8rem;}
+  .card-delta{font-family:"IBM Plex Mono",monospace;font-size:.85rem;font-weight:600;margin-bottom:.6rem;}
+  .card-delta.up{color:var(--green);}
+  .card-delta.down{color:var(--accent);}
+  .card-delta.neutral{color:var(--navy);}
+  .card-desc{font-size:.88rem;line-height:1.5;color:var(--ink-soft);font-weight:400;}
+  .card-desc strong{font-weight:700;color:var(--ink);}
+  .wide{grid-column:1/-1;}
+  @media(min-width:700px){.wide{grid-column:span 2;}}
+  .compare-row{display:grid;grid-template-columns:1fr 1fr;gap:0;border:2px solid var(--ink);margin-top:1.2rem;}
+  .compare-col{padding:1.4rem;}
+  .compare-col:first-child{border-right:2px solid var(--ink);background:rgba(184,73,47,.06);}
+  .compare-col:last-child{background:rgba(47,107,102,.06);}
+  .compare-label{font-family:"IBM Plex Mono",monospace;font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:var(--muted);margin-bottom:.6rem;}
+  .compare-name{font-family:"Fraunces",serif;font-weight:700;font-size:1.4rem;margin-bottom:.3rem;}
+  .compare-val{font-family:"IBM Plex Mono",monospace;font-size:1.1rem;font-weight:600;margin-bottom:.4rem;}
+  .compare-note{font-size:.8rem;color:var(--ink-soft);line-height:1.4;}
+  .footer-note{text-align:center;margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid var(--rule);font-size:.78rem;color:var(--muted);font-family:"IBM Plex Mono",monospace;}
+  .highlight-box{background:var(--ink);color:var(--paper);padding:1.5rem;margin-top:1.2rem;text-align:center;}
+  .highlight-box p{font-family:"Fraunces",serif;font-weight:600;font-size:1.3rem;line-height:1.4;margin:0;}
+  .highlight-box .attr{font-family:"IBM Plex Mono",monospace;font-size:.75rem;color:var(--rule);margin-top:.6rem;display:block;}
+</style>
+</head>
+<body>
+<div class="board">
+  <div class="board-header">
+    <h1>The Inference Pivot</h1>
+    <div class="sub">Five signals. One direction change. What capital is pricing — and what it isn't.</div>
+    <div class="date">June 1, 2026 · AI Agents Field Guide</div>
+  </div>
+
+  <div class="compare-row wide">
+    <div class="compare-col">
+      <div class="compare-label">Ticker</div>
+      <div class="compare-name">$ANTH</div>
+      <div class="compare-val">~$1B rev</div>
+      <div class="compare-note">Higher valuation on 1/3 the revenue. The market voted for safety over scale.</div>
+    </div>
+    <div class="compare-col">
+      <div class="compare-label">Ticker</div>
+      <div class="compare-name">$OAI</div>
+      <div class="compare-val">~$3.7B rev</div>
+      <div class="compare-note">Ships faster. Iterates ahead. Braintrust + Codex are operationally superior. The market doesn't care.</div>
+    </div>
+  </div>
+
+  <div class="highlight-box wide">
+    <p>"The market is no longer pricing AI by revenue. It's pricing AI by who you'd let near your data."</p>
+    <span class="attr">— The Valuation Inversion</span>
+  </div>
+
+  <div class="grid" style="margin-top:1.2rem;">
+    <div class="card teal">
+      <div class="card-label">Inference Demand</div>
+      <div class="card-metric">24×</div>
+      <div class="card-delta up">Goldman Sachs forecast</div>
+      <div class="card-desc">AI agent token consumption by 2030. Inference moves from <strong>30% → 70%</strong> of total compute spend.</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Cost Restructure</div>
+      <div class="card-metric">−90%</div>
+      <div class="card-delta up">$PINS proprietary embeddings</div>
+      <div class="card-desc">Replaced Qwen3-VL. Latency: <strong>1.2s → 0.3s</strong>. FLOPs: <strong>−75%</strong>. The marginal return on model-slimming now exceeds scale training.</div>
+    </div>
+    <div class="card navy">
+      <div class="card-label">NVIDIA Capital Lock-in</div>
+      <div class="card-metric small">$3.8B</div>
+      <div class="card-delta neutral">Acquisitions this week</div>
+      <div class="card-desc">Not buying chip competitors. Buying its own customers. Shovel-maker → shareholder in the gold mines.</div>
+    </div>
+    <div class="card gold">
+      <div class="card-label">ASIC Structural Tilt</div>
+      <div class="card-metric small">$AVGO</div>
+      <div class="card-delta neutral">Watch June 3</div>
+      <div class="card-desc">Designs custom ASICs for Google TPU and Apple Silicon. In inference, custom silicon delivers <strong>10× lower</strong> token cost than general-purpose GPUs.</div>
+    </div>
+    <div class="card green">
+      <div class="card-label">Physical Ceiling</div>
+      <div class="card-metric">+300%</div>
+      <div class="card-delta down">AI power use YoY</div>
+      <div class="card-desc">Data center build cycles: <strong>12 → 24 months</strong>. $GOOGL and $MSFT siting next to nuclear plants. Edge AI's advantage isn't speed — it's that the grid hasn't been built.</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Policy Split</div>
+      <div class="card-metric small">$ORCL</div>
+      <div class="card-delta up">DoD AI contract</div>
+      <div class="card-desc">Classified cloud deployment. Government market: <strong>1.5–2×</strong> pricing premium. NVIDIA loses 20-25% China revenue. Oracle gains it back on margin.</div>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    Independent research. Not financial advice. Sources: NYT, Goldman Sachs, Pinterest Engineering, Reuters, Bloomberg.
+  </div>
+</div>
+</body>
+</html>
