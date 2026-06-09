@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Accumulator 产品剖析：从结构到定价</title>
+    <meta name="description" content="从结构、术语、定价到自检，将累计期权拆到底。">
+    <meta property="og:title" content="Accumulator 产品剖析：从结构到定价">
+    <meta property="og:description" content="从结构、术语、定价到自检，将累计期权拆到底。">
+    <meta property="og:image" content="https://hwan50.github.io/ai-agents-guide/accumulator-analysis/og.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Accumulator 产品剖析：从结构到定价">
+    <meta name="twitter:description" content="从结构、术语、定价到自检，将累计期权拆到底。">
+    <meta name="twitter:image" content="https://hwan50.github.io/ai-agents-guide/accumulator-analysis/og.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Noto+Serif+SC:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>
+  MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] },
+    chtml: { scale: 1.0 }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js" async></script>
+<style>
+  :root{
+    --paper:#f4f0e7; --paper-2:#ece6d8; --ink:#211f1b; --ink-soft:#4f4a40;
+    --ink-mute:#928b7c; --rule:#ddd6c6; --rule-strong:#c3bba7;
+    --accent:#b8492f; --accent-soft:#cf7a63; --card:#fbf8f1;
+    --dark:#15181d; --dark-2:#1d222a; --green:#54c98c; --green-dim:#2f6147;
+    --display:'Fraunces','Noto Serif SC',Georgia,serif;
+    --serif:'Newsreader','Noto Serif SC',Georgia,serif;
+    --sans:'Inter',system-ui,sans-serif;
+    --mono:'JetBrains Mono','SF Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:var(--serif);font-size:19.6px;line-height:1.72;-webkit-font-smoothing:antialiased}
+
+  .masthead{border-bottom:1px solid var(--rule-strong)}
+  .masthead-inner{max-width:1140px;margin:0 auto;padding:16px 32px;display:flex;justify-content:space-between;align-items:center;font-family:var(--sans);font-size:12.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase}
+  .masthead .left{color:var(--ink)}
+  .masthead .left .sep{color:var(--accent);margin:0 4px}
+  .masthead .right{color:var(--ink-mute);font-weight:500;letter-spacing:.14em}
+
+  .container{max-width:1140px;margin:0 auto;padding:0 32px}
+  .hero{padding:70px 0 0;max-width:760px}
+  .kicker{font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:14px;margin-bottom:30px}
+  .kicker .rule{width:42px;height:1px;background:var(--accent-soft)}
+  h1.title{font-family:var(--display);font-weight:600;font-size:clamp(40px,6.6vw,72px);line-height:1.08;letter-spacing:-.015em;color:var(--ink);margin-bottom:30px}
+  .deck{font-family:var(--serif);font-style:italic;font-size:clamp(20px,2.6vw,24px);line-height:1.5;color:var(--ink-soft);max-width:620px}
+  .meta{margin-top:40px;padding:18px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);font-family:var(--sans);font-size:13px;color:var(--ink-mute);display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center}
+  .meta b{color:var(--ink);font-weight:600}
+  .meta .dot{color:var(--rule-strong)}
+
+  .layout{display:grid;grid-template-columns:200px 1fr;gap:56px;max-width:1140px;margin:48px auto 0;padding:0 32px;align-items:start}
+  /* TOC */
+  .toc{position:sticky;top:32px;font-family:var(--sans)}
+  .toc-h{font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-mute);padding-bottom:14px;border-bottom:1px solid var(--rule)}
+  .toc a{display:flex;gap:10px;padding:7px 0 7px 12px;border-left:2px solid transparent;color:var(--ink-soft);text-decoration:none;font-size:13.5px;line-height:1.35;transition:.15s}
+  .toc a .n{color:var(--ink-mute);font-variant-numeric:tabular-nums;font-size:12px;padding-top:1px}
+  .toc a:hover{color:var(--accent)}
+  .toc a.active{border-left-color:var(--accent);color:var(--accent)}
+  .toc a.active .n{color:var(--accent)}
+
+  article{max-width:720px;min-width:0}
+  .lede{font-size:20px}
+  .lede p{margin:0 0 20px}
+  .dropcap::first-letter{font-family:var(--display);font-weight:600;font-size:4.6em;line-height:.82;float:left;margin:8px 14px 0 0;color:var(--accent)}
+
+  .sec{margin-top:72px}
+  .sec-kick{font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+  h2{font-family:var(--display);font-weight:600;font-size:clamp(27px,3.6vw,38px);line-height:1.18;letter-spacing:-.01em;color:var(--ink);margin-bottom:18px}
+  h3{font-family:var(--display);font-weight:600;font-size:21px;color:var(--ink);margin:34px 0 8px}
+  p{margin:18px 0;color:var(--ink-soft)}
+  p strong,li strong{color:var(--ink);font-weight:600}
+  ul,ol{margin:18px 0;padding-left:24px}
+  li{margin:10px 0;color:var(--ink-soft)}
+
+  blockquote{margin:36px 0;padding:6px 0 6px 28px;border-left:3px solid var(--accent);font-family:var(--display);font-style:italic;font-weight:400;font-size:23px;line-height:1.42;color:var(--ink)}
+  blockquote .attr{display:block;margin-top:14px;font-family:var(--sans);font-style:normal;font-size:13px;letter-spacing:.04em;color:var(--ink-mute)}
+
+  .table-wrap{margin:30px 0;overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-family:var(--sans);font-size:14px;line-height:1.5}
+  thead th{text-align:left;font-weight:700;color:var(--ink);padding:0 16px 10px;border-bottom:2px solid var(--ink);white-space:nowrap}
+  tbody td{padding:12px 16px;border-bottom:1px solid var(--rule);color:var(--ink-soft);vertical-align:top}
+  tbody td strong{color:var(--ink)}
+  tbody tr:last-child td{border-bottom:1px solid var(--rule-strong)}
+
+  /* math display block */
+  .formula{margin:26px 0;padding:22px 26px;background:var(--card);border:1px solid var(--rule);border-radius:8px;overflow-x:auto}
+  .formula .label{font-family:var(--sans);font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-mute);margin-bottom:10px}
+
+  /* callout */
+  .callout{margin:30px 0;padding:18px 22px;background:var(--paper-2);border:1px solid var(--rule-strong);border-radius:8px;font-family:var(--sans);font-size:14.5px;line-height:1.7;color:var(--ink-soft)}
+  .callout b{color:var(--ink)}
+  .verdict{margin:34px 0;padding:24px 28px;background:#f7e7e1;border:1px solid var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;font-family:var(--serif);font-size:18.5px;line-height:1.62;color:var(--ink)}
+  .verdict .big{display:block;font-family:var(--display);font-weight:600;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+  .verdict b{color:var(--accent);font-weight:600}
+  .ladder{margin:30px 0;padding:4px 0}
+  .ladder .rung{display:grid;grid-template-columns:78px 1fr;gap:16px;align-items:baseline;position:relative;padding:10px 0 10px 24px;border-left:2px solid var(--rule-strong);margin-left:10px}
+  .ladder .rung::before{content:'';position:absolute;left:-8px;top:15px;width:12px;height:12px;border-radius:50%;background:var(--rule-strong);border:3px solid var(--paper)}
+  .ladder .rung .px{font-family:var(--mono);font-size:15px;font-weight:500;color:var(--ink)}
+  .ladder .rung .ev{font-family:var(--sans);font-size:14px;color:var(--ink-soft);line-height:1.5}
+  .ladder .rung .ev b{color:var(--ink)}
+  .ladder .rung.up::before{background:var(--green-dim)}
+  .ladder .rung.up .px{color:var(--green-dim)}
+  .ladder .rung.down::before{background:var(--accent)}
+  .ladder .rung.down .px{color:var(--accent)}
+  .ladder .rung.down .ev b{color:var(--accent)}
+  .ladder .rung.now::before{background:var(--ink);width:14px;height:14px;left:-9px;top:14px}
+  .ladder .rung.now .px{color:var(--ink);font-weight:600}
+  .two-cards{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:30px 0}
+  .mini{padding:20px 22px;background:var(--card);border:1px solid var(--rule);border-radius:8px}
+  .mini h4{font-family:var(--display);font-size:17px;color:var(--ink);margin-bottom:6px}
+  .mini .eq{font-family:var(--mono);font-size:12.5px;color:var(--accent);margin:8px 0;line-height:1.5}
+  .mini p{font-family:var(--sans);font-size:13px;margin:6px 0 0;color:var(--ink-mute)}
+
+  /* dark dashboard panel */
+  .dash{margin:36px 0;background:var(--dark);border-radius:12px;padding:26px 26px 22px;color:#cdd3dc;font-family:var(--sans)}
+  .dash-top{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid #2a2f38;padding-bottom:14px;margin-bottom:20px}
+  .dash-title{font-family:var(--display);font-size:21px;color:#fff;font-weight:600}
+  .dash-tag{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#6b7280}
+  .dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .dcard{background:var(--dark-2);border-radius:8px;padding:16px 18px}
+  .dcard .nm{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8a92a0;margin-bottom:8px}
+  .dcard .big{font-family:var(--mono);font-size:30px;font-weight:500;color:var(--green);line-height:1}
+  .dcard .sub{font-size:12px;color:#9aa3b0;margin-top:8px;line-height:1.5}
+  .dcard .sub b{color:#e6eaf0}
+  .dash-bar{margin-top:18px}
+  .dash-bar .track{position:relative;height:7px;border-radius:4px;background:linear-gradient(90deg,#2f6147,#b85c4f,#b8492f)}
+  .dash-bar .lab{display:flex;justify-content:space-between;font-size:11px;color:#9aa3b0;margin-top:8px}
+  .dash-foot{font-size:11.5px;color:#6b7280;margin-top:16px;border-top:1px solid #2a2f38;padding-top:12px}
+
+  .end-rule{text-align:center;color:var(--accent);font-size:16px;letter-spacing:.5em;margin:60px 0 20px}
+
+  footer{border-top:1px solid var(--rule-strong);margin-top:40px}
+  .footer-inner{max-width:1140px;margin:0 auto;padding:40px 32px 70px;font-family:var(--sans);color:var(--ink-mute)}
+  .footer-inner .related{background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:22px 24px;margin-bottom:34px}
+  .footer-inner .related .rk{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+  .footer-inner .related .rt{font-family:var(--display);font-size:20px;color:var(--ink);margin-bottom:6px}
+  .footer-inner .related p{font-size:14px;color:var(--ink-soft);margin:0}
+  .footer-inner h4{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink);margin-bottom:12px}
+  .refs{font-size:12.5px;line-height:1.95}
+  .refs i{font-style:italic}
+  .disclaim{margin-top:24px;padding-top:16px;border-top:1px solid var(--rule);font-size:12px;font-style:italic;line-height:1.6}
+
+  @media (max-width:900px){
+    .layout{grid-template-columns:1fr;gap:0}
+    .toc{position:static;margin-bottom:10px;border:1px solid var(--rule);border-radius:8px;padding:16px 18px;background:var(--card)}
+    .toc-cols{columns:2;column-gap:24px}
+    article{max-width:none}
+  }
+  @media (max-width:560px){
+    body{font-size:18px}
+    .container,.masthead-inner,.layout,.footer-inner{padding-left:20px;padding-right:20px}
+    .two-cards,.dash-grid{grid-template-columns:1fr}
+    .toc-cols{columns:1}
+  }
+  /* ---- polish ---- */
+  h1.title,h2,h3{text-wrap:balance}
+  article p,li{text-wrap:pretty}
+  article h2{letter-spacing:-.015em}
+  tbody tr{transition:background .15s}
+  tbody tr:hover td{background:rgba(184,73,47,.05)}
+  .toc a{border-radius:0 4px 4px 0}
+  .fig-cap{font-family:var(--sans);font-size:12.5px;line-height:1.55;color:var(--ink-mute);text-align:center;margin-top:10px;padding:0 10px}
+  .dcard{border:1px solid #262b34}
+  .dcard .big{letter-spacing:-.01em}
+  .verdict{box-shadow:0 1px 2px rgba(143,45,36,.05)}
+  .formula{box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  ::selection{background:rgba(184,73,47,.16)}
+  .filings{margin:34px 0;border:1px solid var(--rule-strong);border-radius:8px;background:var(--card);overflow:hidden}
+  .filings-h{font-family:var(--sans);font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);padding:14px 22px;border-bottom:1px solid var(--rule)}
+  .filing{padding:16px 22px;border-bottom:1px solid var(--rule)}
+  .filing-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:9px}
+  .filing-bank{font-family:var(--display);font-size:17px;font-weight:600;color:var(--ink)}
+  .filing-fig{font-family:var(--sans);font-size:13.5px;font-weight:600;color:var(--accent);white-space:nowrap}
+  .filing-q{font-family:var(--serif);font-style:italic;font-size:15px;line-height:1.5;color:var(--ink-soft);margin:0}
+  .filing-src{font-family:var(--sans);font-size:11.5px;color:var(--ink-mute);margin-top:9px}
+  .filings-note{padding:15px 22px;background:var(--paper-2);font-family:var(--sans);font-size:13px;line-height:1.65;color:var(--ink-soft)}
+  .filings-note b{color:var(--ink)}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="left">结构性产品 <span class="sep">/</span> Field Guide</div>
+    <div class="right">Field Review · No. 06</div>
+  </div>
+</header>
+
+<div class="container">
+  <div class="hero">
+    <div class="kicker"><span>累计期权 · 产品剖析</span><span class="rule"></span></div>
+    <h1 class="title">Accumulator 产品剖析</h1>
+    <p class="deck">从结构、术语、定价到自检，将累计期权拆到底。它只列出折扣价与敲出价，却从不披露定价所用的波动率——而那恰恰是唯一能反推出银行利润的参数。</p>
+    <div class="meta">
+      <span>Updated <b>2026年6月</b></span><span class="dot">·</span>
+      <span><b>22 min</b> read</span><span class="dot">·</span>
+      <span>结构性产品研究</span>
+    </div>
+  </div>
+</div>
+
+<div class="layout">
+  <nav class="toc">
+    <div class="toc-h">目录</div>
+    <div class="toc-cols">
+      <a href="#s1"><span class="n">01</span><span>产品本质与不对称</span></a>
+      <a href="#s2"><span class="n">02</span><span>术语与保险类比</span></a>
+      <a href="#s3"><span class="n">03</span><span>等价拆解</span></a>
+      <a href="#s4"><span class="n">04</span><span>买方其实是卖方</span></a>
+      <a href="#s5"><span class="n">05</span><span>假对冲与真假保护</span></a>
+      <a href="#s6"><span class="n">06</span><span>怎么走比走到哪重要</span></a>
+      <a href="#s7"><span class="n">07</span><span>保证期:时间锁</span></a>
+      <a href="#s8"><span class="n">08</span><span>两层算计:期限与波动率</span></a>
+      <a href="#s9"><span class="n">09</span><span>四把锁</span></a>
+      <a href="#s10"><span class="n">10</span><span>与期权市场对比</span></a>
+      <a href="#s11"><span class="n">11</span><span>三个波动率</span></a>
+      <a href="#s12"><span class="n">12</span><span>计算方法</span></a>
+      <a href="#s13"><span class="n">13</span><span>两单测算</span></a>
+      <a href="#s14"><span class="n">14</span><span>两层加价与基准</span></a>
+      <a href="#s15"><span class="n">15</span><span>银行如何定价</span></a>
+      <a href="#s16"><span class="n">16</span><span>验证与自检</span></a>
+      <a href="#end"><span class="n">—</span><span>结语</span></a>
+    </div>
+  </nav>
+
+  <article>
+    <div class="lede">
+      <p class="dropcap">累计期权(Accumulator,俗称"打折累计股票")是亚洲私人银行最主力的场外结构性产品之一。它表面是"每天按折扣价买入股票"的好事,实则风险高度不对称、定价高度不透明,并通过多重机制锁住买方的灵活性。本文以脱敏后的两笔真实交易(标的分别为微软与甲骨文)为例,从结构一路拆到定价与自检。</p>
+      <p>文中以"某美资投行"指代产品发行方,以"某亚洲银行"指代分销方。</p>
+    </div>
+
+    <section class="sec" id="s1">
+      <div class="sec-kick">01 — 产品本质</div>
+      <h2>它是什么:上有封顶,下不保底,还带杠杆</h2>
+      <p>累计期权是一份场外、实物交割的累积型合约:期限通常一年(约 250 个交易日),买方每天按一个<strong>低于市价的折扣行权价</strong>买入固定股数。每个交易日按收盘价分三种情形结算:</p>
+      <ul>
+        <li>股价<strong>高于敲出价</strong>(通常为现价的 103%–108%)→ 合约立即终止;</li>
+        <li>股价<strong>介于行权价与敲出价之间</strong> → 买方按折扣价正常接货;</li>
+        <li>股价<strong>低于行权价</strong>(通常为现价的 75%–90%)→ 买方按折扣价<strong>双倍</strong>接货。</li>
+      </ul>
+      <p>由此,买方收益被敲出价封顶(敲出后归零),下行却不设保底、还附带杠杆。这种"上有封顶、下不保底且加杠杆"的不对称,是理解整个产品的起点。它在 2008 年金融危机中因大量亏损而声名狼藉,香港市场俗称其为"I kill you later"。</p>
+    </section>
+
+    <section class="sec" id="s2">
+      <div class="sec-kick">02 — 术语与类比</div>
+      <h2>两组术语,与一个保险类比</h2>
+      <p>期权术语其实是<strong>两组独立</strong>的判断,分开来看便不易混淆。第一组只回答"买的权利还是卖的权利":看涨期权(call)是按某价<strong>买进</strong>的权利,看跌期权(put)是按某价<strong>卖出</strong>的权利。第二组只回答"这张券是持有,还是开给他人":持有(long)是付费买券、握有权利;卖出(short)是开券收钱、负有义务。</p>
+      <p>判断身处哪一方,只看一件事:<strong>一旦出险,由谁履行义务、由谁承担损失,谁便是卖方。</strong> 借保险作比可一举厘清——put 是跌价保险、call 是涨价券(此为券的<em>种类</em>);long 是投保人(交付保费、出险获赔)、short 是保险公司(收取保费、出险赔付)(此为<em>立场</em>)。</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>组合</th><th>通俗含义</th><th>在累计期权里</th></tr></thead>
+        <tbody>
+          <tr><td>long put</td><td>买入跌价保险(下跌时获赔)</td><td>—</td></tr>
+          <tr><td><strong>short put</strong></td><td>卖出跌价保险(下跌时须赔付)</td><td><strong>买方的下行腿</strong></td></tr>
+          <tr><td>long call</td><td>买入涨价券(上涨时获益)</td><td>—</td></tr>
+          <tr><td><strong>short call</strong></td><td>卖出涨价券(上涨时让出收益)</td><td><strong>被敲出封顶</strong></td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section class="sec" id="s3">
+      <div class="sec-kick">03 — 等价拆解</div>
+      <h2>它等于一个两倍规模的卖出宽跨式</h2>
+      <p>把累计期权拆成标准期权头寸,每个累计交易日 \(i\) 的等价形式为:</p>
+      <div class="formula">
+        <div class="label">每日等效头寸(附向上敲出障碍)</div>
+        \[ +\,N\,\cdot\,\mathrm{Call}(K,\,T_i)\;\;-\;\;2N\,\cdot\,\mathrm{Put}(K,\,T_i) \]
+      </div>
+      <p>合起来看,整体等价于<strong>一个远期多头</strong>(每日折价接货)<strong>加一个卖出的看涨期权</strong>(涨过敲出价、收益被截断)<strong>加一个卖出的看跌期权</strong>(跌破行权价双倍接货)。后两条腿即一个<strong>两倍规模的卖出宽跨式(short strangle)</strong>——买方对涨跌双向暴露,只在股价窄幅波动时获利。</p>
+      <p>这一拆解点破了产品最大的误解:<strong>"折扣"不是银行让利,而是买方卖出期权所得的权利金,被压价后折算成折扣提前支付。</strong> 买方不会"再拿一次权利金",因为它已经以折扣形式、且打了折扣地拿到了。</p>
+    </section>
+
+    <section class="sec" id="s4">
+      <div class="sec-kick">04 — 关键纠偏</div>
+      <h2>买方以为在"看多",其实卖出了看多的权利</h2>
+      <p>最隐蔽的一点:<strong>看多一只股票,不等于应该当 call 的买方。</strong> 真正看涨者应买入 long call,以博取上行空间;而累计期权的买方是 <strong>short call</strong>——小幅上涨时仅靠折价接货获取微利,一旦真正大涨却被敲出离场,<strong>无法获得方向判断正确所应得的收益</strong>。与此同时,买方又是 short put,跌破行权价须双倍接货、承担赔付。</p>
+      <blockquote>产品以"看多"包装,实质让买方卖出了看多的权利,并独自承担了下跌的赔付义务。</blockquote>
+    </section>
+
+    <section class="sec" id="s5">
+      <div class="sec-kick">05 — 对冲的真相</div>
+      <h2>"一买一卖能对冲":一句营销话术</h2>
+      <p>当累购出现浮亏,销售常会建议"再加一笔累沽(Decumulator)对冲下行"。理由听起来天衣无缝:累购令客户<strong>买入</strong>、累沽令客户<strong>卖出</strong>,一买一卖、方向相反,自然对冲;且中间区间还白得一笔价差。但把它拆开,这套说辞每一条都站不住。</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>销售的说法(营销话术)</th><th>实质</th></tr></thead>
+        <tbody>
+          <tr><td>"一买一卖,方向对冲"</td><td>只有<strong>远期腿</strong>相消;两张合约<strong>卖出的期权腿相加</strong>,变成加倍的双边裸卖</td></tr>
+          <tr><td>"中间区间还白赚价差"</td><td>以狭窄区间内的小额确定收益为饵,<strong>使客户忽视两端的尾部风险</strong></td></tr>
+          <tr><td>"零成本,不用额外掏钱"</td><td>零成本意味着<strong>再度卖出了一次风险</strong>;真正的保护必然有成本</td></tr>
+          <tr><td>"多一层结构更稳健"</td><td>多一层即多一道加价,且会<strong>放大相反一侧的敞口</strong></td></tr>
+        </tbody>
+      </table></div>
+      <p>核心在于:能相消的只是<strong>方向(远期)那条腿</strong>,而真正构成风险的是<strong>加了杠杆的卖出期权</strong>(下方双倍 put + 上方双倍 call),它在两张合约中是<strong>相加</strong>的,永不抵消。被对冲掉的只是方向,而方向本非最大风险;真正的尾部风险,分文未减。</p>
+
+      <h3>以 Meta 为例:对冲的念头,是亏到一半才冒出来的</h3>
+      <p>真实的顺序不是"一开始就买对冲"——签约时客户只觉得在打折买好股,不会被"对冲结构"诱惑。设在 Meta = <strong>$720</strong> 时签下一张累购(折扣买入价 <strong>$630</strong>,上方敲出 $756)。此后 Meta 不是冲高敲出,而是<strong>一路阴跌</strong>:两三个月跌破 630,之后每天在 630 被迫 <strong>2× 接货</strong>(累购<strong>没有下方敲出,跌没有刹车</strong>);到第七个月已跌破 600,持仓越积越多、浮亏不断扩大。</p>
+      <p><strong>正是在这个深度套牢的点上,"加一张反向累沽对冲一下"的念头(或客户经理的建议)才冒出来。</strong> 但此刻再加反向结构,不过是把同一个陷阱挪到 600 这个新价位,再叠上第二道 markup。</p>
+      <div style="margin:30px 0;background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:20px 14px 12px">
+        <svg viewBox="0 0 720 360" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;font-family:'Inter',sans-serif">
+          <rect x="70" y="153" width="600" height="147" fill="rgba(184,73,47,0.07)"/>
+          <line x1="70" y1="44" x2="670" y2="44" stroke="#c3bba7" stroke-width="1" stroke-dasharray="4 4"/>
+          <line x1="70" y1="75" x2="670" y2="75" stroke="#c3bba7" stroke-width="1" stroke-dasharray="4 4"/>
+          <line x1="70" y1="153" x2="670" y2="153" stroke="#b8492f" stroke-width="1.3"/>
+          <line x1="70" y1="300" x2="670" y2="300" stroke="#211f1b" stroke-width="1.2"/>
+          <text x="62" y="48" text-anchor="end" font-size="11" fill="#928b7c">$756</text>
+          <text x="62" y="79" text-anchor="end" font-size="11" fill="#211f1b">$720</text>
+          <text x="62" y="157" text-anchor="end" font-size="11" fill="#b8492f">$630</text>
+          <text x="62" y="235" text-anchor="end" font-size="11" fill="#928b7c">$540</text>
+          <text x="62" y="303" text-anchor="end" font-size="11" fill="#928b7c">$460</text>
+          <text x="70" y="318" text-anchor="middle" font-size="11" fill="#928b7c">签约</text>
+          <text x="220" y="318" text-anchor="middle" font-size="11" fill="#928b7c">3 月</text>
+          <text x="370" y="318" text-anchor="middle" font-size="11" fill="#928b7c">6 月</text>
+          <text x="520" y="318" text-anchor="middle" font-size="11" fill="#928b7c">9 月</text>
+          <text x="668" y="318" text-anchor="end" font-size="11" fill="#928b7c">12 月</text>
+          <text x="666" y="40" text-anchor="end" font-size="10.5" fill="#928b7c">敲出 $756 · 涨 5% 就出局(从未到达)</text>
+          <text x="664" y="148" text-anchor="end" font-size="10.5" fill="#b8492f">行权价 $630 · 跌破即每天 2× 接货(下方无敲出)</text>
+          <polyline points="70,75 140,108 195,153 290,176 420,182" fill="none" stroke="#211f1b" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+          <polyline points="420,182 500,222 560,252" fill="none" stroke="#b8492f" stroke-width="1.8" stroke-dasharray="5 4"/>
+          <polyline points="420,182 500,140 560,118" fill="none" stroke="#cf7a63" stroke-width="1.8" stroke-dasharray="5 4"/>
+          <circle cx="70" cy="75" r="5" fill="#211f1b"/>
+          <circle cx="420" cy="182" r="6.5" fill="#b8492f" stroke="#fbf8f1" stroke-width="2.5"/>
+          <text x="566" y="256" font-size="10.5" fill="#b8492f">继续跌 → 新"对冲"也敲出</text>
+          <text x="566" y="116" font-size="10.5" fill="#b06a55">反弹 → 被迫卖在回升里</text>
+          <text x="414" y="205" text-anchor="middle" font-size="11.5" font-weight="600" fill="#211f1b">第 7 月 · ~$595</text>
+          <text x="414" y="220" text-anchor="middle" font-size="10.5" fill="#928b7c">此刻才动"反向对冲"的念头</text>
+        </svg>
+        <div class="fig-cap">图:累购在 $720 签下,一路阴跌进入"每天 2× 接货"区;对冲的念头直到第 7 个月、深度套牢时才出现——而那时无论涨跌都已是死局。</div>
+      </div>
+      <p>这里有个常被忽略的细节:<strong>累购在下跌时是 2 倍接货,所以这张反向累沽要真盖住它,就得按 2 倍的量来做</strong>(只做同份额,只能盖住一半)。可累沽自己在上涨方向也有翻倍机制——<strong>2 倍的底量,一旦涨过卖出价,就变成 4 倍卖出</strong>。于是两种走势,结果都更糟。</p>
+      <p><strong>情形 ① — Meta 继续往下(600 → 480)。</strong> 起初这张 2 倍累沽确实在卖、暂时对上了累购的 2 倍接货;但 Meta 跌穿它的下方敲出 $540,<strong>这张"对冲"直接敲出、消失</strong>。而原累购行权价在 630、没有下方敲出,<strong>照旧每天 2 倍接货</strong>,此时市价只剩 480。结果:客户多付一笔成本、银行多赚一层加价,而这张对冲恰好在最需要它的暴跌中失效——风险毫未覆盖。</p>
+      <p><strong>情形 ② — Meta 反弹回升(600 → 700)。</strong> Meta 涨过累沽的卖出价 $640,<strong>翻倍机制触发,客户被迫按 4 倍卖出</strong>:在 640 抛售 4 倍数量,而市价已升至 700。这波本应修复前期接货亏损的反弹,反被这张"对冲"放大为 <strong>4 倍的损失</strong>。一言以蔽之:<strong>为覆盖下跌的 2 倍敞口,反而在上涨一侧暴露出 4 倍的风险。</strong></p>
+      <p>不论价格朝哪个方向运行,结果并无二致:风险并未被对冲,客户只是再度卖出了一次波动率,并向银行多付了一层加价。其根本原因在于,累购与累沽本质同源——二者都只在一段<strong>狭窄的价格区间</strong>内才"有效";价格一旦越出区间,这类结构要么<strong>触发敲出、提前失效</strong>,要么以<strong>加倍的杠杆反向产生损失</strong>。于是它无法提供任何真正的保护:本应对冲风险的那一张,在行情真正到来时率先敲出、随即作废;而本应被它抵消的那条加杠杆亏损,却照常全额生效。客户若<strong>加大对冲一侧的规模</strong>以求覆盖,相反一侧的敞口便被同步放大、损失更甚。何况区间本就狭窄,任何一波像样的行情都会令价格迅速越界——而那一刻,恰是最需要保护的时候。<strong>客户所能改变的,仅是风险敞口落在哪一侧;风险本身,无法消除。</strong></p>
+      <div class="callout"><b>无需数学的判断法</b>:凡是银行主动、积极、以零成本推介的"对冲",客户大概率就是卖出风险、承担赔付的一方;而真正使客户受保护的动作(买入看跌期权),通常需由客户主动发起、并支付保费。</div>
+      <div class="verdict">
+        <span class="big">真保护 vs 假保护</span>
+        真正降低下行风险,只有跳出这个产品家族:<b>买一个普通 put</b>——付保费、<b>不敲出</b>、跌了真赔付、整段都在;或<b>直接减仓、平掉累购</b>。<b>真保护 = 花钱买进一份不会消失的赔付;假保护 = 零成本再卖一次风险。</b>凡是银行零成本帮客户配的"对冲",方向都反了——它让客户再当一次保险公司,而不是投保人。
+      </div>
+    </section>
+
+    <section class="sec" id="s6">
+      <div class="sec-kick">06 — 每一天都算数</div>
+      <h2>怎么走,比走到哪重要</h2>
+      <p>累计期权里,<strong>每一天的价格变动都直接影响客户的收益</strong>——决定盈亏的不是"最后跌到哪",而是"这一年怎么走过来的"。</p>
+      <h3>以 Meta 为例:同样跌到 $580,有人小亏、有人血亏</h3>
+      <p>还用前面那张单子(签约价 $720、折扣买入价 $630、敲出价 $756):</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>价格怎么走(都从 $720 开始)</th><th>接货情况</th><th>结果</th></tr></thead>
+        <tbody>
+          <tr><td>一路阴跌到 <strong>$580</strong></td><td>早早跌破 630,几乎整年在 $630 <strong>双倍</strong>接货</td><td><strong>巨额亏损</strong></td></tr>
+          <tr><td>先反弹到 $750(没敲出)、年中才跌到 <strong>$580</strong></td><td>前半段正常接、后半段才双倍</td><td>中等亏损</td></tr>
+          <tr><td>第 8 天冲破 $756 <strong>敲出</strong></td><td>只接了几天就脱身</td><td>小额获利,提前结束</td></tr>
+        </tbody>
+      </table></div>
+      <p><strong>前两条路终点完全一样(都跌到 $580),结果却一个亏到底、一个只亏一半</strong>——因为第一条几乎整年都在双倍接货,第二条只在后半年才双倍。决定命运的,不是"最后跌到哪",而是"每一天怎么走"。</p>
+      <p>正因如此,这单到底值多少、银行赚多少,<strong>没法用一个公式套出来</strong>——只能把这一年<strong>逐日重演</strong>成千上万遍,再把所有结局平均。这就是用蒙特卡洛模拟的原因:一次推演 <strong>12 万条</strong>可能的走势、每条 <strong>250 天</strong>,就是 <strong>3,000 万个价格点</strong>;反复跑来求各项数字,文中两单一共推演了<strong>约 53 亿个价格点</strong>。</p>
+
+      <div style="margin:30px 0;padding:20px 24px;background:var(--paper-2);border-left:3px solid var(--accent);font-family:var(--mono);font-size:.95rem;line-height:1.8;color:var(--ink-soft)">
+        <div style="font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);margin-bottom:10px">计算规模</div>
+单次 net_value = 120,000 路径 × 250 天 = 3,000 万个节点（向量化为一个数组一次性算完）<br>
+保本波动率用 Brent 求根解 NV(σ)=0，约 15–20 次 net_value/次
+<br>
+两单案例 + 不同 markup 区间，整体累计约 53 亿次节点运算（45–60 亿区间）
+      </div>
+
+      <p>这几十亿不是用来炫耀算力——<strong>它恰恰是"未来一年可以怎么走"的种数,也正好揭穿了"对冲"那句话:</strong></p>
+      <p>销售说"一买一卖,自然对冲"。可这话<strong>只在一种走势下成立</strong>:股价不温不火、稳稳待在那条狭窄的中间带,两头都不敲出、杠杆也不触发。在这几十亿种可能里,<strong>这种"风平浪静"的剧本只占极小极小的一撮</strong>;绝大多数走势,要么一端先敲出、留客户单边裸奔,要么跌破涨破触发翻倍、把亏损放大。</p>
+      <p>所以当有人说"这两个能对冲",他其实是<strong>挑出了那个对客户最有利、却几乎不会发生的剧本,把它当成了常态</strong>。说穿了——<strong>相信这个"对冲",约等于押中那个百亿分之一的好运</strong>:这不是在对冲风险,而是在赌那个最理想、最不可能的走势真的上演。真正的风险,就藏在剩下那几十亿种走法里。</p>
+    </section>
+
+    <section class="sec" id="s7">
+      <div class="sec-kick">07 — 时间锁</div>
+      <h2>保证期:确保客户"在桌上坐够久"</h2>
+      <p>多数合约设有"保证期"——签约后约一个月内,即使股价涨过敲出价也不触发终止,合约继续累计。表面是"保障",实质是锁定银行的最低交易时长,确保其定价优势有足够时间通过对冲兑现。其作用<strong>类似赌场确保赌客在桌时间</strong>:停留越久,概率优势越能实现。区别在于,此处买方处境更不利——跌破行权价后每日接货数量翻倍,相当于在亏损时被强制加注。</p>
+    </section>
+
+    <section class="sec" id="s8">
+      <div class="sec-kick">08 — 两层算计</div>
+      <h2>期限与波动率:银行在签约一刻定死的两个旋钮</h2>
+      <p>银行从这件产品上赚多少,不取决于行情怎么走,而取决于它在<strong>签约那一刻</strong>把两个旋钮拧到哪——<strong>期限</strong>与<strong>波动率</strong>。这两个量在成交时就定死、事后再不改变;客户被锁住,银行却已把利润提前锁进了价里。它们正对应期权里的 Theta(时间)与 Vega(波动率)。</p>
+      <p>先点破一个身份错位:<strong>客户名义上是"买方",实际是那一篮子期权的"卖方"——收取权利金、承担赔付的那一方</strong>(那笔权利金被压价后,伪装成了客户眼里的"折扣")。看懂这一层,下面两个旋钮才看得清。</p>
+      <h3>旋钮一 · 期限(Theta)</h3>
+      <p>期权价值随时间流逝而衰减,所以一张合约能榨出多少利润,与它存活多久成正比:<strong>期限越长,银行累计的加价越厚</strong>(利润随"时间 × 波动率敏感度"放大,名义也越滚越大);短单则薄。于是私行的规矩很一致——<strong>只做一年期及以上,短期一律不接</strong>。这不是风控,是因为短单不够它赚。</p>
+      <h3>旋钮二 · 波动率(Vega)</h3>
+      <p>客户是净卖出波动率的一方;签约当时的隐含波动率越高,银行能埋进定价的水分越深(波动率越高,那条卖出的期权腿越值钱,可藏的空间越大),而摆在客户面前的"折扣"也越大、越像便宜货。两个看似无关的现象,根子都在这里:</p>
+      <ul>
+        <li><strong>私行专挑波动率高的时候上门。</strong> 每逢市场恐慌、波动率飙升,客户经理便格外殷勤,主动联系、反复暗示该来做这个结构。那不是雪中送炭,而是那一刻它的油水最厚。<strong>笔者那笔 Oracle 累计,正是在隐含波动率一度突破 100% 的高位签下的</strong>——当时只觉得"折扣可观",事后才明白,那是波动率最贵、最该走开的时点,等于在最高价把波动率低价卖给了对手方。</li>
+        <li><strong>私行不碰低波动率的标的。</strong> 低波动标的波动率敏感度小、可埋的水分薄,对它没赚头。<strong>笔者曾在市场平静、波动率低位时,主动要求用伯克希尔(典型低波动蓝筹)来做累计,私行直接拒绝。</strong></li>
+      </ul>
+      <div class="verdict">
+        <span class="big">用脚投票</span>
+        高波动的 Oracle,私行热情推、笔者签了;低波动的伯克希尔,私行一口回绝。<b>银行愿意做什么、拒绝做什么,比任何条款都更诚实地说明了这件产品为谁而设计。</b>它真正算计的从来不是行情,而是在签约那一瞬——<b>把期限调到最长、把入场挑在波动率最高</b>。这两层都在成交那一刻锁死,客户事后既退不出、也改不动。
+      </div>
+    </section>
+
+    <section class="sec" id="s9">
+      <div class="sec-kick">09 — 被锁住的自由</div>
+      <h2>四把锁</h2>
+      <p>把前面所有的"锁定"收束在一起,可见累计期权通过四重机制限制了买方的灵活性。而这四者——全额预付、保证期、垄断对手方、双倍杠杆——恰是投资者在公开市场自行操作期权时<strong>本可完全掌控</strong>的自由:自己决定占用多少保证金、何时平仓、向谁询价、每次下注多大。累计期权把这四项自由全部收走,再包装成"便捷服务"卖回来。</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>锁定机制</th><th>被限制的自由</th><th>公开市场本可拥有</th></tr></thead>
+        <tbody>
+          <tr><td><strong>全额预付</strong></td><td>资金调度</td><td>仅占用部分保证金,现金留存</td></tr>
+          <tr><td><strong>保证期</strong></td><td>时间</td><td>随时平仓离场</td></tr>
+          <tr><td><strong>垄断对手方</strong></td><td>退出定价</td><td>面对整个市场,透明报价</td></tr>
+          <tr><td><strong>双倍杠杆</strong></td><td>头寸规模</td><td>自主决定每次下注大小</td></tr>
+        </tbody>
+      </table></div>
+      <p>在私行渠道,买方通常须<strong>全额预付</strong>名义本金作抵押。这使银行面对的买方信用风险趋近于零,银行再通过市场对冲消除价格风险,两端风险都被剥离,只留下确定利润。对买方而言,代价是大额现金被锁定一年:下跌时无法动用现金加仓,提前退出还需向银行支付按其单方估值计算的解约成本。</p>
+    </section>
+
+    <section class="sec" id="s10">
+      <div class="sec-kick">10 — 市场对比</div>
+      <h2>它是"自己卖期权"的严格劣化版</h2>
+      <p>累计期权所承担的风险——一个两倍规模的卖出宽跨式——投资者完全可以在公开期权市场自行构建。两者风险相同,但在价格、资金、流动性与灵活性上存在系统性差异:</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>维度</th><th>自行卖出宽跨式</th><th>累计期权</th></tr></thead>
+        <tbody>
+          <tr><td>权利金</td><td>立即收到现金</td><td>无现金,折成隐性折扣且被压价</td></tr>
+          <tr><td>资金占用</td><td>部分保证金(15%–25%)</td><td>全额预付,资金锁定</td></tr>
+          <tr><td>提前退出</td><td>随时按市场透明价平仓</td><td>仅能向银行一家询价,不透明</td></tr>
+          <tr><td>对手方</td><td>整个市场,价格竞争</td><td>垄断对手方,仅此一家</td></tr>
+          <tr><td>灵活性</td><td>可单独调整任一腿</td><td>整体打包,无法单腿调整</td></tr>
+        </tbody>
+      </table></div>
+      <blockquote>承担相同的风险,却获得更少的回报、更差的流动性、更弱的灵活性,以及更被动的退出。银行赚取的,正是这一"封装溢价"。</blockquote>
+      <p>这也指明了衡量它是否划算的<strong>正确基准</strong>:不是"某投行报价多少",而是"自己在公开市场构建同一头寸能收多少权利金"。前者已含加成,后者才是公允价值。两种路径最实质的差异在剧烈下跌时显现——自持头寸可随时按公允价止损,而累计期权买方只能向唯一对手方求一个不透明的解约价。</p>
+    </section>
+
+    <section class="sec" id="s11">
+      <div class="sec-kick">11 — 三个波动率</div>
+      <h2>先厘清三个"波动率"</h2>
+      <p>全篇最容易混淆的,是三个都叫"波动率"、含义却完全不同的量。务必先分清:</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>名称</th><th>含义</th><th>如何得到</th><th>微软的值</th></tr></thead>
+        <tbody>
+          <tr><td><strong>已实现波动率</strong></td><td>股价事后实际波动的幅度</td><td>由历史每日股价<strong>计算</strong></td><td>31%</td></tr>
+          <tr><td><strong>市场波动率</strong></td><td>报价当日期权市场隐含,≈ 银行采用</td><td>已实现波动率 + 风险溢价</td><td>33–36%</td></tr>
+          <tr><td><strong>保本波动率</strong></td><td>使这单"不赚不亏"的临界值</td><td>由合约条款<strong>反推</strong></td><td>25.8%</td></tr>
+        </tbody>
+      </table></div>
+      <div class="callout"><b>重要区分</b>:"保本波动率"既不是银行用的波动率,也不是市场波动率。它是一条仅由合约条款决定的<b>分水岭</b>——真实波动率低于它,这单对客户有利;高于它,客户便处于亏损一侧。</div>
+      <div class="dash" style="padding:30px 26px">
+        <div class="dash-bar" style="margin:8px 4px 0">
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:#9aa3b0;margin-bottom:12px">
+            <span style="color:#54c98c"><b style="color:#7fe0ab;font-family:var(--mono)">25.8%</b> 保本波动率(条款反推)</span>
+            <span style="color:#cf7a63"><b style="color:#e89a86;font-family:var(--mono)">33–36%</b> 市场波动率(银行采用)</span>
+          </div>
+          <div class="track"></div>
+          <div class="lab"><span>低于此则赚</span><span style="color:#e6eaf0">↔ 差 7–10 个点 × vega = 银行锁定的利润</span><span>高于此则亏</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec" id="s12">
+      <div class="sec-kick">12 — 计算方法</div>
+      <h2>五步,从股价到利润</h2>
+      <p>本节方法并非自创。<strong>等效期权拆解、以及按日离散监测敲出的蒙特卡洛定价,沿用 Lam、Yu 与 Xin(2009)《Accumulator pricing》(IEEE 计算智能金融工程会议)所确立的框架</strong>;各期权腿以 <strong>Black–Scholes(1973)</strong> 公式定价;本文的蒙特卡洛实现在"无障碍"口径下,已与该论文的开源实现 <code>jren-maths/accumulator-option-pricing</code> <strong>交叉验证</strong>(214,322 对 211,067,差 1.5%,属抽样误差)。以"市场波动率与保本波动率之差"度量银行嵌入加价的思路,亦与结构性产品定价的实证文献一致(Henderson &amp; Pearson 2011;Vokata 2021)。</p>
+      <p><strong>第一步</strong>　由每日股价计算已实现波动率:</p>
+      <div class="formula"><div class="label">已实现波动率(年化)</div>\[ r_t=\ln\frac{P_t}{P_{t-1}},\qquad \mathrm{RV}=\operatorname{std}(r_t)\times\sqrt{252} \]</div>
+      <p><strong>第二步</strong>　由已实现波动率推定市场波动率(风险溢价是市场普遍现象、非银行加价;波动率风险溢价为期权市场的稳健经验规律,参见 Carr &amp; Wu, 2009):</p>
+      <div class="formula"><div class="label">市场波动率(≈ 银行采用)</div>\[ \mathrm{IV}\approx \mathrm{RV}+\mathrm{VRP},\qquad \mathrm{VRP}\approx 2\text{–}5\ \text{个百分点} \]</div>
+      <p><strong>第三步</strong>　把累计期权拆为等效期权,用蒙特卡洛、按日离散监测敲出,计算投资者净值(按每股 base 计,\(p_i^{\text{surv}}\) 为到第 \(i\) 日未敲出的概率):</p>
+      <div class="formula"><div class="label">投资者净值</div>\[ \mathrm{NV}(\sigma)=\frac{1}{N\,n}\sum_{i=1}^{n}\Big[\,N\,C(K,T_i)\,p_i^{\text{surv}}-2N\,P(K,T_i)\,\Big] \]</div>
+      <p><strong>第四步</strong>　解出保本波动率——使净值为零的那个 \(\sigma\),仅依赖条款:</p>
+      <div class="formula"><div class="label">保本波动率</div>\[ \sigma^{*}\ \text{满足}\ \ \mathrm{NV}(\sigma^{*})=0 \]</div>
+      <p><strong>第五步</strong>　市场波动率与保本波动率之差,乘以波动率敏感度,即为利润:</p>
+      <div class="formula"><div class="label">银行锁定的利润</div>\[ \text{利润}=(\,\mathrm{IV}-\sigma^{*}\,)\times \text{vega}\times \text{base 名义本金} \]</div>
+      <div class="callout"><b>口径提示</b>:净值按 base 股数(base × 累计天数)归一,故美元利润须乘 <b>base 名义本金</b>,不可乘"满仓翻倍名义",否则会重复计算约一倍。</div>
+    </section>
+
+    <section class="sec" id="s13">
+      <div class="sec-kick">13 — 实测</div>
+      <h2>两单到底被赚了多少</h2>
+      <p>用真实历史价格(盈透证券日线)算出已实现波动率,再代入上述五步,得到各层利润——模型直接算出的是 <strong>ATM 波动率加价</strong>(发行商所得的一部分);叠加同样归发行商的<strong>偏度、融资</strong>,以及分销商的<strong>提成</strong>,即为<strong>全包</strong>成本:</p>
+      <div class="dash">
+        <div class="dash-top"><div class="dash-title">Accumulator Cost · 两单测算</div><div class="dash-tag">发行方层 · 模型下限</div></div>
+        <div class="dash-grid">
+          <div class="dcard">
+            <div class="nm">微软 · 某美资投行 · 普通波动</div>
+            <div class="big">$13k–19k</div>
+            <div class="sub">发行商:ATM 加价 <b>$5.0k–6.9k</b> + 偏度 + 融资;分销商:提成 → 全包 <b>4–6%</b><br>保本 vol <b>25.8%</b> → 市场 IV <b>33–36%</b> · 差 7–10 点</div>
+          </div>
+          <div class="dcard">
+            <div class="nm">甲骨文 · 某亚洲银行 · 高波动</div>
+            <div class="big">$21k–29k</div>
+            <div class="sub">发行商:ATM 加价 <b>$12.3k–13.5k</b> + 偏度 + 融资;分销商:提成 → 全包 <b>8–11%</b><br>保本 vol <b>44.7%</b> → 市场 IV <b>70–73%</b> · 差 25–28 点</div>
+          </div>
+        </div>
+        <div class="dash-bar">
+          <div class="track"></div>
+          <div class="lab"><span>ATM 加价合计 ≈ $17k–20k(模型实算)</span><span style="color:#e6eaf0">全包合计 ≈ $34k–48k</span></div>
+        </div>
+        <div class="dash-foot">数字为模型推定,非银行实际对冲盈亏。全包 = 发行商(ATM 加价 + 偏度 + 融资) + 分销商(提成);其中仅 ATM 加价为模型实算,余为估算。</div>
+      </div>
+      <p>甲骨文显著更贵,原因有三:其一,标的波动率本身极高(已实现 68%),vega 大,波动率差被放大;其二,高波动标的的波动率偏度更陡,可隐藏的加价空间更大;其三,经私人银行分销,又多叠一层。两单最终都因标的上涨敲出而获利,但这属于<strong>路径运气</strong>,与定价是否合理无关。</p>
+
+      <h3>当发行、销售与客户管理集于一家</h3>
+      <p>前述测算假设了"发行方 + 分销方"两层结构。但若分销方本身即为发行方——自行设计、自行销售、并管理客户关系——这两层加价便收进同一家机构。加价并不会因此消失:该机构同时赚取结构设计与对冲的利润(原属投行交易台),与销售分销的利润(客户经理提成),整条利润链归其一家。</p>
+      <p>真正被推向极致的,是利益冲突与不透明。此时该机构同时扮演四个角色:<strong>交易对手</strong>(投资者在波动率上亏损,它即获利)、<strong>产品销售方</strong>、客户的<strong>顾问</strong>,以及为头寸<strong>估值、给出解约报价</strong>的一方。四者指向同一方向。更关键的是,连"发行方报价"这一外部参照也不复存在——它一家同时设定"成本价"与"客户价",中间没有任何独立牵制。</p>
+      <p>少一道手是否反而更便宜?理论上存在可能(无"双重加价"),但实践中很少:面对被锁定的客户、唯一的对手方、且无同一结构的竞价压力,该机构缺乏将节省让渡给客户的动力。此外,当其作为发行人(本金交易对手),投资者还额外承担对该机构的信用风险;而投资者全额预付,等于将自身的信用风险降至零——风险并不对等。</p>
+      <div class="verdict">
+        <span class="big">结论 · 全身而退本就不可能</span>
+        无论银行如何组织,投资者的位置都不会改变:始终是买方,也就是波动率的卖方,独自承担不对称的下行。而当同一家机构既是<b>交易对手</b>(客户亏损,它即获利)、又是<b>销售</b>、又是<b>顾问</b>、还是为持仓<b>估值、并报出唯一一个解约价</b>的一方,四个角色无一例外指向同一边。<br><br>最致命之处在于:<b>从客户亏损中获利的那只手,同时握着客户离场的定价权。</b>结局因此早已写定——<b>一旦签下,就没有全身而退的可能</b>:继续持有,任由那条加杠杆的下行腿吞噬;想要退出,协议解约时私行会起草一份<b>由它单方定价、不透明的"放行"条款</b>。而唯一能制衡它的手段——<b>让另一家机构就同一结构竞价、给出新的报价</b>——又恰被这种"自产自销"从根上封死。
+      </div>
+    </section>
+
+    <section class="sec" id="s14">
+      <div class="sec-kick">14 — 加价与基准</div>
+      <h2>两层加价,与行业基准</h2>
+      <p>加价分两层:<strong>发行商层</strong>(美资投行交易台,利润嵌于 ATM 波动率加价、偏度与融资/对冲价差;其中仅 ATM 加价为本文模型实算,偏度与融资为估算)与<strong>分销商层</strong>(私人银行在发行商报价上再叠的销售提成)。客户承担的是两层之和——且发行商通常拿大头,分销商只取那一层提成。私行常先出示数家投行的报价让客户比较,但这些报价本身已各含加成——客户是在多个高于公允价值的数字之间挑选。</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>研究 / 来源</th><th>市场</th><th>加成</th></tr></thead>
+        <tbody>
+          <tr><td>Henderson &amp; Pearson (2011), <i>JFE</i></td><td>美国零售</td><td>约 8%(一次性)</td></tr>
+          <tr><td>Stoimenov &amp; Wilkens (2005), <i>JBF</i></td><td>德国</td><td>3.89%(一次性)</td></tr>
+          <tr><td>Vokata (2021), <i>JFE</i></td><td>美国零售</td><td>约 7%/年</td></tr>
+          <tr><td>2024 年美资发行方 SEC 披露(发行价 − 估值)</td><td>美国</td><td>高盛约 4.5–7.5%、摩根大通约 5–10%、花旗约 8–15%</td></tr>
+        </tbody>
+      </table></div>
+      <p>代入对照:微软的全包成本处于行业中位;甲骨文落在零售结构性产品最高一档。需注意学术研究多针对零售票据而非累计期权,且票据以全额本金为分母,二者百分比不可直接套用,正确口径为"全包成本 ÷ 累计名义本金"。</p>
+      <div class="filings">
+        <div class="filings-h">From the SEC filings · 监管备案原文</div>
+        <div class="filing">
+          <div class="filing-top"><span class="filing-bank">Goldman Sachs</span><span class="filing-fig">估值差 ~4.5–7.5%</span></div>
+          <p class="filing-q">"The original offering price of the notes exceeds the estimated value of the notes … the difference results principally from the underwriting discount and commissions, the expenses incurred in creating, documenting and marketing the notes …"</p>
+          <div class="filing-src">Goldman Sachs Group Inc. · Form 424B2 (2024) · SEC EDGAR</div>
+        </div>
+        <div class="filing">
+          <div class="filing-top"><span class="filing-bank">JPMorgan</span><span class="filing-fig">估值差 ~5–10%</span></div>
+          <p class="filing-q">"The estimated value of the notes, when the terms of the notes are set … <strong>will not be less than $900.00 per $1,000</strong> principal amount note."</p>
+          <div class="filing-src">JPMorgan Chase &amp; Co. · Form 424B2 · SEC EDGAR (CIK 0000019617)</div>
+        </div>
+        <div class="filing">
+          <div class="filing-top"><span class="filing-bank">Citigroup</span><span class="filing-fig">估值差 ~8–15%</span></div>
+          <p class="filing-q">"The estimated value of the securities is based on CGMI's proprietary pricing models and internal funding rate. It is <strong>not an indication of actual profit to CGMI</strong> …"</p>
+          <div class="filing-src">Citigroup Inc. · Form 424B2 (2024) · SEC EDGAR</div>
+        </div>
+        <div class="filings-note"><b>这是美国注册结构性票据的强制披露</b>——发行价与银行自估 estimated value 之差,即嵌入成本(结构利润 + 承销费 + 对冲成本)。同一批银行对注册零售票据须如此披露,对场外私行 accumulator 则不披露;故此处仅作数量级参照。</div>
+      </div>
+      <blockquote>此类产品并不提供税收、流动性等额外好处,一个理性且知情的投资者很难为购买它找到正当理由;发行方要么在掩盖产品的某些方面,要么借由引入复杂性来利用不知情的投资者。<span class="attr">— Henderson &amp; Pearson, Journal of Financial Economics (2011)</span></blockquote>
+    </section>
+
+    <section class="sec" id="s15">
+      <div class="sec-kick">15 — 定价逻辑</div>
+      <h2>银行如何定价:并非赌博,而是动态对冲</h2>
+      <p>银行同样无法预知未来波动率,但它不赌方向。它以市场波动率定价,售出后每日依据 delta 在市场买卖标的、持续调整头寸,对冲掉"方向"这一变量。对冲之后,其盈亏只取决于"所收波动率"与"实际走出波动率"之差。由于隐含波动率长期高于已实现波动率,再叠加成,这是一门统计上有利的价差生意——与保险公司同理:不预测某一保户是否出险,而以高于期望损失的价格承保、分散于大量合约、并将尾部再保出去。它真正承担的是对冲失效风险(跳空、暴跌、流动性枯竭)。</p>
+      <p>由此需区分两个不同的"利润":</p>
+      <div class="two-cards">
+        <div class="mini">
+          <h4>嵌入加价</h4>
+          <div class="eq">(市场波动率 − 保本波动率) × vega</div>
+          <p>签约一刻锁定的理论利润,<strong>不随后续走势变化</strong>。本文所算即此。</p>
+        </div>
+        <div class="mini">
+          <h4>实际对冲盈亏</h4>
+          <div class="eq">(所收波动率 − 真实已实现波动率) × 对冲敞口</div>
+          <p>跑一年对冲的真实净利,随路径变化,更不稳定。</p>
+        </div>
+      </div>
+      <p>所以,<strong>买方最终是否敲出获利,与银行是否赚得加成,是两件相互独立的事</strong>。银行的嵌入加价,在签约对冲那一刻便已大致锁定。</p>
+
+      <h3>从商业模式看:一门近乎无风险的价差生意</h3>
+      <p>对冲消去方向之后,银行账面上只剩两类风险:一是对冲失效(跳空、暴跌、流动性枯竭),二是客户的履约信用——即客户能否履行持续接货、补足抵押等义务。而第二类风险,私行从一开始便压到近乎为零:<strong>全额预付锁定了名义本金,一年期条款在签约时即已敲定,客户资金又托管在其自有账内,从销售、托管到定价的全链路尽在掌握。</strong>客户的履约信用风险既被剥离,银行方能安心入场对冲;即便客户事后希望重议,作为唯一的对手方,它在解约定价上也不会作出任何实质让步。</p>
+      <p>真正支撑这门生意的,是模型与信息上的<strong>双重优势,且二者相互放大</strong>。其一,<strong>面对客户的信息不对称</strong>:银行清楚结构的公允价值,客户却无从计算——客户算不清的那部分,正是银行的利润。其二,<strong>面对同业的模型优势</strong>:当银行的量化预测模型优于市场竞争对手时,它能比对手定价更准、对冲更省,于是既可在同样的客户报价下多留一层加价,又能以更优的条款抢下对手的订单。在一个不透明的场外市场里,这两重优势叠加,构成一道难以逾越的护城河——<strong>前者决定它能从客户身上赚多少,后者决定它能从同业手中抢多少。</strong></p>
+    </section>
+
+    <section class="sec" id="s16">
+      <div class="sec-kick">16 — 验证与自检</div>
+      <h2>独立验证,与下次报价时的自检</h2>
+      <p>本文方法对应一篇可引用文献:Lam、Yu 与 Xin(2009)发表于 IEEE 计算智能金融工程会议的《Accumulator pricing》。交叉验证方面,将本文蒙特卡洛模型在"无敲出障碍"口径下,与基于该论文的开源实现 <code>jren-maths/accumulator-option-pricing</code> 对齐:该项目得 214,322,本文模型得 211,067,差异 <strong>1.5%</strong>(属抽样误差),核心结构由此得到独立验证。</p>
+      <p>私行作业严谨,除一张报价截图外,定价波动率、销售利润一概不予提供。但这并不妨碍自行测算:<strong>结构参数就在截图上,市场波动率是公开的,保本波动率由条款反推。</strong></p>
+      <ol>
+        <li>留存报价截图;</li>
+        <li>自行查取该标的当时约一年期的平价隐含波动率(期权链或券商终端);</li>
+        <li>将参数与波动率代入测算脚本,即时得出保本波动率、波动率差、各层加价与全包成本,再决定是否接受。</li>
+      </ol>
+      <div class="callout"><b>警惕一年期</b>:分销方往往倾向于推动一年期合约——期限越长,可隐藏的加价越大(vega 随期限放大)、累计名义越高(提成基数越大)、"跌破翻倍接货"的尾部敞口也越长。可主动询问六个月期限的条件,以挤出长期限中隐藏的加价。</div>
+    </section>
+
+    <section class="sec" id="end">
+      <div class="sec-kick">结语</div>
+      <h2>三条判断原则</h2>
+      <p><strong>其一</strong>,保本波动率高于当时市场波动率,是好单;低于,则被高估定价。拿到任何报价,先由条款反推保本波动率,再查市场波动率,两相对照即可判断。</p>
+      <p><strong>其二</strong>,买入累计期权,本质是向银行卖出波动率,只在波动率低位签约才占优。而银行恰恰最倾向于在高波动率时上门推销——那对它最划算。</p>
+      <p><strong>其三</strong>,"大概率小赚"不等于"划算"。这是一类高频小赢、偶发巨亏、期望收益略低于零的偏斜赌局;再叠两层加价,安全垫更薄。本文两单最终都因标的上涨敲出而获利,但这属于<strong>路径运气</strong>替你躲过了左尾,不是结构本身对你公平。</p>
+      <blockquote>一个足以穿透多数结构性产品的问题:"能否随时、透明地、按市场公允价退出?"若答案为否,提问者便正是被锁定、承担风险的那一方。</blockquote>
+    </section>
+
+    <div class="end-rule">◆ ◆ ◆</div>
+  </article>
+</div>
+
+<footer>
+  <div class="footer-inner" style="max-width:776px">
+    <div class="related">
+      <div class="rk">Related · 定价工具</div>
+      <div class="rt">报价即时检查器:下次银行报价,30 秒算出被吃多少</div>
+      <p>结构参数在截图上、市场波动率是公开的;保本波动率由条款反推,无需银行提供其内部波动率。三步即可在报价当场判断划不划算。</p>
+    </div>
+    <h4>参考文献</h4>
+    <ul class="refs" style="list-style:none;padding:0">
+      <li style="padding:.5rem 0;border-bottom:1px solid var(--rule);display:flex;align-items:baseline;gap:.6rem;"><span style="color:var(--accent);font-weight:700">→</span> <a href="https://ieeexplore.ieee.org/document/4936721" style="color:var(--accent-deep);text-decoration:none;border-bottom:1px solid var(--rule);font-family:var(--sans);font-size:.98rem;font-weight:500">Lam, K., Yu, P. L. H., &amp; Xin, L. (2009). <i>Accumulator pricing.</i> IEEE Symposium on Computational Intelligence for Financial Engineering.</a></li>
+      <li style="padding:.5rem 0;border-bottom:1px solid var(--rule);display:flex;align-items:baseline;gap:.6rem;"><span style="color:var(--accent);font-weight:700">→</span> <a href="https://www.journals.uchicago.edu/doi/10.1086/260062" style="color:var(--accent-deep);text-decoration:none;border-bottom:1px solid var(--rule);font-family:var(--sans);font-size:.98rem;font-weight:500">Black, F., &amp; Scholes, M. (1973). <i>The Pricing of Options and Corporate Liabilities.</i> Journal of Political Economy.</a></li>
+      <li style="padding:.5rem 0;border-bottom:1px solid var(--rule);display:flex;align-items:baseline;gap:.6rem;"><span style="color:var(--accent);font-weight:700">→</span> <a href="https://doi.org/10.1093/rfs/hhn037" style="color:var(--accent-deep);text-decoration:none;border-bottom:1px solid var(--rule);font-family:var(--sans);font-size:.98rem;font-weight:500">Carr, P., &amp; Wu, L. (2009). <i>Variance Risk Premiums.</i> Review of Financial Studies.</a></li>
+      <li style="padding:.5rem 0;border-bottom:1px solid var(--rule);display:flex;align-items:baseline;gap:.6rem;"><span style="color:var(--accent);font-weight:700">→</span> <a href="https://www.sciencedirect.com/science/article/abs/pii/S0304-405X(11)00007-5" style="color:var(--accent-deep);text-decoration:none;border-bottom:1px solid var(--rule);font-family:var(--sans);font-size:.98rem;font-weight:500">Henderson, B. J., &amp; Pearson, N. D. (2011). <i>The dark side of financial innovation.</i> Journal of Financial Economics.</a></li>
+      <li style="padding:.5rem 0;border-bottom:1px solid var(--rule);display:flex;align-items:baseline;gap:.6rem;"><span style="color:var(--accent);font-weight:700">→</span> <a href="https://github.com/jren-maths/accumulator-option-pricing" style="color:var(--accent-deep);text-decoration:none;border-bottom:1px solid var(--rule);font-family:var(--sans);font-size:.98rem;font-weight:500">jren-maths/accumulator-option-pricing (GitHub)</a></li>
+    </ul>
+    <div class="disclaim">本文为产品分析,不构成投资建议。文中加成数字均为模型推定,非银行实际对冲盈亏;唯一未能精确取得的环节为报价当日历史隐含波动率,已用实测已实现波动率加风险溢价框定。</div>
+  </div>
+</footer>
+
+<script>
+  // TOC active highlight
+  var links=[...document.querySelectorAll('.toc a')];
+  var map={};links.forEach(function(a){var id=a.getAttribute('href').slice(1);map[id]=a;});
+  var obs=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){links.forEach(function(l){l.classList.remove('active')});if(map[e.target.id])map[e.target.id].classList.add('active');}});},{rootMargin:'-20% 0px -70% 0px'});
+  document.querySelectorAll('section.sec').forEach(function(s){obs.observe(s);});
+</script>
+</body>
+</html>
