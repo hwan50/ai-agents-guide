@@ -176,6 +176,8 @@
         <li><a href="#pricing-logic">银行如何定价</a></li>
         <li><a href="#academic">学术验证</a></li>
         <li><a href="#self-check">自检流程</a></li>
+        <li><a href="#three-rules">三条判断原则</a></li>
+        <li><a href="#acknowledgements">致谢</a></li>
       </ol>
     </nav>
 
@@ -392,12 +394,60 @@
         </div>
       </section>
 
-      <section class="section">
-        <span class="sec-num">结语</span>
-        <h2>三条判断原则</h2>
-        <p>第一，保本波动率高于当时市场波动率，是好单；低于，则被高估定价。拿到任何报价，先由条款反推保本波动率，再查市场波动率，两相对照即可判断。</p>
-        <p>第二，买入累计期权，本质是向银行卖出波动率，<strong>只有在波动率低位时签约才占优。</strong>在波动率高位签约，等同于低价卖出波动率——而银行恰恰最倾向于在高波动率时上门推销。</p>
-        <p>第三，"大概率小赚"不等于"划算"。这是一类高频小赢、偶发巨亏、期望收益略低于零的偏斜赌局；再叠加两层加价，安全垫更薄。本文两单最终获利，源于标的反弹敲出的路径运气，而非结构本身合理。</p>
+      <section class="section" id="three-rules">
+        <span class="sec-num">10 &mdash; 三条判断原则</span>
+        <h2>拿到报价单后，先用这三条过滤</h2>
+
+        <h3>原则一：保本波动率 &ge; 市场波动率，才是真划算</h3>
+        <p>保本波动率只由你的合约条款反推，是一条"盈亏分水岭"——真实波动率低于它，这单对你有利；高于它，你在亏损一侧。所以"划算" = 保本波动率越高越好，最好顶到甚至超过市场波动率。</p>
+        <p>银行锁定的利润 =（市场波动率 &minus; 保本波动率）&times; vega。保本越高，这个差越小，银行吃得越少。</p>
+        <p>想让保本波动率上抬，落到净值公式上，就是让曲线在更高的 &sigma; 处才穿零。对应到条款，四个杠杆：</p>
+        <ul>
+          <li><strong>折扣要够深</strong>（行权价 K 越低越好）—— 折扣本质是给你的期权金，折扣越大、买入价压得越低，Call 值越高、Put 义务越轻，净值整体抬高，&sigma;* 跟着上去。</li>
+          <li><strong>杠杆要够低</strong>（geared 越接近 1&times; 越好）—— "跌破翻倍接货"的 2&times; 才是把保本波动率往下压的元凶。它让你净卖出的 vega 翻倍，同样的折扣换来的保本波动率就低一截。能谈到低杠杆，保本波动率立刻上抬。</li>
+          <li><strong>敲出价要够高、保证期/不敲出期要够长</strong> — 敲出价高、保护期长，意味着你那份"有利头寸"的存活概率更高、累积得更久，净值被抬高，&sigma;* 上行。反过来，敲出价压得很近、几乎没保证期，就是在偷你的保本波动率。</li>
+          <li><strong>期限别拖太长</strong> — 期限越长，你累积的净空 vega 敞口越大，通常会把保本波动率往下拖。</li>
+        </ul>
+        <div class="callout warn">
+          <span class="c-label">核心提醒</span>
+          <p>这是"零成本"产品，银行不会让你同时拿到深折扣 + 低杠杆 + 高敲出——你改善一项，它就在另一项上找回来。所以<strong>单看任何一条都没用</strong>，保本波动率正是把所有条款净算成的那一个数。把整张报价单的参数代进脚本，解出 &sigma;*，再跟市场波动率对照——&sigma;* &ge; 市场波动率，才算真划算。</p>
+        </div>
+
+        <h3>原则二：只在波动率低位签约，本质是你向银行卖出波动率</h3>
+        <p>买入累计期权，本质上是向银行卖出波动率。高波动率时银行最积极推销，不是因为折扣变大了，而是因为波动率变大了。</p>
+        <p>折扣的来源，就是你卖出那套期权收的权利金，而权利金随波动率上升而变大。所以波动率越高，银行能挂出来的折扣天然就越深、越扎眼——这正是它高波动时上门推销的原因：折扣看着诱人，容易让人觉得"这单很值"。</p>
+        <p>但这个大折扣是错觉，不是便宜，有三层：</p>
+        <ul>
+          <li><strong>第一层</strong>：那笔权利金本来就该更大，你只是拿到了本就属于你的一部分，不是银行额外让利。</li>
+          <li><strong>第二层</strong>：银行的加价 =（市场波动率 &minus; 保本波动率）&times; vega，而 vega 和这个价差在高波动时一起放大，所以它从这笔更大的折扣里偷走的绝对金额，往往比低波动时还多。折扣翻倍，它的抽成也翻倍，你未必更占优。</li>
+          <li><strong>第三层</strong>：你是净卖波动率的一方，真正决定盈亏的是存续期的已实现波动率。高波动率环境恰恰意味着未来大概率继续剧烈波动、尾部风险最大，也就是你这个 2 倍杠杆的裸空头最容易击穿保本线的时候。</li>
+        </ul>
+        <p>同一个高波动时点，对银行是"高价卖出 + 肥加价"，对你却是"低价把波动率卖给它、还接下最大的尾部风险"。折扣越显眼，越该警惕。</p>
+
+        <h3>原则三："大概率小赢" &ne; 划算</h3>
+        <p>这是一类高频小赢、偶发巨亏、期望收益略低于零的偏斜赌局。再叠加两层加价，安全垫更薄。这种偏斜不是偶然，是结构里几处不对称硬拼出来的。</p>
+        <p>把每日头寸摊开看：+ base 份折价买入的权利（Call，行权价 K 低于现价）、&minus; 2 倍份跌破翻倍接货的义务（Put），上方还有敲出。三个设计各管一头：</p>
+        <ul>
+          <li><strong>赢的那头被压扁、还被封顶</strong> — 行权价设在现价下方，只要价格待在 K 之上、敲出之下，你每个观察日就以折扣价"赚一点点"（S&minus;K），一天天累积成一串小赢。但一旦涨够了就敲出、合约终止——所以你单笔赢只能是小赢，永远赢不大，上行空间被敲出一刀切掉。</li>
+          <li><strong>亏的那头加了 2 倍杠杆，而且没有底</strong> — 价格跌破 K，翻倍接货义务启动，亏损是 2&times;(S&minus;K)，跌得越深亏得越狠；关键是下方没有敲出、没有地板。价格一路下行，你不仅不能离场，还被迫每天继续以 K 接更多的货——正是最该停手的时候，结构逼你越亏越买。上方封顶、下方敞开且加倍，负偏斜就这么成型了。</li>
+        </ul>
+        <p>为什么"大概率"小赢？一只标的最常见的走法是横盘或温和上行，这些路径几乎都落在"赢区"（K 之上、敲出之下），所以概率质量大半堆在小赢这一侧；巨亏住在低概率的左尾里。频率上你几乎总在赢，可一旦踩中那条小概率的深跌路径，2 倍、无底、还在累积的亏损，一次就把前面攒的无数小赢连本带利吞掉。</p>
+        <p>而期望略低于零，不是偏斜造成的，是加价造成的。一个公允定价的零成本结构，期望大致为零；但银行按市场波动率定价、只给你相当于保本波动率的折扣，再叠发行方与分销两层加价，把本就两侧勉强相抵的期望往下压到零以下。偏斜的作用是心理上的掩护——它让你长期体验到"一直在小赚"，从而看不见左尾和加价正在悄悄为负。</p>
+        <p>本文两单最终获利，就是标的反弹、在踩中左尾之前先敲出了，是路径运气替你躲过了那一下，不是结构本身对你公平。</p>
+      </section>
+
+      <section class="section" id="acknowledgements">
+        <span class="sec-num">致谢</span>
+        <h2>交叉验证与学术参考</h2>
+        <p>本文蒙特卡洛模型的交叉验证得益于 Mingze Gao（Adrian）的公开工作。他的<strong><a href="https://mingze-gao.com/">教学笔记</a></strong>和开源实现为累计期权的定价与理解提供了清晰的入门路径。</p>
+        <div style="display:grid;grid-template-columns:auto 1fr;gap:1.5rem;align-items:start;margin:2rem 0;padding:1.5rem;background:var(--paper-2);border:1px solid var(--rule);border-radius:4px;">
+          <img src="mingze-gao.png" alt="Mingze Gao portrait" style="width:120px;height:120px;object-fit:cover;border-radius:4px;border:1px solid var(--rule);">
+          <div>
+            <p style="margin:0 0 .6rem;font-family:&quot;Fraunces&quot;,serif;font-weight:600;font-size:1.15rem;">Mingze Gao</p>
+            <p style="margin:0;font-size:1.02rem;line-height:1.6;color:var(--ink-soft);">Lecturer in Finance, Macquarie Business School. Deputy Director of the Macquarie University FinTech and Banking Research Centre. Visiting scholar at the University of Sydney. Published in <em>Journal of Corporate Finance</em>, <em>Journal of Banking &amp; Finance</em>, and presented at WFA, SFS Cavalcade, EFA, FMA, FIRN, and AFBC.</p>
+            <p style="margin:.8rem 0 0;font-size:.92rem;font-family:&quot;IBM Plex Mono&quot;,monospace;"><a href="https://mingze-gao.com/">mingze-gao.com</a> &middot; <a href="https://scholar.google.com/citations?user=MingzeGao">Google Scholar</a> &middot; <a href="https://www.ssrn.com/author/3151234">SSRN</a></p>
+          </div>
+        </div>
       </section>
 
       <div class="related">
