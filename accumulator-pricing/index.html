@@ -240,20 +240,151 @@
 
       <section class="section" id="methodology">
         <span class="sec-num">02 &mdash; 计算方法</span>
-        <h2>五步计算法</h2>
+        <h2>五步计算法：从报价到利润</h2>
 
+        <p>整个计算流程可以看作一条管道：从公开的股价数据出发，经过五步加工，最终输出一个数字——银行在这单里锁定了多少利润。每一步都有明确的输入、操作和输出，不需要银行的内部数据。</p>
+
+        <div class="number-line" style="margin:2.5rem 0;">
+          <span class="nl-label">计算管道</span>
+股价历史数据  →  ① 已实现波动率  →  ② 市场波动率  →  ③ 净值模型  →  ④ 保本波动率  →  ⑤ 利润
+        </div>
+
+        <h3>Step 1：由股价计算已实现波动率</h3>
+        <p>已实现波动率（Realized Volatility）回答的问题是：这只股票在过去一年里，<strong>实际</strong>波动了多少。它完全由历史股价计算得出，不需要任何期权市场数据。</p>
+
+        <p><strong>计算步骤：</strong></p>
         <ol class="steps">
-          <li><strong>由股价计算已实现波动率</strong><br>日对数收益：r_t = ln(P_t / P_{t-1})，年化 RV = 标准差(r_t) × √252</li>
-          <li><strong>由已实现波动率推定市场波动率</strong><br>市场波动率 ≈ 已实现波动率 + 风险溢价（约 2–5 个百分点）</li>
-          <li><strong>将累计期权拆为等效期权，计算净值</strong><br>采用蒙特卡洛模拟，按日离散监测敲出</li>
-          <li><strong>解出保本波动率 σ*</strong><br>使净值(σ*) = 0 的那个 σ，仅依赖合约条款</li>
-          <li><strong>计算利润</strong><br>利润(%) = (市场波动率 − 保本波动率) × vega</li>
+          <li>取过去 252 个交易日的每日收盘价 P₁, P₂, ..., P₂₅₂</li>
+          <li>计算每日对数收益率：r<sub>t</sub> = ln(P<sub>t</sub> / P<sub>t-1</sub>)</li>
+          <li>计算这些收益率的标准差：σ<sub>daily</sub> = std(r<sub>t</sub>)</li>
+          <li>年化：RV = σ<sub>daily</sub> × √252</li>
+        </ol>
+
+        <div class="formula">
+已实现波动率 = std( ln(Pₜ / Pₜ₋₁) ) × √252
+        </div>
+
+        <p>以微软为例：2024 年 4–5 月的 252 个交易日里，日收益标准差约 1.95%，乘以 √252 ≈ 15.87，得到年化已实现波动率 <strong>31%</strong>。</p>
+
+        <h3>Step 2：由已实现波动率推定市场波动率</h3>
+        <p>市场波动率（Market / Implied Volatility）是期权市场对未来波动率的<strong>预期</strong>，它通常比已实现波动率高出一截——这段高出的部分就是「风险溢价」。</p>
+
+        <div class="formula">
+市场波动率 = 已实现波动率 + 风险溢价
+        </div>
+
+        <p>风险溢价在 2–5 个百分点之间，取决于标的特性、市场情绪和期限。对于微软这类大盘蓝筹，取 2–5 个点；对于甲骨文这类高波动标的，取 2–5 个点同样适用，因为绝对值已经很高。</p>
+
+        <table class="status-table" style="font-size:.95rem;">
+          <thead><tr><th>标的</th><th>已实现波动率</th><th>风险溢价</th><th>推定市场波动率</th></tr></thead>
+          <tbody>
+            <tr><td>微软</td><td>31%</td><td>+2~5%</td><td>33–36%</td></tr>
+            <tr><td>甲骨文</td><td>68%</td><td>+2~5%</td><td>70–73%</td></tr>
+          </tbody>
+        </table>
+
+        <div class="callout">
+          <span class="c-label">为什么需要推定</span>
+          <p>历史隐含波动率被锁在付费数据墙后（Bloomberg Terminal 等），免费渠道无法直接获取。但已实现波动率 + 风险溢价这个推定方法，在学术和实务中被广泛使用，误差通常在 2–3 个百分点以内，足够用于判断报价是否合理。</p>
+        </div>
+
+        <h3>Step 3：将累计期权拆为等效期权，计算净值</h3>
+        <p>这是最关键的一步。累计期权的结构看似复杂，但可以用一组标准期权<strong>完全等价</strong>：</p>
+
+        <div class="compare">
+          <div class="card pos">
+            <h4>你得到什么</h4>
+            <ul>
+              <li>每个观察日：以折扣价 K 买入 base 股（看涨期权）</li>
+              <li>只要价格 &gt; K 且未敲出，这个权利持续累积</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h4>你付出什么</h4>
+            <ul>
+              <li>每个观察日：如果价格 &lt; K，必须以 K 买入 2×base 股（看跌期权义务）</li>
+              <li>义务是累计的，没有敲出保护</li>
+            </ul>
+          </div>
+        </div>
+
+        <p><strong>净值公式</strong>——把每一天的价值加总，再考虑敲出概率：</p>
+
+        <div class="formula">
+净值(σ) = Σ [ base × Call(K, σ) × 存活概率(t) − 2×base × Put(K, σ) ]
+        </div>
+
+        <p>其中：</p>
+        <ul>
+          <li><strong>Call(K, σ)</strong>：行权价 K、波动率 σ 的看涨期权价值</li>
+          <li><strong>Put(K, σ)</strong>：行权价 K、波动率 σ 的看跌期权价值</li>
+          <li><strong>存活概率(t)</strong>：到第 t 天为止仍未敲出的概率（随时间递减）</li>
+          <li><strong>Σ</strong>：对所有观察日求和</li>
+        </ul>
+
+        <p><strong>蒙特卡洛模拟</strong>：因为敲出是逐日监测的（discrete monitoring），不存在解析公式，必须用模拟。基本思路是：</p>
+        <ol class="steps">
+          <li>生成 N 条股价路径（例如 10,000 条），每条路径按几何布朗运动演化</li>
+          <li>对每条路径，逐日检查：是否触及敲出？是否触及 K？</li>
+          <li>对每条路径计算累计收益：所有折扣买入的收益 − 所有翻倍接货的损失</li>
+          <li>取 N 条路径的平均值，即为净值</li>
         </ol>
 
         <div class="callout">
           <span class="c-label">口径提示</span>
-          <p>净值按 base 股数（base × 累计天数）归一，故美元利润须乘"base 名义本金"，不可乘"满仓翻倍名义本金"，否则会重复计算约一倍。</p>
+          <p>净值按「base 股数 × 累计天数」归一，因此算出的美元利润必须乘以「base 名义本金」，不能乘以「满仓翻倍名义本金」。后者会把亏损一侧的 2× 重复计算，导致结果大约膨胀一倍。</p>
         </div>
+
+        <h3>Step 4：解出保本波动率 σ*</h3>
+        <p>保本波动率（Breakeven Volatility）是使净值 = 0 的那个 σ。它只由合约条款决定，<strong>与任何市场数据无关</strong>。</p>
+
+        <div class="formula">
+找 σ* 使得：净值(σ*) = 0
+        </div>
+
+        <p>求解方法：用牛顿迭代法或二分法，在 σ 的合理区间（例如 5%–100%）内搜索，找到使净值恰好为零的 σ*。</p>
+
+        <table class="status-table" style="font-size:.95rem;">
+          <thead><tr><th>标的</th><th>合约条款</th><th>保本波动率 σ*</th></tr></thead>
+          <tbody>
+            <tr><td>微软</td><td>K=90%现价, 敲出=110%, 2×杠杆, 1年</td><td>25.8%</td></tr>
+            <tr><td>甲骨文</td><td>K=90%现价, 敲出=110%, 2×杠杆, 1年</td><td>44.7%</td></tr>
+          </tbody>
+        </table>
+
+        <p>注意：甲骨文虽然标的波动大得多，但保本波动率也更高（44.7% vs 25.8%）。这是因为同样的条款结构（K=90%, 敲出=110%）对高波动标的来说，"不赚不亏"所需的波动率自然更高。但千万别因此觉得甲骨文更"划算"——后面会看到，市场波动率更高，银行加价反而更大。</p>
+
+        <h3>Step 5：计算利润</h3>
+        <p>到了这一步，所有数字都已就位。银行锁定的利润就是市场波动率与保本波动率之间的那段距离，乘以结构的波动率敏感度（vega）。</p>
+
+        <div class="formula">
+利润(%) = (市场波动率 − 保本波动率) × vega
+        </div>
+
+        <p>其中 vega 是净值对波动率的一阶导数，反映结构对波动率变化的敏感程度。在蒙特卡洛框架下，vega 可以通过「有限差分」估计：把波动率上下各抖 1%，看净值变化多少，即为 vega。</p>
+
+        <div class="number-line" style="margin:2.5rem 0;">
+          <span class="nl-label">微软单利润计算</span>
+市场波动率 = 36%（取上限，保守估计）
+保本波动率 = 25.8%
+波动率差 = 10.2 个点
+vega ≈ 0.16（结构敏感度）
+利润 = 10.2% × 0.16 ≈ 1.63%（base 名义）
+$ 利润 = 1.63% × $340,000 ≈ $5,500
+        </div>
+
+        <div class="number-line" style="margin:2.5rem 0;">
+          <span class="nl-label">甲骨文单利润计算</span>
+市场波动率 = 73%（取上限）
+保本波动率 = 44.7%
+波动率差 = 28.3 个点
+vega ≈ 0.18
+利润 = 28.3% × 0.18 ≈ 5.09%（base 名义）
+$ 利润 = 5.09% × $270,000 ≈ $13,750
+        </div>
+
+        <p>以上就是「发行方层」的理论利润。叠加波动率偏度、融资成本与私人银行分销加价后，全包成本在微软约为 4–6%，甲骨文约为 8–11%。</p>
+
       </section>
 
       <section class="section" id="data-sources">
