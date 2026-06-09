@@ -73,6 +73,17 @@
   .source-card p{font-size:1.05rem;line-height:1.58;margin:0 0 .8rem}
   .source-card a.btn{font-family:"Inter",sans-serif;font-weight:600;font-size:.86rem;color:var(--paper);background:var(--ink);text-decoration:none;border:none;display:inline-block;padding:.55rem 1.1rem;transition:background .15s;}
   .source-card a.btn:hover{background:var(--accent)}
+  .sec-filing-card{margin:2.2rem 0;padding:0;border:1px solid var(--rule);background:var(--paper);}
+  .sec-filing-label{font-family:"Inter",sans-serif;font-weight:700;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ink);padding:.9rem 1.6rem .6rem;border-bottom:1px solid var(--rule);background:var(--paper-2);}
+  .sec-filing-body{padding:1.3rem 1.6rem 1.5rem;}
+  .sec-filing-item{margin-bottom:1.6rem;}
+  .sec-filing-item:last-child{margin-bottom:0}
+  .sec-filing-bank{font-family:"Newsreader",Georgia,serif;font-size:1.05rem;line-height:1.5;color:var(--ink);margin-bottom:.5rem;}
+  .sec-filing-bank strong{font-weight:600}
+  .sec-filing-highlight{font-family:"Fraunces",serif;font-weight:600;color:var(--accent);}
+  .sec-filing-quote{font-family:"Newsreader",Georgia,serif;font-style:italic;font-size:.95rem;line-height:1.6;color:var(--ink-soft);padding:.4rem 0 .3rem .6rem;border-left:2px solid var(--rule);margin:0 0 .4rem .1rem;}
+  .sec-filing-cite{font-family:"Inter",sans-serif;font-size:.76rem;color:var(--muted);letter-spacing:.02em;}
+  .sec-filing-note{font-size:1.02rem;font-style:italic;color:var(--muted);margin:1.2rem 0 0;padding:0;}
   code{font-family:"IBM Plex Mono",monospace;font-size:.86em;background:var(--paper-2);padding:.12em .38em;border-radius:3px;color:var(--accent-deep);}
   .codeblock{margin:1.7rem 0;background:var(--code-bg);border-radius:6px;overflow:hidden;box-shadow:0 12px 30px -16px rgba(33,31,27,.5);}
   .codeblock .cb-head{display:flex;align-items:center;justify-content:space-between;padding:.5rem .9rem;background:var(--code-paper);border-bottom:1px solid rgba(255,255,255,.07);}
@@ -467,7 +478,29 @@ $ 利润 = 5.09% × $270,000 ≈ $13,750
           </tbody>
         </table>
 
-        <p>2024 年三家美资发行方的监管披露：高盛约 3%，摩根大通最高约 10%，花旗（区间累计票据）约 15%。</p>
+        <div class="sec-filing-card">
+          <div class="sec-filing-label">From the SEC Filings · 监管备案原文</div>
+          <div class="sec-filing-body">
+            <div class="sec-filing-item">
+              <div class="sec-filing-bank"><strong>高盛 Goldman Sachs</strong> — 估值差约 <span class="sec-filing-highlight">4.5–7.5%</span>（estimated value 约 $925–955 / $1,000）</div>
+              <div class="sec-filing-quote">"The original offering price of the notes exceeds the estimated value of the notes … The difference … results principally from the underwriting discount and commissions, the expenses incurred in creating, documenting and marketing the notes …"</div>
+              <div class="sec-filing-cite">Goldman Sachs Group Inc., Form 424B2 (2024), SEC EDGAR</div>
+            </div>
+            <div class="sec-filing-item">
+              <div class="sec-filing-bank"><strong>摩根大通 JPMorgan</strong> — 估值差约 <span class="sec-filing-highlight">5–10%</span>（estimated value 不低于 $900；实例 $914–952）</div>
+              <div class="sec-filing-quote">"The estimated value of the notes, when the terms of the notes are set, will be provided in the pricing supplement and will not be less than $900.00 per $1,000 principal amount note."</div>
+              <div class="sec-filing-cite">JPMorgan Chase & Co., Form 424B2, SEC EDGAR (CIK 0000019617)</div>
+            </div>
+            <div class="sec-filing-item">
+              <div class="sec-filing-bank"><strong>花旗 Citigroup</strong> — 估值差约 <span class="sec-filing-highlight">8–15%</span>（estimated value 约 $850–922；长久期复杂结构最高 15%）</div>
+              <div class="sec-filing-quote">"The estimated value of the securities is based on CGMI's proprietary pricing models and internal funding rate. It is not an indication of actual profit to CGMI or other of their affiliates …"</div>
+              <div class="sec-filing-cite">Citigroup Inc., Form 424B2 (2024), SEC EDGAR</div>
+            </div>
+          </div>
+        </div>
+
+        <p class="sec-filing-note">这是美国注册结构性票据的强制披露——发行价与银行自估 estimated value 之差，即嵌入成本（结构利润 + 承销费 + 对冲成本）。同一批银行对注册零售票据须如此披露，对场外私行 accumulator 则不披露；故此处仅作数量级参照。</p>
+
 
         <blockquote>
           此类产品并不提供税收、流动性等额外好处，一个理性且知情的投资者很难为购买它找到正当理由；发行方要么在掩盖产品的某些方面，要么借由引入复杂性来利用不知情的投资者。
