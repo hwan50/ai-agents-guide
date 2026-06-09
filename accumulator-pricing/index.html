@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>拆解 Accumulator 报价单：银行利润藏在哪里</title>
+<meta name="description" content="以两笔真实交易为例，完整还原如何从公开市场数据出发，估算银行在累计期权每一单里锁定的利润。">
+<meta property="og:title" content="拆解 Accumulator 报价单：银行利润藏在哪里">
+<meta property="og:description" content="以两笔真实交易为例，完整还原如何从公开市场数据出发，估算银行在累计期权每一单里锁定的利润。">
+<meta property="og:image" content="https://hwan50.github.io/ai-agents-guide/accumulator-pricing/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="拆解 Accumulator 报价单：银行利润藏在哪里">
+<meta name="twitter:description" content="以两笔真实交易为例，完整还原如何从公开市场数据出发，估算银行在累计期权每一单里锁定的利润。">
+<meta name="twitter:image" content="https://hwan50.github.io/ai-agents-guide/accumulator-pricing/og.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..600&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..500&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--paper:#f4f0e7;--paper-2:#ebe5d8;--ink:#211f1b;--ink-soft:#46423a;--muted:#7c7567;--rule:#d8d1c0;--accent:#b8492f;--accent-deep:#9a3a23;--teal:#2f6b66;--code-bg:#211f1b;--code-paper:#2c2a24;--code-ink:#e9e3d4;--code-muted:#9b9483;--maxread:42rem;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:"Newsreader",Georgia,serif;font-size:1.225rem;line-height:1.72;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden;}
+  #progress{position:fixed;top:0;left:0;height:3px;width:0%;background:var(--accent);z-index:200;transition:width .1s linear;}
+  .wrap{max-width:74rem;margin:0 auto;padding:0 1.6rem;}
+  .masthead{border-bottom:1px solid var(--rule);padding:1.1rem 0;display:flex;align-items:center;justify-content:space-between;font-family:"Inter",sans-serif;}
+  .masthead .brand{font-weight:700;font-size:.82rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink);text-decoration:none;}
+  .masthead .brand span{color:var(--accent)}
+  .masthead .issue{font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);}
+  header.hero{padding:4.5rem 0 1rem}
+  .kicker{font-family:"Inter",sans-serif;font-weight:600;font-size:.78rem;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin-bottom:1.4rem;display:flex;align-items:center;gap:.7rem;}
+  .kicker::after{content:"";flex:0 0 2.4rem;height:1px;background:var(--accent)}
+  h1.title{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(2.6rem,6.4vw,5rem);line-height:1.04;letter-spacing:-.02em;max-width:18ch;margin-bottom:1.6rem;}
+  .standfirst{font-family:"Newsreader",serif;font-style:italic;font-size:clamp(1.3rem,2.4vw,1.6rem);line-height:1.5;color:var(--ink-soft);max-width:38rem;margin-bottom:2.2rem;}
+  .byline{display:flex;flex-wrap:wrap;gap:.55rem 1.3rem;align-items:center;font-family:"Inter",sans-serif;font-size:.82rem;letter-spacing:.04em;color:var(--muted);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:.9rem 0;}
+  .byline strong{color:var(--ink);font-weight:600}
+  .byline .dot{width:3px;height:3px;border-radius:50%;background:var(--muted);}
+  .layout{display:grid;grid-template-columns:15rem 1fr;gap:3.5rem;padding:3.5rem 0 2rem;align-items:start;}
+  nav.toc{position:sticky;top:2rem;font-family:"Inter",sans-serif;}
+  nav.toc .toc-label{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:600;padding-bottom:.8rem;margin-bottom:.4rem;border-bottom:1px solid var(--rule);}
+  nav.toc ol{list-style:none;counter-reset:toc}
+  nav.toc li{counter-increment:toc}
+  nav.toc a{display:flex;gap:.6rem;padding:.42rem 0;font-size:.86rem;line-height:1.35;color:var(--ink-soft);text-decoration:none;border-left:2px solid transparent;padding-left:.8rem;margin-left:-.8rem;transition:color .15s,border-color .15s;}
+  nav.toc a::before{content:counter(toc,decimal-leading-zero);color:var(--muted);font-variant-numeric:tabular-nums;font-size:.74rem;flex:0 0 auto;padding-top:.08rem;}
+  nav.toc a:hover{color:var(--accent)}
+  nav.toc a.active{color:var(--accent);font-weight:600;border-left-color:var(--accent);}
+  nav.toc a.active::before{color:var(--accent)}
+  article{max-width:var(--maxread);min-width:0}
+  article p{margin:0 0 1.35rem}
+  article p a,article li a,.endlinks a{color:var(--accent-deep);text-decoration:none;border-bottom:1px solid var(--rule);transition:border-color .15s;}
+  article p a:hover,article li a:hover,.endlinks a:hover{border-bottom-color:var(--accent);}
+  article .lede::first-letter{font-family:"Fraunces",serif;font-weight:600;float:left;font-size:5.1rem;line-height:.78;padding:.36rem .55rem 0 0;color:var(--accent);}
+  .section{padding-top:2.4rem;scroll-margin-top:1.5rem}
+  .sec-num{font-family:"Inter",sans-serif;font-weight:700;font-size:.78rem;letter-spacing:.16em;color:var(--accent);text-transform:uppercase;display:block;margin-bottom:.55rem;}
+  h2{font-family:"Fraunces",serif;font-weight:600;font-size:clamp(1.85rem,3.6vw,2.7rem);line-height:1.12;letter-spacing:-.015em;margin-bottom:1.2rem;}
+  h3{font-family:"Fraunces",serif;font-weight:600;font-size:1.4rem;line-height:1.25;margin:2.3rem 0 .9rem;}
+  h2+p,h3+p{margin-top:0}
+  article ul{list-style:none;margin:0 0 1.5rem;padding:0}
+  article ul li{position:relative;padding-left:1.5rem;margin-bottom:.7rem;}
+  article ul li::before{content:"";position:absolute;left:0;top:.62em;width:.5rem;height:.5rem;background:var(--accent);transform:rotate(45deg);}
+  article ol.steps{list-style:none;counter-reset:step;margin:0 0 1.5rem;padding:0;}
+  article ol.steps li{counter-increment:step;position:relative;padding-left:2.4rem;margin-bottom:.85rem;}
+  article ol.steps li::before{content:counter(step);position:absolute;left:0;top:.05em;width:1.65rem;height:1.65rem;background:var(--ink);color:var(--paper);font-family:"Inter",sans-serif;font-weight:600;font-size:.82rem;display:flex;align-items:center;justify-content:center;border-radius:50%;}
+  li strong{font-weight:600}
+  blockquote{margin:2.6rem 0;font-family:"Fraunces",serif;font-weight:500;font-style:italic;font-size:clamp(1.5rem,3vw,2rem);line-height:1.32;color:var(--ink);padding-left:1.6rem;border-left:3px solid var(--accent);}
+  blockquote .attr{display:block;font-family:"Inter",sans-serif;font-style:normal;font-weight:500;font-size:.82rem;letter-spacing:.04em;color:var(--muted);margin-top:.9rem;}
+  .callout{margin:2rem 0;padding:1.3rem 1.5rem;background:var(--paper-2);border-left:3px solid var(--teal);}
+  .callout.warn{border-left-color:var(--accent)}
+  .callout .c-label{font-family:"Inter",sans-serif;font-weight:700;font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;color:var(--teal);display:block;margin-bottom:.4rem;}
+  .callout.warn .c-label{color:var(--accent)}
+  .callout p{margin:0;font-size:1.08rem;line-height:1.6}
+  .source-card{margin:2.2rem 0;padding:1.4rem 1.6rem;border:1px solid var(--rule);background:var(--paper-2);}
+  .source-card .c-label{font-family:"Inter",sans-serif;font-weight:700;font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:.5rem;}
+  .source-card p{font-size:1.05rem;line-height:1.58;margin:0 0 .8rem}
+  .source-card a.btn{font-family:"Inter",sans-serif;font-weight:600;font-size:.86rem;color:var(--paper);background:var(--ink);text-decoration:none;border:none;display:inline-block;padding:.55rem 1.1rem;transition:background .15s;}
+  .source-card a.btn:hover{background:var(--accent)}
+  code{font-family:"IBM Plex Mono",monospace;font-size:.86em;background:var(--paper-2);padding:.12em .38em;border-radius:3px;color:var(--accent-deep);}
+  .codeblock{margin:1.7rem 0;background:var(--code-bg);border-radius:6px;overflow:hidden;box-shadow:0 12px 30px -16px rgba(33,31,27,.5);}
+  .codeblock .cb-head{display:flex;align-items:center;justify-content:space-between;padding:.5rem .9rem;background:var(--code-paper);border-bottom:1px solid rgba(255,255,255,.07);}
+  .codeblock .cb-name{font-family:"IBM Plex Mono",monospace;font-size:.76rem;color:var(--code-muted);display:flex;align-items:center;gap:.5rem;}
+  .codeblock .cb-name .dots{display:flex;gap:.32rem}
+  .codeblock .cb-name .dots i{width:.5rem;height:.5rem;border-radius:50%;display:block;}
+  .dots i:nth-child(1){background:#d8553f}
+  .dots i:nth-child(2){background:#d8a23f}
+  .dots i:nth-child(3){background:#3f9d7d}
+  .copy-btn{font-family:"Inter",sans-serif;font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--code-muted);background:transparent;border:1px solid rgba(255,255,255,.14);border-radius:4px;padding:.28rem .6rem;cursor:pointer;transition:color .15s,border-color .15s;}
+  .copy-btn:hover{color:var(--code-ink);border-color:rgba(255,255,255,.35)}
+  .copy-btn.done{color:#3f9d7d;border-color:#3f9d7d}
+  .codeblock pre{margin:0;padding:1.1rem 1.2rem;overflow-x:auto;}
+  .codeblock code{font-family:"IBM Plex Mono",monospace;background:none;padding:0;border-radius:0;color:var(--code-ink);font-size:.83rem;line-height:1.65;display:block;white-space:pre;}
+  .tok-c{color:#8f8a7a;font-style:italic}
+  .tok-k{color:#e8896b}
+  .tok-s{color:#9bbf8f}
+  .tok-y{color:#e6c07b}
+  .tok-no{color:#d8553f}
+  .tok-ok{color:#5fae8c}
+  .compare{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem;margin:1.8rem 0;}
+  .compare .card{border:1px solid var(--rule);padding:1.3rem;background:var(--paper-2);}
+  .compare .card.pos{border-color:var(--teal);border-width:1px 1px 1px 3px}
+  .compare .card h4{font-family:"Inter",sans-serif;font-weight:700;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.7rem;color:var(--muted);}
+  .compare .card.pos h4{color:var(--teal)}
+  .compare .card ul{margin:0}
+  .compare .card ul li{font-size:1.02rem;line-height:1.5;margin-bottom:.5rem;padding-left:1.1rem;}
+  .compare .card ul li::before{width:.34rem;height:.34rem;top:.6em;background:var(--muted);}
+  .compare .card.pos ul li::before{background:var(--teal)}
+  .status-table{width:100%;border-collapse:collapse;margin:1.7rem 0;font-size:1.02rem;}
+  .status-table th{font-family:"Inter",sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:.6rem .8rem;border-bottom:2px solid var(--ink);}
+  .status-table td{padding:.8rem .8rem;border-bottom:1px solid var(--rule);vertical-align:top;}
+  .status-table td:first-child{font-weight:500}
+  .status-table tr:last-child td{border-bottom:none}
+  .badge{font-family:"Inter",sans-serif;font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.22rem .5rem;border-radius:3px;white-space:nowrap;display:inline-block;}
+  .b-stable{background:#dceee2;color:#2f6b4e}
+  .b-exp{background:#f6e6cc;color:#9a6a16}
+  .b-early{background:#e6e1f0;color:#5a4a8a}
+  .b-no{background:#f1ddd6;color:#a8412a}
+  .endmatter{border-top:3px solid var(--ink);margin-top:3rem;padding-top:2.2rem;}
+  .endmatter h3{margin-top:0}
+  .endlinks{list-style:none;padding:0;margin:1rem 0 0}
+  .endlinks li{padding:.7rem 0;border-bottom:1px solid var(--rule);display:flex;align-items:baseline;gap:.6rem;}
+  .endlinks li::before{content:"\2192";color:var(--accent);font-weight:700}
+  .endlinks a{font-family:"Inter",sans-serif;font-size:.98rem;font-weight:500}
+  .disclosure{font-size:.92rem;font-style:italic;color:var(--muted);margin-top:1.6rem;}
+  .related{margin:2.2rem 0;padding:1.4rem 1.6rem;border:1px solid var(--rule);background:var(--paper-2);}
+  .related .c-label{font-family:"Inter",sans-serif;font-weight:700;font-size:.74rem;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:.5rem;}
+  .related a{font-family:"Fraunces",serif;font-weight:600;font-size:1.15rem;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--rule);transition:border-color .15s;}
+  .related a:hover{border-bottom-color:var(--accent)}
+  .related p{font-size:1.02rem;line-height:1.55;color:var(--ink-soft);margin:.4rem 0 0}
+  footer.foot{border-top:1px solid var(--rule);margin-top:3.5rem;padding:2.2rem 0 3rem;font-family:"Inter",sans-serif;display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between;align-items:center;}
+  footer.foot .f-brand{font-weight:700;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;}
+  footer.foot .f-brand span{color:var(--accent)}
+  footer.foot .f-note{font-size:.8rem;color:var(--muted);}
+  .formula{font-family:"IBM Plex Mono",monospace;font-size:.95rem;background:var(--paper-2);padding:1rem 1.2rem;border-radius:4px;margin:1.5rem 0;display:block;line-height:1.6;color:var(--ink-soft);}
+  .number-line{margin:2rem 0;padding:1.5rem;background:var(--paper-2);border-left:3px solid var(--accent);font-family:"IBM Plex Mono",monospace;font-size:.95rem;line-height:1.8;color:var(--ink-soft);}
+  .number-line .nl-label{font-family:"Inter",sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:.6rem;}
+  @media(max-width:880px){body{font-size:1.12rem}.layout{grid-template-columns:1fr;gap:0;padding-top:2.2rem}nav.toc{position:static;margin-bottom:2.5rem;padding:1.1rem 1.2rem;background:var(--paper-2);border:1px solid var(--rule);}nav.toc ol{columns:2;column-gap:1.4rem;}nav.toc a{padding-left:.6rem;margin-left:0;border-left:none}nav.toc a.active{border-left:none}header.hero{padding-top:2.6rem}.compare{grid-template-columns:1fr}article .lede::first-letter{font-size:4rem}}
+  @media(max-width:520px){.wrap{padding:0 1.1rem}nav.toc ol{columns:1}.status-table{font-size:.92rem}.status-table th,.status-table td{padding:.55rem .45rem}blockquote{padding-left:1.1rem}}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<div class="wrap">
+  <div class="masthead">
+    <a href="/ai-agents-guide/" class="brand">AI Agents <span>/</span> Field Guide</a>
+    <div class="issue">Field Review &middot; No. 05</div>
+  </div>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="kicker">Structured Product Pricing</div>
+    <h1 class="title">拆解一张 Accumulator 报价单</h1>
+    <p class="standfirst">累计期权的报价单上通常只列出两个数字：折扣买入价和敲出价。它不会告诉你银行定价时用的波动率——而这恰恰是唯一能反推出银行利润的参数。</p>
+    <div class="byline">
+      <span>Updated <strong>Jun 2026</strong></span>
+      <span class="dot"></span>
+      <span><strong>18 min</strong> read</span>
+      <span class="dot"></span>
+      <span>Quantitative analysis</span>
+    </div>
+  </header>
+</div>
+
+<div class="wrap">
+  <div class="layout">
+
+    <nav class="toc" id="toc">
+      <div class="toc-label">Contents</div>
+      <ol>
+        <li><a href="#core-finding">核心结论</a></li>
+        <li><a href="#three-vols">三个波动率</a></li>
+        <li><a href="#methodology">计算方法</a></li>
+        <li><a href="#data-sources">数据来源</a></li>
+        <li><a href="#case-studies">两单测算</a></li>
+        <li><a href="#markup-layers">两层加价</a></li>
+        <li><a href="#benchmark">行业基准</a></li>
+        <li><a href="#pricing-logic">银行如何定价</a></li>
+        <li><a href="#academic">学术验证</a></li>
+        <li><a href="#self-check">自检流程</a></li>
+      </ol>
+    </nav>
+
+    <article>
+      <p class="lede">本文以两笔真实交易（标的分别为微软与甲骨文）为例，完整还原一套可复算的方法：如何从公开市场数据出发，估算出银行在每一单里锁定了多少利润，并与学术界和监管披露的行业基准做对照。</p>
+
+      <p>为保护交易关系，文中两家对手方分别以"某美资投行"（微软那单的发行方）与"某新加坡私人银行"（甲骨文那单的分销方）指代。</p>
+
+      <section class="section" id="core-finding">
+        <span class="sec-num">核心结论</span>
+        <h2>累计期权的本质</h2>
+        <p>累计期权的本质，是一份"每天按折扣价买入固定股数"的合约。把它拆成期权，等于：<strong>每个交易日买入 N 份看涨期权 − 卖出 2N 份看跌期权</strong>（跌破行权价时翻倍接货），并附带一个向上敲出条款。结构上是"上有封顶、下不保底且带杠杆"。</p>
+        
+        <p>这类产品被设计成"零成本"——你不付权利金，银行的利润因此不在表面价格里，而是嵌在定价波动率中：<strong>银行按市场实际波动率给你定价，却只给你相当于"保本波动率"那点折扣</strong>，两者之差，乘以结构的波动率敏感度（vega），就是他在签约一刻锁定的利润。</p>
+
+        <table class="status-table">
+          <thead>
+            <tr><th></th><th>保本波动率</th><th>已实现波动率</th><th>市场波动率</th><th>波动率差</th><th>利润（发行方层）</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>微软</td><td>25.8%</td><td>31%</td><td>33–36%</td><td>7–10 个点</td><td>约 $5,000–6,900</td></tr>
+            <tr><td>甲骨文</td><td>44.7%</td><td>68%</td><td>70–73%</td><td>25–28 个点</td><td>约 $12,300–13,500</td></tr>
+          </tbody>
+        </table>
+
+        <p>上表仅为"发行方层"的利润下限。叠加波动率偏度、融资成本与私人银行的分销加价后，<strong>全包成本约为：微软 4–6%、甲骨文 8–11%，两单合计约 3.5 万至 5.5 万美元</strong>。对照行业基准，微软那单处于中位，甲骨文那单则落在零售结构性产品最高的一档。两单最终都因标的上涨敲出而获利，但这属于路径运气，与定价是否合理无关。</p>
+      </section>
+
+      <section class="section" id="three-vols">
+        <span class="sec-num">01 &mdash; 三个波动率</span>
+        <h2>先厘清三个"波动率"</h2>
+        <p>全篇最容易混淆的，是三个都叫"波动率"、含义却完全不同的量。务必先分清：</p>
+
+        <table class="status-table">
+          <thead>
+            <tr><th>名称</th><th>含义</th><th>如何得到</th><th>微软的值</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>已实现波动率</strong></td><td>股价事后实际波动的幅度</td><td>由历史每日股价<strong>计算</strong>得出</td><td>31%</td></tr>
+            <tr><td><strong>市场波动率</strong></td><td>报价当日期权市场隐含的波动率</td><td>已实现波动率 + 风险溢价</td><td>33–36%</td></tr>
+            <tr><td><strong>保本波动率</strong></td><td>使这单对你"不赚不亏"所需的波动率</td><td>由<strong>合约条款</strong>反推</td><td>25.8%</td></tr>
+          </tbody>
+        </table>
+
+        <div class="callout">
+          <span class="c-label">重要区分</span>
+          <p><strong>"保本波动率"既不是银行用的波动率，也不是市场波动率。</strong>它是一条仅由合约条款决定的分水岭——真实波动率低于它，这单对你有利；高于它，你处于亏损一侧。</p>
+        </div>
+
+        <div class="number-line">
+          <span class="nl-label">三者的关系</span>
+保本波动率（25.8%）     ← 7–10 个点 →     市场波动率（33–36%）
+  │                                              │
+  │  这段差 × vega = 银行锁定的利润              │
+  │                                              │
+分水岭                                      现实所在
+低于此你赚 / 高于此你亏
+        </div>
+      </section>
+
+      <section class="section" id="methodology">
+        <span class="sec-num">02 &mdash; 计算方法</span>
+        <h2>五步计算法</h2>
+
+        <ol class="steps">
+          <li><strong>由股价计算已实现波动率</strong><br>日对数收益：r_t = ln(P_t / P_{t-1})，年化 RV = 标准差(r_t) × √252</li>
+          <li><strong>由已实现波动率推定市场波动率</strong><br>市场波动率 ≈ 已实现波动率 + 风险溢价（约 2–5 个百分点）</li>
+          <li><strong>将累计期权拆为等效期权，计算净值</strong><br>采用蒙特卡洛模拟，按日离散监测敲出</li>
+          <li><strong>解出保本波动率 σ*</strong><br>使净值(σ*) = 0 的那个 σ，仅依赖合约条款</li>
+          <li><strong>计算利润</strong><br>利润(%) = (市场波动率 − 保本波动率) × vega</li>
+        </ol>
+
+        <div class="callout">
+          <span class="c-label">口径提示</span>
+          <p>净值按 base 股数（base × 累计天数）归一，故美元利润须乘"base 名义本金"，不可乘"满仓翻倍名义本金"，否则会重复计算约一倍。</p>
+        </div>
+      </section>
+
+      <section class="section" id="data-sources">
+        <span class="sec-num">03 &mdash; 数据来源</span>
+        <h2>哪些是"查"的，哪些是"算"的</h2>
+
+        <table class="status-table">
+          <thead>
+            <tr><th>用到的量</th><th>性质</th><th>来源 / 方法</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>每日股票收盘价</td><td>查询</td><td>盈透证券(IBKR)历史日线</td></tr>
+            <tr><td>已实现波动率</td><td><strong>计算</strong></td><td>日收益标准差 × √252</td></tr>
+            <tr><td>保本波动率</td><td><strong>计算</strong></td><td>解 净值(σ)=0</td></tr>
+            <tr><td>报价当日市场波动率</td><td>推定</td><td>已实现波动率 + 风险溢价</td></tr>
+          </tbody>
+        </table>
+
+        <p>唯一无法精确取得的，是报价当日的历史隐含波动率——免费数据源将其锁于付费墙后。但这并不影响结论的稳健：<strong>两端都已钉牢</strong>，不确定性仅落在风险溢价那 2–3 个百分点上。</p>
+      </section>
+
+      <section class="section" id="case-studies">
+        <span class="sec-num">04 &mdash; 两单测算</span>
+        <h2>逐步还原</h2>
+
+        <h3>微软（某美资投行）</h3>
+        <div class="formula">
+① 已实现波动率 = 31%
+② 市场波动率 = 31% + (2~5) = 33–36%
+③ 保本波动率 = 25.8%
+   波动率差 = 7–10 个点
+   发行方层利润 = 1.6%–2.2% × base 名义 = $5,020–6,882
+   叠加偏度 / 融资 / 分销 → 全包约 4%–6%
+        </div>
+
+        <h3>甲骨文（某新加坡私人银行）</h3>
+        <div class="formula">
+① 已实现波动率 = 68%（高波动标的）
+② 市场波动率 = 68% + (2~5) = 70–73%
+③ 保本波动率 = 44.7%
+   波动率差 = 25–28 个点（为微软的三倍有余）
+   发行方层利润 = 4.6%–5.1% × base 名义 = $12,261–13,457
+   叠加偏度 / 融资 / 分销 → 全包约 8%–11%
+        </div>
+
+        <table class="status-table">
+          <thead>
+            <tr><th></th><th>发行方层</th><th>全包</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>微软</td><td>$5,020–6,882</td><td>约 4%–6%</td></tr>
+            <tr><td>甲骨文</td><td>$12,261–13,457</td><td>约 8%–11%</td></tr>
+            <tr><td><strong>合计</strong></td><td><strong>约 $17,000–20,000</strong></td><td><strong>约 $35,000–55,000</strong></td></tr>
+          </tbody>
+        </table>
+
+        <p>甲骨文那单显著更贵，原因有三：其一，标的波动率本身极高（已实现 68%），vega 大，波动率差被放大；其二，高波动标的的波动率偏度更陡，可隐藏的加价空间更大；其三，经私人银行分销，又多叠一层销售利润。</p>
+      </section>
+
+      <section class="section" id="markup-layers">
+        <span class="sec-num">05 &mdash; 两层加价</span>
+        <h2>发行方与分销方</h2>
+        <p>需要理解的关键市场结构是：<strong>加价分两层。</strong></p>
+        <p>其一，<strong>发行方层</strong>——美资投行的奇异期权交易台负责结构设计与对冲，利润嵌在波动率、偏度与对冲价差中。本文模型计算的即为这一层（且仅含平价波动率，故为下限）。</p>
+        <p>其二，<strong>分销方层</strong>——私人银行通常不自行设计产品，而是向发行方取价，再加上自己的销售利润与客户经理提成，然后才报给客户。客户承担的是两层之和。</p>
+      </section>
+
+      <section class="section" id="benchmark">
+        <span class="sec-num">06 &mdash; 行业基准</span>
+        <h2>与学术研究对照</h2>
+
+        <table class="status-table">
+          <thead>
+            <tr><th>研究</th><th>市场</th><th>样本</th><th>加价</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Henderson & Pearson (2011)</td><td>美国零售</td><td>64 只</td><td>约 8%</td></tr>
+            <tr><td>Stoimenov & Wilkens (2005)</td><td>德国</td><td>大样本</td><td>3.89%</td></tr>
+            <tr><td>Vokata (2021)</td><td>美国零售</td><td>约 28,000 只</td><td>约 7%/年</td></tr>
+          </tbody>
+        </table>
+
+        <p>2024 年三家美资发行方的监管披露：高盛约 3%，摩根大通最高约 10%，花旗（区间累计票据）约 15%。</p>
+
+        <blockquote>
+          此类产品并不提供税收、流动性等额外好处，一个理性且知情的投资者很难为购买它找到正当理由；发行方要么在掩盖产品的某些方面，要么借由引入复杂性来利用不知情的投资者。
+          <span class="attr">— Henderson & Pearson, Journal of Financial Economics (2011)</span>
+        </blockquote>
+      </section>
+
+      <section class="section" id="pricing-logic">
+        <span class="sec-num">07 &mdash; 定价逻辑</span>
+        <h2>银行如何定价：并非赌博，而是动态对冲</h2>
+        <p>银行以市场波动率定价，售出后每日依据 delta 在市场上买卖标的、持续调整头寸，从而对冲掉"方向"这一变量。对冲之后，其盈亏不再取决于股价涨跌，而只取决于：他所收取的波动率，与这一年实际走出的已实现波动率之差。</p>
+        <p>由于隐含波动率长期高于已实现波动率（即风险溢价），再叠加加价，<strong>这本质上是一门统计上有利的价差生意，而非赌博。</strong>其逻辑与保险公司一致：不预测你家是否失火，而是以高于期望损失的价格承保。</p>
+
+        <div class="compare">
+          <div class="card">
+            <h4>嵌入加价</h4>
+            <ul>
+              <li>签约一刻锁定的理论利润</li>
+              <li>=(市场波动率 − 保本波动率) × vega</li>
+              <li>不随后续走势变化</li>
+            </ul>
+          </div>
+          <div class="card pos">
+            <h4>实际对冲盈亏</h4>
+            <ul>
+              <li>一年对冲下来的真实净利</li>
+              <li>=(所收波动率 − 真实已实现波动率) × 对冲敞口</li>
+              <li>更不稳定</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="academic">
+        <span class="sec-num">08 &mdash; 学术验证</span>
+        <h2>交叉验证</h2>
+        <p>原始论文为 Lam、Yu 与 Xin (2009) 发表于 IEEE 计算智能金融工程会议的 <em>Accumulator pricing</em>，作者为香港浸会大学 Kin Lam、香港大学统计系 Philip L. H. Yu 等。</p>
+        <p>GitHub 开源项目 <code>jren-maths/accumulator-option-pricing</code> 按同一论文以 MATLAB/Python/C++ 实现。将本文蒙特卡洛模型在"无敲出障碍"口径下与其对齐：该项目得 214,322，本文模型得 211,067，<strong>差异 1.5%</strong>（属蒙特卡洛抽样误差），核心结构由此得到独立验证。</p>
+      </section>
+
+      <section class="section" id="self-check">
+        <span class="sec-num">09 &mdash; 自检流程</span>
+        <h2>下次报价时自行复算</h2>
+        <p>私人银行通常作业严谨，除一张报价截图外，定价波动率、销售利润、条款明细一概不予提供。但这并不妨碍你自行测算，因为：<strong>结构参数就在截图上，市场波动率是公开的；保本波动率由条款反推，无需银行提供其内部波动率。</strong></p>
+
+        <ol class="steps">
+          <li>留存报价截图</li>
+          <li>自行查取该标的当时约一年期的平价隐含波动率</li>
+          <li>将参数与波动率代入测算脚本，即时得出保本波动率、波动率差、各层加价与全包成本</li>
+        </ol>
+
+        <div class="callout warn">
+          <span class="c-label">警惕</span>
+          <p><strong>分销方往往倾向于推动一年期的合约。</strong>期限越长，可隐藏的加价越大（vega 随期限放大）、累计名义本金越高（分销提成基数越大）、"跌破翻倍接货"的尾部敞口也越长。三者皆对卖方有利。面对此类推动，可主动询问六个月期限的条件，以此挤出长期限中隐藏的加价空间。</p>
+        </div>
+      </section>
+
+      <section class="section">
+        <span class="sec-num">结语</span>
+        <h2>三条判断原则</h2>
+        <p>第一，保本波动率高于当时市场波动率，是好单；低于，则被高估定价。拿到任何报价，先由条款反推保本波动率，再查市场波动率，两相对照即可判断。</p>
+        <p>第二，买入累计期权，本质是向银行卖出波动率，<strong>只有在波动率低位时签约才占优。</strong>在波动率高位签约，等同于低价卖出波动率——而银行恰恰最倾向于在高波动率时上门推销。</p>
+        <p>第三，"大概率小赚"不等于"划算"。这是一类高频小赢、偶发巨亏、期望收益略低于零的偏斜赌局；再叠加两层加价，安全垫更薄。本文两单最终获利，源于标的反弹敲出的路径运气，而非结构本身合理。</p>
+      </section>
+
+      <div class="related">
+        <span class="c-label">Related Review</span>
+        <a href="/ai-agents-guide/ai-weekly-2026-06-01/">AI Weekly: The Valuation Inversion</a>
+        <p>Anthropic at $100B+ on $1B revenue vs OpenAI at $80B on $3.7B — the smaller one got built into a premium.</p>
+      </div>
+
+      <div class="endmatter">
+        <h3>References</h3>
+        <ul class="endlinks">
+          <li><a href="https://ieeexplore.ieee.org/document/4936721">Lam, K., Yu, P. L. H., & Xin, L. (2009). Accumulator pricing. IEEE Symposium on Computational Intelligence for Financial Engineering.</a></li>
+          <li><a href="https://www.sciencedirect.com/science/article/abs/pii/S0304-405X(11)00007-5">Henderson, B. J., & Pearson, N. D. (2011). The dark side of financial innovation. Journal of Financial Economics.</a></li>
+          <li><a href="https://github.com/jren-maths/accumulator-option-pricing">jren-maths/accumulator-option-pricing (GitHub)</a></li>
+        </ul>
+        <p class="disclosure">本文为个人复盘记录，不构成投资建议。文中加价数字均为模型推定，非银行实际对冲盈亏；唯一未能精确取得的环节为报价当日历史隐含波动率，已用实测已实现波动率加风险溢价框定。</p>
+      </div>
+    </article>
+  </div>
+</div>
+
+<div class="wrap">
+  <footer class="foot">
+    <div class="f-brand">AI Agents <span>/</span> Field Guide</div>
+    <div class="f-note">Last updated Jun 2026</div>
+  </footer>
+</div>
+
+<script>
+var progress=document.getElementById('progress');
+function updateProgress(){var h=document.documentElement;var max=h.scrollHeight-h.clientHeight;var pct=max>0?(h.scrollTop/max)*100:0;progress.style.width=pct+'%';}
+document.addEventListener('scroll',updateProgress,{passive:true});window.addEventListener('resize',updateProgress);updateProgress();
+
+var sections=Array.prototype.slice.call(document.querySelectorAll('section.section'));
+var tocLinks=Array.prototype.slice.call(document.querySelectorAll('#toc a'));
+function spy(){var pos=window.scrollY+window.innerHeight*0.3;var current=sections[0];for(var i=0;i<sections.length;i++){if(sections[i].offsetTop<=pos)current=sections[i];}tocLinks.forEach(function(a){a.classList.toggle('active',a.getAttribute('href')==='#'+current.id);});}
+document.addEventListener('scroll',spy,{passive:true});window.addEventListener('resize',spy);spy();
+</script>
+</body>
+</html>
