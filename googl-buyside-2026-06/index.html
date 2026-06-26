@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>谷歌的"便宜"，是个错觉 · Alphabet 买方框架（A/B 对抗后）</title>
+<meta name="description" content="营收还在涨、巴菲特还在加仓、华尔街还在喊买入，谷歌怎么看都不像该跌的样子。可把三家巨头摆一起、用同一把尺量，最贵的恰恰是它。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700;900&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--paper:#f4f0e7;--paper-2:#ebe5d8;--paper-3:#efe7d6;--ink:#211f1b;--ink-soft:#46423a;--muted:#7c7567;--rule:#d8d1c0;--accent:#b8492f;--accent-deep:#9a3a23;--teal:#2f6b66;--maxread:42rem;
+    --serif:"Noto Serif SC","Songti SC","Source Han Serif SC",Georgia,serif;
+    --sans:"Inter","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:var(--serif);font-size:1.16rem;line-height:1.92;-webkit-font-smoothing:antialiased}
+  #progress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--accent);z-index:200;transition:width .1s linear}
+  .wrap{max-width:74rem;margin:0 auto;padding:0 1.6rem}
+  .masthead{border-bottom:1px solid var(--rule);padding:1.1rem 0;display:flex;align-items:center;justify-content:space-between;font-family:var(--sans)}
+  .masthead .brand{font-weight:700;font-size:.82rem;letter-spacing:.16em;color:var(--ink)}
+  .masthead .brand span{color:var(--accent)}
+  .masthead .issue{font-size:.74rem;letter-spacing:.13em;color:var(--muted)}
+  header.hero{padding:3.6rem 0 1rem}
+  .kicker{font-family:var(--sans);font-weight:600;font-size:.78rem;letter-spacing:.22em;color:var(--accent);margin-bottom:1.3rem;display:flex;align-items:center;gap:.7rem}
+  .kicker::after{content:"";flex:0 0 2.4rem;height:1px;background:var(--accent)}
+  h1.title{font-weight:900;font-size:clamp(2.2rem,5.4vw,4rem);line-height:1.16;letter-spacing:-.01em;max-width:21ch;margin-bottom:1.4rem}
+  .standfirst{font-weight:500;font-size:clamp(1.15rem,2.1vw,1.45rem);line-height:1.7;color:var(--ink-soft);max-width:40rem;margin-bottom:1.9rem}
+  .byline{display:flex;flex-wrap:wrap;gap:.5rem 1.2rem;align-items:center;font-family:var(--sans);font-size:.82rem;color:var(--muted);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:.9rem 0}
+  .byline strong{color:var(--ink);font-weight:600}
+  .byline .dot{width:3px;height:3px;border-radius:50%;background:var(--muted)}
+  figure.hero-fig{margin:2.2rem 0 0;border:1px solid var(--rule);background:var(--paper-2)}
+  .fig-head{display:flex;justify-content:space-between;align-items:baseline;padding:.8rem 1.2rem;border-bottom:1px solid var(--rule);font-family:var(--sans);font-size:.72rem;letter-spacing:.13em;color:var(--muted);text-transform:uppercase}
+  .fig-head .v{color:var(--accent);font-weight:700}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr)}
+  .stat{padding:1.05rem 1.2rem;border-right:1px solid var(--rule)}
+  .stat:last-child{border-right:none}
+  .stat .l{font-family:var(--sans);font-size:.72rem;color:var(--muted);margin-bottom:.3rem}
+  .stat .n{font-family:var(--mono);font-size:1.4rem;font-weight:600;line-height:1.1}
+  .stat .s{font-family:var(--sans);font-size:.72rem;color:var(--ink-soft);margin-top:.3rem}
+  .stat .n.dn{color:var(--accent)} .stat .n.up{color:var(--teal)}
+  .scenbar{padding:1rem 1.2rem;border-top:1px solid var(--rule)}
+  .scenbar .sl{font-family:var(--sans);font-size:.72rem;color:var(--muted);margin-bottom:.5rem}
+  .bar{display:flex;height:1.5rem;border-radius:3px;overflow:hidden;font-family:var(--sans);font-size:.72rem;font-weight:600;color:#fff}
+  .bar span{display:flex;align-items:center;justify-content:center;white-space:nowrap}
+  .bar .b{background:var(--teal)} .bar .m{background:#9b9484} .bar .r{background:var(--accent)}
+  .tldr{margin:2rem 0 .5rem;padding:1.3rem 1.5rem;background:var(--paper-3);border:1px solid var(--rule);border-left:4px solid var(--teal)}
+  .tldr .c-label{font-family:var(--sans);font-weight:700;font-size:.74rem;letter-spacing:.13em;color:var(--teal);display:block;margin-bottom:.6rem}
+  .tldr ul{list-style:none}
+  .tldr li{position:relative;padding:.34rem 0 .34rem 1.4rem;font-size:1.04rem;line-height:1.65}
+  .tldr li::before{content:"▸";position:absolute;left:0;color:var(--accent)}
+  .layout{display:grid;grid-template-columns:15rem 1fr;gap:3.5rem;padding:2.6rem 0 2rem;align-items:start}
+  nav.toc{position:sticky;top:2rem;font-family:var(--sans)}
+  nav.toc .toc-label{font-size:.72rem;letter-spacing:.18em;color:var(--muted);font-weight:600;padding-bottom:.8rem;margin-bottom:.4rem;border-bottom:1px solid var(--rule)}
+  nav.toc ol{list-style:none;counter-reset:toc}
+  nav.toc li{counter-increment:toc}
+  nav.toc a{display:flex;gap:.6rem;padding:.4rem 0 .4rem .8rem;margin-left:-.8rem;font-size:.85rem;line-height:1.4;color:var(--ink-soft);text-decoration:none;border-left:2px solid transparent;transition:.15s}
+  nav.toc a::before{content:counter(toc,decimal-leading-zero);color:var(--muted);font-family:var(--mono);font-size:.74rem}
+  nav.toc a:hover{color:var(--accent)}
+  nav.toc a.active{color:var(--accent);font-weight:600;border-left-color:var(--accent)}
+  nav.toc a.active::before{color:var(--accent)}
+  article{max-width:var(--maxread);min-width:0}
+  article p{margin:0 0 1.35rem}
+  .section{padding-top:2.4rem;scroll-margin-top:1.5rem}
+  .sec-num{font-family:var(--mono);font-weight:600;font-size:.78rem;letter-spacing:.1em;color:var(--accent);margin-bottom:.55rem;display:block}
+  h2{font-weight:700;font-size:clamp(1.65rem,3.3vw,2.3rem);line-height:1.25;letter-spacing:-.01em;margin-bottom:1.1rem}
+  h2+p{margin-top:0}
+  .lede{font-size:1.2rem;color:var(--ink);font-weight:500}
+  strong{font-weight:700}
+  .num{font-family:var(--mono);font-size:.88em;font-weight:500;color:var(--accent-deep)}
+  blockquote{margin:2.2rem 0;font-weight:600;font-size:clamp(1.35rem,2.6vw,1.85rem);line-height:1.4;letter-spacing:-.01em;padding-left:1.4rem;border-left:3px solid var(--accent);color:var(--ink)}
+  .callout{margin:1.9rem 0;padding:1.15rem 1.4rem;background:var(--paper-2);border-left:3px solid var(--teal)}
+  .callout.warn{border-left-color:var(--accent)}
+  .callout .c-label{font-family:var(--sans);font-weight:700;font-size:.74rem;letter-spacing:.13em;color:var(--teal);display:block;margin-bottom:.4rem}
+  .callout.warn .c-label{color:var(--accent)}
+  .callout p{margin:0;font-size:1.05rem;line-height:1.75}
+  .verdict{margin:0 0 .5rem;padding:1.3rem 1.5rem;background:var(--paper-3);border:1px solid var(--rule);border-left:5px solid var(--accent)}
+  .verdict .c-label{font-family:var(--sans);font-weight:700;font-size:.74rem;letter-spacing:.14em;color:var(--accent-deep);display:block;margin-bottom:.45rem}
+  .verdict .vt{font-weight:700;font-size:1.3rem;line-height:1.45;margin-bottom:.4rem}
+  .verdict .vd{font-size:1.02rem;color:var(--ink-soft);line-height:1.7}
+  figure.chart{margin:1.7rem 0;border:1px solid var(--rule);background:var(--paper-2);padding:1rem 1.2rem}
+  figure.chart .ct{font-family:var(--sans);font-size:.72rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem}
+  figure.chart svg{width:100%;height:auto;display:block}
+  figure.chart text{font-family:var(--sans)}
+  figure.chart .vnum{font-family:var(--mono)}
+  figure.chart figcaption{font-family:var(--sans);font-size:.79rem;color:var(--muted);margin-top:.7rem;padding-left:.9rem;border-left:2px solid var(--accent);line-height:1.55}
+  table.peer{width:100%;border-collapse:collapse;font-size:.9rem;margin:1.4rem 0}
+  table.peer th,table.peer td{padding:.55rem .55rem;text-align:left;vertical-align:top;border-bottom:1px solid var(--rule)}
+  table.peer thead th{font-family:var(--sans);font-size:.74rem;letter-spacing:.04em;color:var(--muted);border-bottom:2px solid var(--ink)}
+  table.peer thead th.g{color:var(--accent-deep)}
+  table.peer td:first-child,table.peer th:first-child{font-family:var(--sans);font-size:.8rem;color:var(--ink-soft);width:30%}
+  table.peer .g{background:var(--paper-3)}
+  table.peer .mono{font-family:var(--mono);font-size:.84rem;color:var(--ink)}
+  table.peer .pos{color:var(--accent-deep);font-weight:600} table.peer .neg{color:var(--teal);font-weight:600}
+  .scen{margin:1.5rem 0;border:1px solid var(--rule)}
+  .scen .row{display:grid;grid-template-columns:8.5rem 1fr;gap:1rem;padding:.8rem 1.1rem;border-top:1px solid var(--rule);align-items:baseline}
+  .scen .row:first-child{border-top:none}
+  .scen .row .h{font-family:var(--sans);font-weight:600;font-size:.92rem}
+  .scen .row .h .pr{display:block;font-family:var(--mono);font-size:.82rem;color:var(--accent-deep);margin-top:.15rem}
+  .scen .row .d{font-size:.99rem;color:var(--ink-soft);line-height:1.62}
+  .scen .bull .h{color:var(--teal)} .scen .bear .h{color:var(--accent)}
+  .endmatter{border-top:3px solid var(--ink);margin-top:3rem;padding-top:2rem}
+  .endmatter h3{font-weight:700;font-size:1.35rem;margin-bottom:.9rem}
+  table.errata{width:100%;border-collapse:collapse;font-size:.9rem;margin:.8rem 0 1.6rem}
+  table.errata th{font-family:var(--sans);font-size:.72rem;letter-spacing:.06em;color:var(--muted);text-align:left;padding:.5rem .55rem;border-bottom:1px solid var(--rule)}
+  table.errata td{padding:.55rem .55rem;border-bottom:1px solid var(--rule);vertical-align:top}
+  table.errata .was{color:var(--muted);text-decoration:line-through}
+  table.errata .now{color:var(--accent-deep);font-weight:600}
+  .srcs{font-family:var(--mono);font-size:.8rem;color:var(--ink-soft);line-height:1.85}
+  .disclosure{font-size:.92rem;color:var(--muted);margin-top:1.3rem;font-style:italic}
+  footer.foot{border-top:1px solid var(--rule);margin-top:1rem;padding:2rem 0 3.5rem;font-family:var(--sans);display:flex;flex-wrap:wrap;gap:1rem;justify-content:space-between;align-items:center}
+  footer.foot .f-brand{font-weight:700;font-size:.8rem;letter-spacing:.14em} footer.foot .f-brand span{color:var(--accent)}
+  footer.foot .f-note{font-size:.8rem;color:var(--muted)}
+  @media(max-width:880px){body{font-size:1.08rem}.layout{grid-template-columns:1fr;gap:0;padding-top:1.8rem}nav.toc{position:static;margin-bottom:2rem;padding:1.1rem 1.2rem;background:var(--paper-2);border:1px solid var(--rule)}nav.toc ol{columns:2;column-gap:1.4rem}nav.toc a{margin-left:0;border-left:none}.stats{grid-template-columns:repeat(2,1fr)}.stat:nth-child(2){border-right:none}.stat{border-bottom:1px solid var(--rule)}}
+  @media(max-width:520px){.stats{grid-template-columns:1fr}.stat{border-right:none}.scen .row{grid-template-columns:1fr;gap:.3rem}nav.toc ol{columns:1}table.peer{font-size:.8rem}}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<div class="wrap"><div class="masthead">
+  <span class="brand">投研知识库 <span>/</span> 买方框架</span>
+  <span class="issue">深度研究 · GOOGL · A/B 对抗修订</span>
+</div></div>
+
+<div class="wrap"><header class="hero">
+  <div class="kicker">ALPHABET · 被错杀，还是被定价？</div>
+  <h1 class="title">谷歌的"便宜"，是个错觉</h1>
+  <p class="standfirst">营收还在涨、巴菲特还在加仓、华尔街还在喊买入，谷歌怎么看都不像该跌的样子。可把它和微软、Meta 摆到一起，用同一把尺量，你会撞见一件反常识的事：三家里，最贵的恰恰是它。</p>
+  <div class="byline">
+    <span>更新 <strong>2026-06-26</strong></span><span class="dot"></span>
+    <span>现价 <strong>$343.71</strong></span><span class="dot"></span>
+    <span>经 A/B 红蓝队对抗修订</span><span class="dot"></span>
+    <span>独立研究 · 非投资建议</span>
+  </div>
+
+  <figure class="hero-fig">
+    <div class="fig-head"><span>GOOGL · 关键数据快照</span><span class="v">裁定 — 持有 / 不补 / 等 Q2</span></div>
+    <div class="stats">
+      <div class="stat"><div class="l">现价 / 距 52w 高</div><div class="n dn">$343.71</div><div class="s">−16%（自 $408）</div></div>
+      <div class="stat"><div class="l">Q1 云增速</div><div class="n up">+63%</div><div class="s">RPO $462B</div></div>
+      <div class="stat"><div class="l">EV/EBITDA vs 自身中位</div><div class="n dn">+51%</div><div class="s">25.5x / 16.9x</div></div>
+      <div class="stat"><div class="l">FCF 收益率</div><div class="n dn">1.74%</div><div class="s">＜ 4.3% 无风险利率</div></div>
+    </div>
+    <div class="scenbar">
+      <div class="sl">12 个月情景分布（左偏）</div>
+      <div class="bar"><span class="b" style="width:25%">牛 25%</span><span class="m" style="width:50%">基 50% · $330–400</span><span class="r" style="width:25%">熊 25%</span></div>
+    </div>
+  </figure>
+
+  <div class="tldr">
+    <span class="c-label">3 分钟速读</span>
+    <ul>
+      <li><strong>生意没坏，跌的是估值。</strong>营收涨两成、云涨六成、订单积压四千六百亿——市场罚的是烧钱的回报，不是基本面。</li>
+      <li><strong>"超预期"是会计戏法。</strong>挤掉一次性投资收益，这季其实差了一美分，不是超，是不及。</li>
+      <li><strong>三家里它最贵。</strong>估值比自己五年中位高出一半，而微软、Meta 都还趴在自己历史线的下面。</li>
+      <li><strong>动作是拿着、不补、等七月。</strong>逻辑没破所以别卖；可也不在"非买不可"的位置，所以也别补。</li>
+    </ul>
+  </div>
+</header></div>
+
+<div class="wrap"><div class="layout">
+
+  <nav class="toc" id="toc">
+    <div class="toc-label">目录</div>
+    <ol>
+      <li><a href="#facts">生意没坏，跌的是另一笔账</a></li>
+      <li><a href="#beat">"超预期"是会计戏法</a></li>
+      <li><a href="#cheap">"便宜"少给你看的对照</a></li>
+      <li><a href="#fcf">现金被烧掉的那一半</a></li>
+      <li><a href="#peer">把三家摆一起，它最贵</a></li>
+      <li><a href="#smart">聪明钱，两张脸</a></li>
+      <li><a href="#gates">三个月内，三道闸</a></li>
+      <li><a href="#verdict">一个买方，怎么落子</a></li>
+    </ol>
+  </nav>
+
+  <article>
+
+    <div class="verdict">
+      <span class="c-label">买方裁定</span>
+      <div class="vt">持有 · 现价不追高、暂不补仓 · 等七月 Q2 再定</div>
+      <div class="vd">逻辑没破，所以不卖；可"便宜"经对抗是个错觉，加上未来三个月三道闸悬着，也没到补仓的时候。把决定攥到 Q2 印证之后；真要加，只用新钱、分批，而且确认它是最好的去处——不为把成本线做好看。</div>
+    </div>
+
+    <section class="section" id="facts">
+      <span class="sec-num">01</span>
+      <h2>生意没坏，跌的是另一笔账</h2>
+      <p class="lede">先看一组数字，但别急着下结论。</p>
+      <p>谷歌从一年内的高点跌下来，回撤一成六。一只一年前还在创新高、华尔街集体喊买、连巴菲特都在加仓的票，按理说不该这么跌。</p>
+      <p>更奇怪的是，它的生意根本没出问题。上个季度营收还在以两成的速度往上走，到一千一百亿美元；最要紧的云业务，一个季度做了两百亿，同比涨了六成多，还在提速；手里没交付的云订单堆了四千六百亿——差不多就是它去年一整年挣的全部收入。连喊了好几年的"AI 会干掉搜索"，这季也被搜索 19% 的增速打了脸。</p>
+      <p>生意没坏，股价却跌。市场到底在怕什么？</p>
+      <blockquote>答案就俩字：烧钱。</blockquote>
+      <p>今年，谷歌一边给巴菲特定向增发一百亿美元新股，一边把资本开支的指引抬到一千八到一千九百亿。一个全世界最不缺钱的公司，开始一边发股、一边砸钱。市场打的这个折，不冲它的生意，冲的是这笔钱什么时候能赚回来。所以这篇先不谈买卖，先回答一件事：这个折扣，打得对不对。</p>
+    </section>
+
+    <section class="section" id="beat">
+      <span class="sec-num">02 · 第一处修正</span>
+      <h2>那个"超预期"，是会计变的戏法</h2>
+      <p>几乎所有标题都说谷歌这季大超预期：每股收益 5.11 美元，翻了一倍还多。这话不假，但有水分。</p>
+      <p>这 5.11 里，有 2.35 美元不是做生意挣来的，是它手里 Waymo、Anthropic 这些股权这季重估、账面上多出来的一笔——税后将近三百亿美元，下个季度不会再有第二次。把这笔一次性的水分挤干净，真正靠生意挣的，大概是每股 2.62 美元。而华尔街的预期，是 2.63。</p>
+      <blockquote>差一美分。说好的"超预期"，其实是差了一点点。</blockquote>
+      <p>这一美分不影响"生意很强"——营收、利润、云的增速，都是真金白银，也都一条条核过。它影响的是另一件事：当一份报告悄悄把这笔一次性收益算进"超预期"，它就在你没留神的时候，把天平往多头那头压了一寸。生意这层我认八九分；可"这季超预期"这句，挤完水分，我把它划掉了。</p>
+    </section>
+
+    <section class="section" id="cheap">
+      <span class="sec-num">03 · 第二处修正</span>
+      <h2>"便宜"，少给你看了一组对照</h2>
+      <p>看多的人有个说法：远期市盈率才二十四倍，对一台还在以两成增长的机器，不算贵。听着有道理。但这句话，藏了两件事没说。</p>
+      <p>第一件，它对自己不便宜。换一把更扎实的尺——EV/EBITDA——现在是 25.5 倍，而它自己过去五年的中位数，才 16.9 倍。高出去整整一半。如果只是回到它自己的历史常态，对应的价大概是 227 美元，比现在还低三成。原稿只让你看了"比同行便宜"，把"比自己贵"那张对照表，扣下了。</p>
+      <p>第二件，那个"二十四倍"，是借了后年的光。分母用的是后年的盈利；可从今年到后年，盈利只多 2%。你为两成的营收增长掏钱，买到的近端利润增长几乎是零——这本身就是个信号：利润正被折旧一点点啃掉。</p>
+      <div class="callout"><span class="c-label">现金这本账，更冷</span><p>按现价算，它的自由现金流收益率只有 1.74%（一手重算，不是原稿的 1.5%），跑不赢 4.3% 的无风险利率。换句话说，论现金回报，它给得还没国债多。卖方共识目标价 427 到 433 美元、约两成五的上行，可那建在一个前提上：云的利润率得大幅扩张，高估值还得撑住。</p></div>
+    </section>
+
+    <section class="section" id="fcf">
+      <span class="sec-num">04 · 真正的痛点</span>
+      <h2>现金被烧掉的那一半</h2>
+      <p>真正把股价往下拽的，不是发新股那点稀释——摊薄才 2%——是自由现金流。去年，谷歌还能从生意里攒下七百三十亿美元的自由现金流；今年第一个季度，一个季度就只剩一百零一亿，而同期的资本开支，翻了一倍还多。</p>
+      <figure class="chart">
+        <div class="ct">自由现金流 vs 资本开支（$B）</div>
+        <svg viewBox="0 0 430 178" role="img" aria-label="自由现金流压缩图">
+          <line x1="120" y1="8" x2="120" y2="168" stroke="#d8d1c0" stroke-width="1"/>
+          <rect x="120" y="16" width="240" height="26" fill="#b8492f"/><text x="10" y="33" font-size="11.5" fill="#46423a">FY26 资本开支</text><text class="vnum" x="366" y="33" font-size="11.5" fill="#9a3a23">$185B</text>
+          <rect x="120" y="52" width="214" height="26" fill="#2f6b66"/><text x="10" y="69" font-size="11.5" fill="#46423a">FY25 经营现金流</text><text class="vnum" x="340" y="69" font-size="11.5" fill="#2f6b66">$164.7B</text>
+          <rect x="120" y="88" width="95" height="26" fill="#46423a"/><text x="10" y="105" font-size="11.5" fill="#46423a">FY25 自由现金流</text><text class="vnum" x="221" y="105" font-size="11.5" fill="#211f1b">$73.3B</text>
+          <rect x="120" y="124" width="26" height="26" fill="#b8492f" opacity=".5"/><text x="10" y="141" font-size="11.5" fill="#46423a">FY26E 自由现金流</text><text class="vnum" x="152" y="141" font-size="11.5" fill="#9a3a23">$10–30B</text>
+        </svg>
+        <figcaption>一千八九百亿的开支，几乎把一整年从生意里挣的现金全吃光；自由现金流随之从七百多亿，塌到一两百亿。这就是市场打折的机制。</figcaption>
+      </figure>
+      <p>更要命的是，管理层放了话：明年的开支只会"显著更高"。这就意味着，那套"自由现金流撑得起估值"的老算法，2026 年先失灵了。这也不是谷歌一家的病。微软、Meta，全在同一张牌桌上——市场不是在罚某一家，是给整个 AI 的烧钱，统一打上一个问号：这钱，到底什么时候能赚回来。</p>
+      <blockquote>需求是张口头承诺，开支是份签了字的合同。</blockquote>
+      <p>市场的做法因此很简单：先给确定要花出去的钱打折，再慢慢等那笔不确定能挣回来的钱。</p>
+    </section>
+
+    <section class="section" id="peer">
+      <span class="sec-num">05 · 同业坐标</span>
+      <h2>把三家摆一起，它最贵</h2>
+      <p>"谷歌被错杀"这话，得放进同行里看，才知道立不立得住。找一把最不容易被周期忽悠的尺：每家公司现在比自己过去五年的估值中位，是贵了还是便宜了。三家超级巨头排下来，只有谷歌，站在"贵"那一头。</p>
+      <figure class="chart">
+        <div class="ct">EV/EBITDA 相对自身 5 年中位</div>
+        <svg viewBox="0 0 440 176" role="img" aria-label="同业估值相对自身中位">
+          <text x="220" y="11" font-size="9.5" fill="#7c7567" text-anchor="middle">0% · 自身 5 年中位</text>
+          <line x1="220" y1="16" x2="220" y2="152" stroke="#7c7567" stroke-width="1" stroke-dasharray="3 3"/>
+          <rect x="220" y="24" width="153" height="30" fill="#b8492f"/>
+          <text x="10" y="44" font-size="13" font-weight="700" fill="#211f1b">GOOGL</text>
+          <text class="vnum" x="379" y="44" font-size="12.5" fill="#9a3a23">+51%</text>
+          <rect x="139" y="66" width="81" height="30" fill="#2f6b66"/>
+          <text x="10" y="86" font-size="13" font-weight="700" fill="#211f1b">MSFT</text>
+          <text class="vnum" x="133" y="86" font-size="12.5" fill="#2f6b66" text-anchor="end">−27%</text>
+          <rect x="163" y="108" width="57" height="30" fill="#2f6b66"/>
+          <text x="10" y="128" font-size="13" font-weight="700" fill="#211f1b">META</text>
+          <text class="vnum" x="157" y="128" font-size="12.5" fill="#2f6b66" text-anchor="end">−19%</text>
+          <text x="10" y="170" font-size="9.5" fill="#7c7567">← 低于自身历史（便宜）</text>
+          <text x="430" y="170" font-size="9.5" fill="#9a3a23" text-anchor="end">高于（贵）→</text>
+        </svg>
+        <figcaption>微软、Meta 都被实打实砸到了自身历史估值的下面；谷歌反而高出中位一半。同样是"套牢一成六"，含义可不一样。</figcaption>
+      </figure>
+      <table class="peer">
+        <thead><tr><th>指标</th><th>MSFT</th><th class="g">GOOGL</th><th>META</th></tr></thead>
+        <tbody>
+          <tr><td>现价</td><td class="mono">$352.83</td><td class="mono g">$343.71</td><td class="mono">$542.87</td></tr>
+          <tr><td>EV/EBITDA vs 自身中位</td><td class="mono neg">−27%</td><td class="mono g pos">+51%</td><td class="mono neg">−19%</td></tr>
+          <tr><td>自由现金流收益率</td><td class="mono">2.78%</td><td class="mono g">1.74%</td><td class="mono">0.4–1.8%</td></tr>
+          <tr><td>资本开支压力</td><td class="mono">占经营现金 66%</td><td class="mono g">几乎吞光经营现金</td><td class="mono">明年或转负</td></tr>
+          <tr><td>聪明钱</td><td>Ackman 建仓 / 高管在卖</td><td class="g">巴菲特重仓 / Ackman 清</td><td>高管按计划卖</td></tr>
+          <tr><td>A/B 裁定</td><td>持有偏减、别补</td><td class="g">持有、别补、等 Q2</td><td>持有、别补、等 7/29</td></tr>
+        </tbody>
+      </table>
+      <p>这不推翻"拿着"——三家的生意都没塌。但它把"该补哪一只"的次序排清楚了：真要拿钱出手，被实打实砸到历史估值线下面的微软和 Meta，垫子比还吊在自己高位的谷歌厚。谷歌这回的跌，与其说"跌进了便宜"，不如说"从过头的乐观，落回了该有的位置"。</p>
+    </section>
+
+    <section class="section" id="smart">
+      <span class="sec-num">06 · 第三处修正</span>
+      <h2>聪明钱，两张脸</h2>
+      <p>最响的那张多头嘴，是巴菲特。一个季度里，伯克希尔把谷歌从一千七百多万股，加到近五千八百万股，翻了三倍多；紧接着六月一号，又掏一百亿美元，接下一笔定向增发的新股。这里得纠原稿一个错：那是普通股，不是优先股，A 类 C 类各占一半，定价还都比现价略高。算下来，伯克希尔在谷歌身上压了八千六百万股、三百多亿美元，挤进它的前五大重仓。按市价给一个成长故事背书，不是趁打折捡漏——这是分量最重的一票。</p>
+      <p>另一张脸，是 Ackman。同一段时间，他把手里九成五的谷歌清了，掉头买进微软，押的正是"又稀释、回报又看不清"的空头逻辑。我不拿它当否决票，拿它当一面照自己论点的镜子。至于公司高管，九十天里确实在卖，但全是限制性股票解锁后顺手的配对卖出，没一笔是主动掏钱买——大科技里高管不主动买本就是常态，这个信号很轻。</p>
+      <div class="callout"><span class="c-label">顺手改两个数</span><p>那笔总融资是 847.5 亿美元，里头强制可转换优先股 167.5 亿（不是原稿写的"190 亿以上"）；伯克希尔那一百亿是普通股，跟优先股没关系。</p></div>
+    </section>
+
+    <section class="section" id="gates">
+      <span class="sec-num">07 · 时钟</span>
+      <h2>三个月内，三道闸</h2>
+      <p>往近了看，这只票是被事件推着走的，不是被估值。三件事，会挤在一个季度里落地——它们才是该不该补的扳机，今天的股价不是。</p>
+      <div class="scen">
+        <div class="row base"><div class="h">① Q2 财报<span class="pr">七月 · 待官宣</span></div><div class="d">就盯两个数：云的增速能不能守住五成五、利润率还扩不扩。最容易证伪的一个。</div></div>
+        <div class="row bear"><div class="h">② AdX 反垄断<span class="pr">悬而未决</span></div><div class="d">法官要是判强制拆卖 AdX，等于直接抽走三四千亿美元的广告技术估值。</div></div>
+        <div class="row bear"><div class="h">③ 欧盟 DMA<span class="pr">罚款 / 整改</span></div><div class="d">分量不如前两件，但赶在同一个窗口，会把波动放大。</div></div>
+      </div>
+      <p>真正会让我回头重算这笔账的，是这几条里但凡亮一条：云的增速掉到四成以下、管理层还顺手砍了全年指引；苹果把别家的 AI 搜索请进了 Safari 的默认位；AdX 被判强制拆卖；或者搜索的单价，连着两个季度往下走。眼下，这几盏灯，全绿。</p>
+    </section>
+
+    <section class="section" id="verdict">
+      <span class="sec-num">08 · 结论</span>
+      <h2>一个买方，怎么落子</h2>
+      <p class="lede">四个角度，加一轮红蓝队对着干，最后收成一句话：生意这层我认八九分，故事那层挤完水分只剩四五分。所以——拿着，但不加。</p>
+      <p><strong>先说不卖。</strong>跌的是离高点的距离，更要紧的是，没有一条根本逻辑被打破：云在提速、搜索在涨、巴菲特在加仓。这是被套，不是看走了眼。基本面不破，就没有卖的理由。就这么拿着。</p>
+      <p><strong>再说为什么也别现在补。</strong>补仓只问一句话：今天的谷歌，是不是这笔钱最好的去处？老实讲，不是。它不在"便宜到非买不可"的位置——比自己历史贵了一半，现金回报跑不赢国债，三家里还是最不便宜的那个；而且未来三个月，三道闸一道没落。最稳的默认，是把钱攥到七月：Q2 要是云稳住、又没被判拆卖，加仓的理由才算成立；真要是云失速、或者拆卖砸下来，便会庆幸没追。真动手，也只用新钱、分三笔、跨着财报建——绝不是为了把成本线做得好看一点。</p>
+      <div class="scen">
+        <div class="row bull"><div class="h">🐂 牛 · 25%<span class="pr">$430–515</span></div><div class="d">Q2 云续增六成、利润率再扩，AdX 只判个行为整改没拆卖，苹果保住默认位——华尔街上修，估值重新算过。</div></div>
+        <div class="row base"><div class="h">🦬 基 · 50%<span class="pr">$330–400</span></div><div class="d">生意稳，但现金被开支压着、市场对回报继续打折——跟着基本面慢慢爬，不靠估值翻身。最可能的一条路。</div></div>
+        <div class="row bear"><div class="h">🐻 熊 · 25%<span class="pr">$260–310</span></div><div class="d">云增速破四成、AdX 被拆卖、苹果议价松动，三件撞一块——估值连环压缩。这是回头重算的区域，不是闭眼割肉的区域。</div></div>
+      </div>
+      <p>对长期持有者，挪动一次的代价不低，这只会让"先不动"显得更对。坐住，等七月；不摊低成本；新钱分批，而且只在谷歌确实是最好的那个去处时，才出手。</p>
+
+      <div class="endmatter">
+        <h3>⚔️ A/B 红蓝队对抗注记 — 改了什么</h3>
+        <p style="font-size:.98rem;color:var(--ink-soft);margin-bottom:.4rem">数字这一层经一手核实，我认八九分；"解读与框架"那一层，被红蓝队拆穿三处偏多，已在正文改正。决策级更正如下：</p>
+        <table class="errata"><thead><tr><th>项</th><th>原</th><th>改为</th></tr></thead><tbody>
+          <tr><td>Q1 每股收益性质</td><td class="was">调整 EPS ~$2.76 = 超预期</td><td class="now">街口径 $2.62 vs 预期 $2.63 = 差一美分</td></tr>
+          <tr><td>估值"便宜"</td><td class="was">FY27 市盈率约 24x，便宜</td><td class="now">EV/EBITDA 25.5x，高出五年中位 16.9x 约一半</td></tr>
+          <tr><td>自由现金流收益率</td><td class="was">1.5%</td><td class="now">1.74%（按现价重算）</td></tr>
+          <tr><td>强制可转优先股</td><td class="was">约 190 亿以上</td><td class="now">167.5 亿（基础发行）</td></tr>
+          <tr><td>伯克希尔的 100 亿</td><td class="was">优先股条款</td><td class="now">普通股（A 类 + C 类）</td></tr>
+        </tbody></table>
+        <h3>数据与来源</h3>
+        <p class="srcs">
+          现价 $343.71（AV GLOBAL_QUOTE, 06-25 收）[实测]<br>
+          Q1'26 营收 $109.9B / 营业利润率 36.1% / 云 $20.0B +63% / RPO $462B（AV + 8-K）[实测]<br>
+          调整 EPS $2.62 vs 预期 $2.63；GAAP $5.11 含一次性投资收益 $2.35/股（CNBC、LSEG 两源 + 8-K）[实测]<br>
+          自由现金流 FY25 $73.3B → Q1'26 $10.1B（AV CASH_FLOW）[实测]；FY26 资本开支指引 $180–190B [指引]<br>
+          EV/EBITDA ~25.5x vs 5y 中位 16.9x（聚合源）[估算]；FY27 EPS $14.51（AV, 54 家）[实测]；FCF 收益率 1.74% [自算]<br>
+          同业相对自身中位：MSFT −27%、GOOGL +51%、META −19%（聚合源）[估算]<br>
+          卖方共识目标价 $427–433（+25%，零卖出）[共识]；伯克希尔约 8600 万股、总融资 $84.75B（含优先股 $16.75B）[实测/估算]<br>
+          <strong>待核 / 单源：</strong>EV/EBITDA 历史区间（聚合估算）；合并股数（跨披露估算）；Q2 财报日（7/22 与 7/28 两源冲突，公司未官宣）。
+        </p>
+        <p class="disclosure">本报告为个人独立研究，仅供学习用途。所有目标价、预测与估算均标注来源与可信度等级；结论对齐 A/B 红蓝队收敛裁判。过往表现不预示未来，投资决策请自行尽调。</p>
+      </div>
+    </section>
+
+  </article>
+</div></div>
+
+<div class="wrap"><footer class="foot">
+  <div class="f-brand">投研知识库 <span>/</span> 买方框架</div>
+  <div class="f-note">2026-06 · 独立研究 · 非投资建议</div>
+</footer></div>
+
+<script>
+  var p=document.getElementById('progress');
+  function up(){var h=document.documentElement;var m=h.scrollHeight-h.clientHeight;p.style.width=(m>0?h.scrollTop/m*100:0)+'%';}
+  addEventListener('scroll',up,{passive:true});addEventListener('resize',up);up();
+  var secs=[].slice.call(document.querySelectorAll('section.section'));
+  var links=[].slice.call(document.querySelectorAll('#toc a'));
+  function spy(){var pos=scrollY+innerHeight*0.3,cur=secs[0];for(var i=0;i<secs.length;i++){if(secs[i].offsetTop<=pos)cur=secs[i];}links.forEach(function(a){a.classList.toggle('active',a.getAttribute('href')==='#'+cur.id);});}
+  addEventListener('scroll',spy,{passive:true});addEventListener('resize',spy);spy();
+</script>
+</body>
+</html>
